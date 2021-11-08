@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "slides": "cd slides && yarn dev",
     "start": "ts-node test.ts",
     "test": "ts-node test.ts"
   },

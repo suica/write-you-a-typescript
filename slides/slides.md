@@ -1,49 +1,144 @@
 ---
-# try also 'default' to start simple
-theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://source.unsplash.com/collection/94734566/1920x1080
-# apply any windi css classes to the current slide
-class: 'text-center'
-# https://sli.dev/custom/highlighters.html
+theme: default
+class: text-center
 highlighter: shiki
-# show line numbers in code blocks
 lineNumbers: false
-# some information about the slides, markdown enabled
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
 
   Learn more at [Sli.dev](https://sli.dev)
-# persist drawings in exports and build
 drawings:
   persist: false
+title: 类型系统入门
+monaco: dev
 ---
 
-# Welcome to Slidev
+# 类型系统入门
 
-Presentation slides for developers
+吴登轲 高洁璇
 
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
+---
+layout: section
+---
 
-<div class="abs-br m-6 flex gap-2">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub"
-    class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon-logo-github />
-  </a>
-</div>
+# 第一节：类型系统简介
 
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
+---
+layout: statement
+---
+
+## 什么是类型？
+
+---
+
+# 自然语言中的类型
+
+我们其实都已经是汉语这门自然语言中的「类型系统」的专家了。
+
+- 汉语的词性包括：动词，名词，形容词，副词……它们其实就是「词语」组成的搜集，它们是词语的类型。
+
+- 例子：类型错误。第一句话是一个正确的命题。我们稍微修改一下这句话，得到第二句话。本应该是名词待的位置，却被替换成了动词，让这个句子失去了合法性。
+
+<br>
+
+> 997 是一个质数。
+
+> *997 是一个跑。
+
+<br>
+
+- 如果你来判断这句话第二句话是否正确，你可以立刻下结论——它是错的——而不用去理解这个命题涉及的任何数学概念。因为这句话在语法上就是错的。这其实就是一种类型检查。
+
+<!-- TODO: 从和编程语言的对应上来说，s-selection 其实才是类型检查……需要修改例子 -->
+
+<br>
+
+<Center>
+ 那么，到编程语言这个形式系统上，我们是不是也可以有类似的「类型检查」？
+</Center>
+
+---
+
+# 编程语言中的类型
+
+## TypeScript中的类型概览
+
+在TypeScript 4.5中，我们有`number`, `boolean`, `string`, `bigint`, `symbol`，以及`undefined`, `null`[^1]这7个**原始类型(Primitive Type)**，还有`Array`, `Object`, `Function`等等**引用类型**()。
+
+[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照JavaScript的提法，将其同样认为是原始类型。
+
+---
+
+# 语言的分类
+
+```ts {monaco}
+type LanguageTaxonomy = ['动态定型' | '静态定型', '强类型' | '弱类型'];
+const CPP: LanguageTaxonomy = ['静态定型', '强类型'];
+const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
+```
+
+在一些编程语言中，变量的类型可以在运行程序之前就能确定下来。这种
+
+```cpp {monaco}
+// CPP
+int a = 10;
+a = 'b'; // 会在编译时报错
+```
+
+```js
+// JavaScript
+let a = 10;
+a = 'b'; // 完全合法
+```
+
+<!-- 在编程语言中，类型系统提供的能力，可以帮助我们写出更好的程序。 -->
+
+---
+
+# 编程语言为什么要引入类型系统？
+
+## 动机
+
+## 好处
+
+---
+
+# 类型系统的基本概念
+
+- 一个**值 (Value)**，就是某个东西。它是一个直观上的概念。
+
+- 一个**搜集 (Collection)**，就是一堆东西组成的整体。它同样是一个直观上的概念。
+
+<!-- TODO: 注释一下为啥不用一个更严格的词 -->
+
+- 一个**类型 (Type)**，就是一个由**值**组成的**搜集** [^ts] （你可以直观地认为类型就是一个值组成的**集合**)。 
+
+- 在编程语言中，**一个表达式的类型**就是它在执行之时估计会取到的值形成的一个 **搜集** [^ts]。
+
+- 在编程语言中，**类型系统 (Type System)** 就是一个**类型规则的搜集**，这种规则能为每个项确定一个类型。
+
+类型系统其实很难有一个精确的定义。从某个角度可以定义如下：
+
+> A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute. - [tapl]
+
+
+<!-- # 类型系统背后的理论：类型论 -->
+<!-- 编程语言是一种形式系统。而 **类型论 (Type Theory)** 作为编程语言的类型系统后的理论基础，则有更广的对象：它是关于所有形式系统中的项的类型的学术化的研究 [wiki]。 -->
+
+<!-- ## 类型论的历史 -->
+
+<!-- 类型论 (Type Theory) 从 20 世纪初期发端。…… -->
+
+---
+
+# 参考文献
+
+[ts]: http://lucacardelli.name/papers/typesystems.pdf
+
+---
+
+# 为什么要学习类型系统
 
 ---
 
@@ -59,7 +154,6 @@ Slidev is a slides maker and presenter designed for developers, consist of the f
 - 📤 **Portable** - export into PDF, PNGs, or even a hostable SPA
 - 🛠 **Hackable** - anything possible on a webpage
 
-<br>
 <br>
 
 Read more about [Why Slidev?](https://sli.dev/guide/why)
@@ -175,7 +269,6 @@ Check out [the guides](https://sli.dev/builtin/components.html) for more.
 
 </div>
 </div>
-
 
 ---
 class: px-20
@@ -336,7 +429,6 @@ C -->|Two| E[Result 2]
 </div>
 
 [Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
 
 ---
 layout: center
