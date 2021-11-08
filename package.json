@@ -1,0 +1,17 @@
+{
+  "name": "write-you-a-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node test.ts",
+    "test": "ts-node test.ts"
+  },
+  "author": "suicca",
+  "license": "ISC",
+  "dependencies": {
+    "byots": "^4.3.0-dev.20210326.17.17",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.5.0-dev.20211011"
+  }
+}
