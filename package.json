@@ -5,14 +5,21 @@
   "main": "index.js",
   "scripts": {
     "slides": "cd slides && yarn dev",
-    "start": "ts-node test.ts",
-    "test": "ts-node test.ts"
+    "start": "ts-node src/index.ts",
+    "test": "node src/test/www.js"
   },
   "author": "suicca",
   "license": "ISC",
   "dependencies": {
     "byots": "^4.3.0-dev.20210326.17.17",
     "ts-node": "^10.2.1",
-    "typescript": "^4.5.0-dev.20211011"
+    "typescript": "^4.4.4",
+    "typescript-parser": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "eslint": "^8.1.0"
   }
 }

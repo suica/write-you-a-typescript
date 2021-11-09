@@ -1,10 +1,11 @@
 import * as ts from 'byots'
+import { Scanner } from 'byots';
 
 // TypeScript has a singleton scanner
 const scanner = ts.createScanner(ts.ScriptTarget.Latest, /*skipTrivia*/ true);
 
 // That is initialized using a function `initializeState` similar to
-function initializeState(text: string) {
+function initializeState(scanner:Scanner,text: string) {
     scanner.setText(text);
     scanner.setOnError((message: ts.DiagnosticMessage, length: number) => {
         console.error(message);
@@ -13,10 +14,6 @@ function initializeState(text: string) {
     scanner.setLanguageVariant(ts.LanguageVariant.Standard);
 }
 
-// Sample usage
-initializeState(`
-type A = 122 + 2;
-`.trim());
 
 function readToEOF(scanner: ts.Scanner) {
     let token = scanner.scan();
@@ -27,6 +24,11 @@ function readToEOF(scanner: ts.Scanner) {
     }
     return result;
 }
+
+import { readFileSync } from 'fs';
+
+const content = readFileSync('./src/examples/test.ts').toString();
+initializeState(scanner,content);
 
 const wwww = readToEOF(scanner);
 console.log(wwww.map(ts.Debug.formatSyntaxKind));
