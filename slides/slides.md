@@ -34,49 +34,39 @@ layout: statement
 
 # 自然语言中的类型
 
-我们其实都已经是汉语这门自然语言中的「类型系统」的专家了。
+在知道类型系统的定义之前，我们其实都已经是汉语这门自然语言中的「类型」专家了。
 
-- 汉语的词性包括：动词，名词，形容词，副词……它们其实就是「词语」组成的搜集，它们是词语的类型。
+汉语官话是一种自然语言。
 
-- 例子：类型错误。第一句话是一个正确的命题。我们稍微修改一下这句话，得到第二句话。本应该是名词待的位置，却被替换成了动词，让这个句子失去了合法性。
+- 它的词性包括：动词，名词，形容词，副词……它们其实就是「词语」组成的搜集，它们是词语的类型。
 
-<br>
-
-> 997 是一个质数。
-
-> *997 是一个跑。
+- 第一句话是一个正确的命题。我们稍微修改一下这句话，得到第二句话。本应该是名词待的位置，却被替换成了动词，让这个句子失去了合法性。
 
 <br>
 
-- 如果你来判断这句话第二句话是否正确，你可以立刻下结论——它是错的——而不用去理解这个命题涉及的任何数学概念。因为这句话在语法上就是错的。这其实就是一种类型检查。
+> 例1：997 是一个质数。
 
-<!-- TODO: 从和编程语言的对应上来说，s-selection 其实才是类型检查……需要修改例子 -->
+> *例2：997 是一个跑。
+
+<br>
+
+- 如果我们来判断这句话第二句话是否正确，我们可以立刻下结论——它是错的——而不用去理解这个命题涉及的任何数学概念。因为这句话在语法上就是错的。这其实就是一种类型检查。
+
+<!-- TODO: 从和编程语言的对应上来说，semantic-selection 其实才是类型检查……需要修改例子和文案 -->
 
 <br>
 
 <Center>
- 那么，到编程语言这个形式系统上，我们是不是也可以有类似的「类型检查」？
+那么，到编程语言这个形式系统上，我们是不是也可以有类似的快速「检查」？
+
+——这样，我们可以用很低的成本来验证程序是否是对的。
 </Center>
 
 ---
 
 # 编程语言中的类型
 
-## TypeScript中的类型概览
-
-在TypeScript 4.5中，我们有`number`, `boolean`, `string`, `bigint`, `symbol`，以及`undefined`, `null`[^1]这7个**原始类型(Primitive Type)**，还有`Array`, `Object`, `Function`等等**引用类型**()。
-
-[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照JavaScript的提法，将其同样认为是原始类型。
-
----
-
-# 语言的分类
-
-```ts {monaco}
-type LanguageTaxonomy = ['动态定型' | '静态定型', '强类型' | '弱类型'];
-const CPP: LanguageTaxonomy = ['静态定型', '强类型'];
-const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
-```
+##
 
 在一些编程语言中，变量的类型可以在运行程序之前就能确定下来。这种
 
@@ -92,15 +82,12 @@ let a = 10;
 a = 'b'; // 完全合法
 ```
 
-<!-- 在编程语言中，类型系统提供的能力，可以帮助我们写出更好的程序。 -->
-
+---
+layout: statement
 ---
 
-# 编程语言为什么要引入类型系统？
-
-## 动机
-
-## 好处
+## 什么是类型系统？
+## 为什么要用类型系统？
 
 ---
 
@@ -116,12 +103,9 @@ a = 'b'; // 完全合法
 
 - 在编程语言中，**一个表达式的类型**就是它在执行之时估计会取到的值形成的一个 **搜集** [^ts]。
 
-- 在编程语言中，**类型系统 (Type System)** 就是一个**类型规则的搜集**，这种规则能为每个项确定一个类型。
+## 什么是类型系统？
 
-类型系统其实很难有一个精确的定义。从某个角度可以定义如下：
-
-> A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute. - [tapl]
-
+在编程语言中，**类型系统 (Type System)** 就是一个**类型规则的搜集**，这种规则能为项确定类型。
 
 <!-- # 类型系统背后的理论：类型论 -->
 <!-- 编程语言是一种形式系统。而 **类型论 (Type Theory)** 作为编程语言的类型系统后的理论基础，则有更广的对象：它是关于所有形式系统中的项的类型的学术化的研究 [wiki]。 -->
@@ -130,9 +114,217 @@ a = 'b'; // 完全合法
 
 <!-- 类型论 (Type Theory) 从 20 世纪初期发端。…… -->
 
+<!-- ## 什么是类型系统？
+
+"A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute." - [^tapl] -->
+
+
+---
+
+# 为什么要使用类型系统？
+
+##
+
+- 在计算机科学和软件工程中，我们可以用形式化方法(formal methods)来检查一个软件或是硬件系统是否满足某种性质。例如：
+
+  1. 将芯片设计抽象为模型(model)，使用模型检查器(model checker)证明它的行为符合规范[^tapl];
+
+  2. 使用$\pi$-演算来描述一个并发系统的行为[^2]，证明它不会出现死锁；
+
+  3. 使用证明助手Coq，来构建形式化的证明，从数学上证明星载实时操作系统SpaceOS的内核设计符合一些性质[^1]。
+
+- 类型系统，以及类型检查，可以看成是一种轻量的形式化方法 (formal method)，它也是一种验证软件**性质**的手段[^tapl]。 我们想要的**性质**，一般就是程序不会出某些运行时错误。
+
+[^tapl]: tapl
+[^1]: 顾海博, 付明, 乔磊,等. SpaceOS中若干全局性质的形式化描述和验证[J]. 小型微型计算机系统, 2019, 40(1):8.
+[^2]: 焦文品, 史忠植. 形式化多主体系统中的交互及交互协议[J]. 软件学报, 2001.
+
+<style>
+.footnotes-sep {
+  @apply mt-0 opacity-10;
+}
+.footnotes {
+  @apply text-sm opacity-75;
+}
+.footnote-backref {
+  display: none;
+}
+</style>
+
+---
+layout: statement
+---
+## 类型系统有哪些好处？
+
+
+---
+
+# 类型系统能帮我们发现错误
+
+<br>
+
+<div grid="~ cols-2 gap-2">
+
+```ts {monaco}
+type Status = 'finished' | 'unfinished';
+
+const StatusDisplayDict: Record<Status, string> = {
+  finished: "已完成",
+  unfinished: "未完成",
+}
+```
+
+```ts {monaco}
+type Status = 'finished' | 'unfinished' | 'processing';
+
+const StatusDisplayDict: Record<Status, string> = {
+  finished: "已完成",
+  unfinished: "未完成",
+}
+```
+
+</div>
+
+---
+
+# 类型系统能帮我们发现错误（续）
+
+
+```ts {monaco}
+type MyEvent = | {kind:'resize'; hw: [number,number]} 
+               | {kind: 'select', keys?: string[]};
+// @ts-expect-error
+function badHandleEvent(e){
+  // 这里不小心少考虑了几种情况……
+  const keysHash = [...e.keys].sort().join('#');
+  console.log(`keys' hash is: ${keysHash}`);
+}
+function goodHandleEvent(e: MyEvent){
+  if(e.kind === 'resize'){
+    const [h,w] = e.hw;
+    console.log(`area: ${h*w}`);
+  }else if(e.kind === 'select'){
+    if(e.keys){
+      const keysHash = [...e.keys].sort().join('#');
+      console.log(`keys' hash is: ${keysHash}`);
+    }else{
+      console.error('selected, but nothing selected!');
+    }
+  }
+}
+```
+
+<style>
+iframe{
+  height: 380px !important;
+}
+</style>
+
+---
+
+# 类型系统能提供抽象机制
+
+类型系统不止可以用于发现错误。
+
+---
+
+# 类型系统能提供文档能力
+类型就是比自然语言更加精确的文档。
+
+不必写注释明说如何使用`add`函数。用心去感受……
+```ts {monaco}
+function add<A extends string, B extends string>(first: A, second: B): `${A}${B}`;
+function add(first: number, second: number): number;
+function add(first: unknown, second: unknown): unknown {
+  return first as any + second as any;
+}
+
+
+add("1",2);             // 类型错误
+add("1",2 as string);   // 类型错误
+add("1","2");           // 正确
+add(1,2);               // 正确
+```
+<style>
+iframe{
+  height: 380px !important;
+}
+</style>
+
+---
+
+# 类型系统能提供文档能力（续）
+类型就是比自然语言更加精确的文档。
+
+可以用类型系统做流程控制。例如，限制代码必须无lint错误才能提交。
+```ts {monaco}
+type Code = { fileList: string[]; addedTime: Date }
+declare const LintInternalSymbol: unique symbol
+type Linted<T> = T & { [LintInternalSymbol]: undefined }
+declare function lint<T extends Code>(code: T): Linted<Code>
+declare function commit(code: Linted<Code>): Promise<void>
+
+declare const code: Code
+
+commit(code)
+
+commit(lint(code))
+```
+
+<br>
+往对象上添加元信息的这种技巧俗称"打标"(Tagging)。
+
+<style>
+iframe{
+  height: 280px !important;
+}
+</style>
+
+---
+
+# 类型系统能提供语言安全性
+
+---
+layout: statement
+---
+
+## 为什么要学习类型系统？
+
+---
+
+# TypeScript的类型系统
+
+## TypeScript中的类型概览
+
+在TypeScript 4.5中，我们有`number`, `boolean`, `string`, `bigint`, `symbol`，以及`undefined`, `null`[^1]这7个**原始类型(Primitive Type)**，还有`Array`, `Object`, `Function`等等**引用类型**。
+
+[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照JavaScript的提法，将其同样认为是原始类型。
+
+---
+
+# 语言的分类
+
+```ts {monaco}
+type LanguageTaxonomy = ['动态定型' | '静态定型', '强类型' | '弱类型'];
+const CPP: LanguageTaxonomy = ['静态定型', '强类型'];
+const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
+```
+
+<!-- 在编程语言中，类型系统提供的能力，可以帮助我们写出更好的程序。 -->
+
+---
+
+# 编程语言为什么要引入类型系统？
+
+## 动机
+
+## 好处
+
 ---
 
 # 参考文献
+
+<!-- TODO: 处理一下参考文献的问题。 -->
 
 [ts]: http://lucacardelli.name/papers/typesystems.pdf
 
