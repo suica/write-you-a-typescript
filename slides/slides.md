@@ -226,6 +226,10 @@ iframe{
 
 类型系统不止可以用于发现错误。
 
+- 不同的模块之间产生交互时，只需用约定接口类型，即可各自开发。
+
+- 可以快速地通过模块导出的类型了解模块的功能。
+
 ---
 
 # 类型系统能提供文档能力
@@ -284,11 +288,42 @@ iframe{
 
 # 类型系统能提供语言安全性
 
+<!-- TODO -->
+
 ---
 layout: statement
 ---
 
 ## 为什么要学习类型系统？
+
+---
+
+# 为什么要学习类型系统？
+
+- 提高理论水平
+
+- 对TypeScript的类型系统产生更深的理解
+
+- 写一个自己的类型检查器
+
+- 写出质量更高的程序
+
+---
+
+# 课程路线图
+
+---
+
+# 类型论的大图景
+
+##
+
+类型论(Type Theory)是类型系统背后的理论。它也是理论计算机科学编程语言理论的一个重要组成成分。
+
+<img border="rounded" src="public/lambda-cube.jpeg" class="w-1/2 mx-auto">
+
+<!-- lambda cube -->
+<!-- https://twitter.com/cattheory/status/984976270772654080 -->
 
 ---
 
@@ -310,27 +345,26 @@ const CPP: LanguageTaxonomy = ['静态定型', '强类型'];
 const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
 ```
 
-<!-- 在编程语言中，类型系统提供的能力，可以帮助我们写出更好的程序。 -->
-
 ---
 
-# 编程语言为什么要引入类型系统？
-
-## 动机
-
-## 好处
-
----
-
-# 参考文献
+## 参考文献
 
 <!-- TODO: 处理一下参考文献的问题。 -->
 
 [ts]: http://lucacardelli.name/papers/typesystems.pdf
 
+
 ---
 
-# 为什么要学习类型系统
+## 延伸阅读
+
+[Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
+
+---
+layout: section
+---
+# 第二节：类型系统的基础
+
 
 ---
 
