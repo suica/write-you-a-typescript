@@ -56,11 +56,9 @@ layout: statement
 
 <br>
 
-<Center>
 那么，到编程语言这个形式系统上，我们是不是也可以有类似的快速「检查」？
 
 ——这样，我们可以用很低的成本来验证程序是否是对的。
-</Center>
 
 ---
 
@@ -87,7 +85,6 @@ layout: statement
 ---
 
 ## 什么是类型系统？
-## 为什么要用类型系统？
 
 ---
 
@@ -119,6 +116,10 @@ layout: statement
 "A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute." - [^tapl] -->
 
 
+---
+layout: statement
+---
+## 为什么要用类型系统？
 ---
 
 # 为什么要使用类型系统？
@@ -262,21 +263,21 @@ iframe{
 
 可以用类型系统做流程控制。例如，限制代码必须无lint错误才能提交。
 ```ts {monaco}
-type Code = { fileList: string[]; addedTime: Date }
-declare const LintInternalSymbol: unique symbol
-type Linted<T> = T & { [LintInternalSymbol]: undefined }
-declare function lint<T extends Code>(code: T): Linted<Code>
-declare function commit(code: Linted<Code>): Promise<void>
+type Code = { fileList: string[]; addedTime: Date };
+declare const LintInternalSymbol: unique symbol;
+type Linted<T> = T & { [LintInternalSymbol]: undefined };
+declare function lint<T extends Code>(code: T): Linted<Code>;
+declare function commit(code: Linted<Code>): Promise<void>;
 
-declare const code: Code
+declare const code: Code;
 
-commit(code)
+commit(code);
 
-commit(lint(code))
+commit(lint(code));
 ```
-
 <br>
-往对象上添加元信息的这种技巧俗称"打标"(Tagging)。
+
+往对象上添加元信息来模拟 **名义类型** (Nominal Type)的这种技巧俗称"打标"(Tagging)。
 
 <style>
 iframe{
@@ -300,17 +301,60 @@ layout: statement
 
 # 为什么要学习类型系统？
 
-- 提高理论水平
+- 入门类型论，提高理论水平，为之后在类型系统以及编程语言上的探索打下基础；
 
-- 对TypeScript的类型系统产生更深的理解
+- 俯瞰各个语言的类型系统；
 
-- 写一个自己的类型检查器
+- 对TypeScript的类型系统产生更深的理解，在日常工作中，写出质量更高的程序；
 
-- 写出质量更高的程序
+- 写一个自己的类型检查器，并且能够添加自己想要的特性；
+
+- ...
+
+---
+
+
+# 课程介绍
+
+- 本课程主要面向有一定经验的TypeScript用户，对于没有TypeScript经验的学习者，可以在先学完TypeScript课程再来学习本课程。
+
+- 本课程不预设学习者有特别的数学背景，尽量简化用到的数学知识，并会对学习者可能不熟悉的数学知识进行及时的介绍。但是，学习者应当熟悉高中数学涉及到的命题逻辑(比如，$\land$, $\lor$, $\lnot$, $\forall$)。
+
+- 本课程的一大特色就是**产出导向**。每一节课之后，都设有需要编码的作业。每次的作业预计可以在若干小时内完成。如果你完成了每节课后的作业，那么你最终就能得到一个属于自己的，理论能力和TypeScript一样强大的类型检查器，且有一个**图灵完备**的类型系统。
 
 ---
 
 # 课程路线图
+
+### 第二节：类型检查器基础
+  - $\lambda$-演算；类型；函数类型；元语言和目标语言；定型；定型环境；二元关系；定型关系；定型规则；自然演绎；类型系统的完备性以及可靠性。
+  - 在这一节的作业要求学习者实现一个有着最基础类型的类型检查器。
+
+### 第三节：子类型理论以及实现
+  - 子类型关系；里氏替换原则；子类型的集合论模型；函数的逆变、协变、不变。
+  - 这一节你将往类型检查器中加入子类型这个特性。
+
+### 第四节：多态理论以及实现
+  - 泛型；子类型多态；特设多态；参数多态；let多态；顶类型和底类型；全称量词和全称类型；extends关键字；类型参数。
+  - 这一节你将往类型检查器中加入泛型。
+
+---
+
+# 课程路线图（续）
+
+### 第五节：递归类型理论以及实现
+  - $\mu$-操作符；链表、树的递归类型定义；有类型不动点组合子。
+  - 在这一节，你将往类型检查器中加入对递归类型的支持。
+
+### 第六节：总结和展望
+  - 类型检查器成品回顾；TypeScript的类型体操以及例子；柯里霍华德同构。
+  - 在这一节，你将使用你自己写的类型检查器解决一系列有挑战性的问题，并了解这个玩具类型检查器还有什么特性可以添加。
+
+---
+layout: statement
+---
+
+## 我们在哪里？
 
 ---
 
@@ -318,12 +362,45 @@ layout: statement
 
 ##
 
-类型论(Type Theory)是类型系统背后的理论。它也是理论计算机科学编程语言理论的一个重要组成成分。
+类型论(Type Theory, TT)是类型系统背后的理论，是理论计算机科学(Theoretical Computer Science, TCS)中编程语言理论(Programming Language Theory, PLT)的一个重要话题。
 
-<img border="rounded" src="public/lambda-cube.jpeg" class="w-1/2 mx-auto">
+TCS中的TT主要有两个分支：TT在编程语言中的应用；纯类型系统(Pure Type System, PTS)。
+
+---
+
+# 纯类型系统
+
+##
+
+PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simply Typed Lambda Calculus, STLC)的基础上，组合三种正交的特性，我们可以得到8种不同的$\lambda$-演算的变体，从而画出如下类似立方体的图案。它叫做$\lambda$-cube。
+
+<img border="rounded" src="lambda-cube.jpeg" class="w-1/3 mx-auto">
+
+这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。
 
 <!-- lambda cube -->
 <!-- https://twitter.com/cattheory/status/984976270772654080 -->
+
+---
+
+## 参考文献
+
+<!-- TODO: 处理一下参考文献的问题。 -->
+
+[ts]: http://lucacardelli.name/papers/typesystems.pdf
+
+
+---
+
+## 延伸阅读
+
+[Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
+
+---
+layout: section
+---
+
+# 第二节：类型系统的基础
 
 ---
 
@@ -346,24 +423,6 @@ const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
 ```
 
 ---
-
-## 参考文献
-
-<!-- TODO: 处理一下参考文献的问题。 -->
-
-[ts]: http://lucacardelli.name/papers/typesystems.pdf
-
-
----
-
-## 延伸阅读
-
-[Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
-
----
-layout: section
----
-# 第二节：类型系统的基础
 
 
 ---
