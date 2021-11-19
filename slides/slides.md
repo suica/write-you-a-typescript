@@ -16,7 +16,7 @@ monaco: dev
 
 # 类型系统入门
 
-吴登轲 高洁璇
+吴登轲
 
 ---
 layout: section
@@ -31,16 +31,28 @@ layout: statement
 ## 什么是类型？
 
 ---
+layout: statement
+---
+
+## 命题1：自然数 997 是一个质数。
+
+---
+layout: statement
+---
+
+## 命题2：自然数 997 是一个跑。
+
+---
 
 # 自然语言中的类型
 
 在知道类型系统的定义之前，我们其实都已经是汉语这门自然语言中的「类型」专家了。
 
-汉语官话是一种自然语言。
+<!-- 汉语是一种自然语言。
 
-- 它的词性包括：动词，名词，形容词，副词……它们其实就是「词语」组成的搜集，它们是词语的类型。
+- 汉语的词性包括：动词，名词，形容词，副词……它们其实就是「词语」组成的集合，它们是词语的类型。
 
-- 第一句话是一个正确的命题。我们稍微修改一下这句话，得到第二句话。本应该是名词待的位置，却被替换成了动词，让这个句子失去了合法性。
+- 第一句话是一个正确的命题。我们稍微修改一下这句话，得到第二句话。本应该是名词待的位置，却被替换成了动词，让这个句子失去了合法性。 -->
 
 <br>
 
@@ -50,15 +62,15 @@ layout: statement
 
 <br>
 
-- 如果我们来判断这句话第二句话是否正确，我们可以立刻下结论——它是错的——而不用去理解这个命题涉及的任何数学概念。因为这句话在语法上就是错的。这其实就是一种类型检查。
+- 如果我们来判断这句话第二句话是否正确，我们可以立刻下结论——它是错的——而不用去理解这个命题涉及的任何数学概念。因为这句话在**语法**上就是错的。这其实就是一种类型检查。
 
 <!-- TODO: 从和编程语言的对应上来说，semantic-selection 其实才是类型检查……需要修改例子和文案 -->
 
 <br>
 
-那么，到编程语言这个形式系统上，我们是不是也可以有类似的快速「检查」？
+那么，在编程语言这个形式系统里，我们是不是也可以有类似的快速「检查」？
 
-——这样，我们可以用很低的成本来验证程序是否是对的。
+——这样，我们可以用很低的成本来验证程序是否是对的，而不需要去跑程序本身。
 
 ---
 
@@ -80,9 +92,13 @@ let a = 10;
 a = 'b'; // 完全合法
 ```
 
-<hr>
+而有一些编程语言当中，表达式类型之间的转化需要显式地进行，锱铢必较。
 
-而有一些编程语言当中，表达式类型之间的转化需要显式地进行，锱铢必较。这种语言，叫做强类型语言(Strongly-typed Languages)；反之，那些类型之间的转化大都可以隐式进行的(叫做coercion)，叫做弱类型语言(Weakly-typed languages)。需要注意的是，强弱类型其实是一个比较主观的概念，并没有非常严格的定义。
+这种语言，叫做强类型语言(Strongly-typed Languages)；
+
+反之，那些类型之间的转化大都可以隐式进行的，叫做弱类型语言(Weakly-typed languages)。
+
+> 注意：强弱类型其实是一个比较主观的概念，并没有非常严格的定义。
 
 ---
 layout: statement
@@ -94,19 +110,21 @@ layout: statement
 
 # 类型系统的基本概念
 
-- 一个**值 (Value)**，就是某个东西。它是一个直观上的概念。
+- 一个**值 (Value)**，就是某个东西。它既可以是一个直观上的概念，也可以被解读为编程语言中的**项**。
 
-- 一个**搜集 (Collection)**，就是一堆东西组成的整体。它同样是一个直观上的概念。
+- 一个**搜集 (Collection)**，就是一堆东西组成的整体。它是一个直观上的概念。
 
 <!-- TODO: 注释一下为啥不用一个更严格的词 -->
 
 - 一个**类型 (Type)**，就是一个由**值**组成的**搜集** [^ts] （你可以直观地认为类型就是一个值组成的**集合**)。 
 
-- 在编程语言中，**一个表达式的类型**就是它在执行之时估计会取到的值形成的一个 **搜集** [^ts]。
+  - 在编程语言中，**一个表达式的类型**就是它在执行之时估计会取到的值形成的一个 **搜集** [^ts]。
 
 ## 什么是类型系统？
 
 在编程语言中，**类型系统 (Type System)** 就是一个**类型规则的搜集**，这种规则能为项确定类型。
+
+这些规则都是如果A，则B的形式。例如：如果`a: number, b: number`，那么`(a+b): number`。
 
 <!-- # 类型系统背后的理论：类型论 -->
 <!-- 编程语言是一种形式系统。而 **类型论 (Type Theory)** 作为编程语言的类型系统后的理论基础，则有更广的对象：它是关于所有形式系统中的项的类型的学术化的研究 [wiki]。 -->
@@ -119,6 +137,7 @@ layout: statement
 
 "A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute." - [^tapl] -->
 
+[^ts]: [Type Systems](http://lucacardelli.name/papers/typesystems.pdf)
 
 ---
 layout: statement
@@ -140,7 +159,7 @@ layout: statement
 
 - 类型系统，以及类型检查，可以看成是一种轻量的形式化方法 (formal method)，它也是一种验证软件**性质**的手段[^tapl]。 我们想要的**性质**，一般就是程序不会出某些运行时错误。
 
-[^tapl]: tapl
+[^tapl]: [Benjamin C. Pierce. 2002. Types and Programming Languages (1st. ed.). The MIT Press.](https://dl.acm.org/doi/book/10.5555/509043)
 [^1]: 顾海博, 付明, 乔磊,等. SpaceOS中若干全局性质的形式化描述和验证[J]. 小型微型计算机系统, 2019, 40(1):8.
 [^2]: 焦文品, 史忠植. 形式化多主体系统中的交互及交互协议[J]. 软件学报, 2001.
 
@@ -281,7 +300,7 @@ commit(lint(code));
 ```
 <br>
 
-往对象上添加元信息来模拟 **名义类型** (Nominal Type)的这种技巧俗称"打标"(Tagging)。
+在TypeScript的结构化定型的类型系统中，往对象上添加元信息来模拟 **名义类型** (Nominal Type)的这种技巧俗称"打标"(Tagging)。
 
 <style>
 iframe{
@@ -289,11 +308,11 @@ iframe{
 }
 </style>
 
----
+<!-- ---
 
 # 类型系统能提供语言安全性
 
-这里需要一些例子。
+这里需要一些例子。 -->
 
 <!-- TODO -->
 
@@ -319,14 +338,13 @@ layout: statement
 
 ---
 
-
 # 课程介绍
 
 - 本课程主要面向有一定经验的TypeScript用户，对于没有TypeScript经验的学习者，可以在先学完TypeScript课程再来学习本课程。
 
-- 本课程不预设学习者有特别的数学背景，尽量简化用到的数学知识，并会对学习者可能不熟悉的数学知识进行及时的介绍。但是，学习者应当熟悉高中数学涉及到的命题逻辑(比如，$\land$, $\lor$, $\lnot$, $\forall$)以及集合、函数相关知识。
+- 本课程不预设学习者有特别的数学背景，尽量简化用到的数学知识，并会对学习者可能不熟悉的数学知识进行及时的介绍。但是，学习者应当熟悉高中数学涉及到的命题逻辑(比如，$\land$, $\lor$, $\lnot$, $\forall$)以及简单的集合论等相关知识。
 
-- 本课程的一大特色就是**产出导向**。每一节课之后，都设有需要编码的作业。每次的作业预计可以在若干小时内完成。如果你完成了每节课后的作业，那么你最终就能得到一个属于自己的，理论能力和TypeScript一样强大的类型检查器，且有一个**图灵完备**的类型系统。
+- 本课程的一大特色就是**产出导向**。每一节课之后，都设有需要动手编码的小作业。如果你完成了每节课后的作业，那么你最终就能得到一个属于自己的，理论能力和TypeScript一样强大的类型检查器，且有一个**图灵完备**的类型系统。这意味着你可以在编译期而非运行时实现一个图灵机。
 
 ---
 
@@ -349,7 +367,7 @@ layout: statement
 # 课程路线图（续）
 
 ### 第五节：递归类型理论以及实现
-  - $\mu$-操作符；链表、树的递归类型定义；有类型不动点组合子。
+  - $\mu$-构造器；链表、树的递归类型定义；有类型不动点组合子。
   - 在这一节，你将往类型检查器中加入对递归类型的支持。
 
 ### 第六节：总结和展望
@@ -368,9 +386,13 @@ layout: statement
 
 ##
 
-类型论(Type Theory, TT)是类型系统背后的理论，是理论计算机科学(Theoretical Computer Science, TCS)中编程语言理论(Programming Language Theory, PLT)的一个重要话题。
+类型论(Type Theory, TT)是类型系统背后的理论。
 
-TCS中的TT主要有两个分支：TT在编程语言中的应用；纯类型系统(Pure Type System, PTS)。
+在理论计算机科学(Theoretical Computer Science, TCS)的编程语言理论(Programming Language Theory, PLT)中，它是一个重要话题。
+
+TCS中的TT主要有两个分支：
+1. TT在编程语言中的应用。这表现为编程语言的类型系统。TypeScript就是一个类型系统的非常好的应用；
+2. 纯类型系统(Pure Type System, PTS)。这个分支比较偏向理论，并不关注它在工业界的应用。但是编程语言的设计也时常能够从中汲取一些营养。
 
 ---
 
@@ -380,7 +402,7 @@ TCS中的TT主要有两个分支：TT在编程语言中的应用；纯类型系�
 
 PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simply Typed Lambda Calculus, STLC)的基础上，组合三种正交的特性，我们可以得到8种不同的$\lambda$-演算的变体，从而画出如下类似立方体的图案。它叫做$\lambda$-cube。
 
-<img border="rounded" src="lambda-cube.jpeg" class="w-1/3 mx-auto">
+<img border="rounded" src="1/lambda-cube.jpeg" class="w-1/3 mx-auto">
 
 这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。
 
@@ -391,10 +413,9 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 
 ## 参考文献
 
-<!-- TODO: 处理一下参考文献的问题。 -->
+[Type Systems](http://lucacardelli.name/papers/typesystems.pdf)
 
-[ts]: http://lucacardelli.name/papers/typesystems.pdf
-
+[Benjamin C. Pierce. 2002. Types and Programming Languages (1st. ed.). The MIT Press.](https://dl.acm.org/doi/book/10.5555/509043)
 
 ---
 
@@ -410,6 +431,116 @@ layout: section
 
 ---
 
+# JavaScript口味的无类型$\lambda$-演算
+
+##
+
+$\lambda$-演算(Lambda Calculus)是一种计算模型。它有三个要素：抽象(abstraction)、应用(application)、变量(Variable)。
+
+我们无意对$\lambda$-演算进行一个形式定义，在这门课程中你只需要直观地认识它即可。一个推荐的方式是：将它类比成JavaScript中的箭头函数，这样大多数关于箭头函数的直觉都可以沿用下来。**无类型**一词，指的是我们现在考虑的$\lambda$-演算还没有包含任何类型。下面是一些$\lambda$-演算和JavaScript中的对应物的例子。
+
+<div grid="~ cols-2 gap-2">
+
+```
+λx.x+1
+```
+
+```js
+x=>x+1
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+λx.λy.x+y
+```
+
+```js
+x=>y=>x+y
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+(λx.λy.x+y 1) 得到 λy.y+1
+```
+
+```js
+(x=>y=>x+y)(1) // 等价于 y=>y+1
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+((λx.λy.x+y 1) 2) 得到 3
+λx.λy.x+y 1 2 括号可以省略，同样得到3
+```
+
+```js
+(x=>y=>x+y)(1)(2) // 3
+```
+
+</div>
+
+定义函数，$\lambda$-演算中叫做抽象(Abstraction)；调用函数，叫做应用(Application)；这些形式参数叫做变量(Variable)。
+
+
+<!-- 如果你关心$\lambda$-演算的历史，可以去看本章的延伸阅读中的相关材料。 -->
+
+---
+
+# 错误的本质是什么
+
+##
+
+我们刚刚看了一些$\lambda$-演算以及JavaScript的例子。
+但是，要是写下的JavaScript表达式不那么对劲，我们会得到什么？比如：
+
+```js
+x =>   // 故意不写返回值
+x =====> x // 箭头很长
+(1)()  // 故意把数字当成函数进行调用
+```
+
+JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会陷入迷茫 (Stuck)……此时就出现了错误。
+
+<!-- 这些例子都是没有**错误**、能**正常**跑起来的。
+但是，什么是错误？又如何定义正常？ -->
+
+<!-- 其实，JavaScript对表达式的求值遵循它的一套规则。JavaScript解释器对表达式求值的过程中，无法匹配到任何一条规则的时候，就会陷入迷茫…… -->
+
+<img src="1/我是谁.jpeg" class="w-1/4 mx-auto" />
+
+---
+
+# 错误的本质是什么（续）
+
+##
+
+解释器为什么会陷入迷茫？迷茫的本质在于，此时解释器无法按照对待正常的JavaScript表达式那样继续处理下去了。
+
+<img src="1/../public/1/js-the-good-parts-guide.jpg" class="w-1/2 mx-auto" />
+
+---
+
+# TypeScript口味的简单类型$\lambda$-演算
+
+---
+
+ <!-- $\lambda$-演算；类型；函数类型；元语言和目标语言；定型；定型环境；二元关系；定型关系；定型规则；自然演绎；类型系统的完备性以及可靠性。 -->
+
+# 定型关系，是一种二元关系
+
+## 二元关系
+
+---
+
 # 目标类型系统：TAT
 
 ## 名字的由来
@@ -419,6 +550,7 @@ layout: section
 ## 它的特性
 
 <!-- 命名有诸多候选：TNT for The New Type; ToT -->
+
 
 ---
 
@@ -441,6 +573,12 @@ const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
 ```
 
 ---
+
+# 扩展阅读
+
+## 
+
+[让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
 
 
 ---
