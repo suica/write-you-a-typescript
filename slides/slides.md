@@ -349,7 +349,7 @@ layout: statement
 # 课程路线图（续）
 
 ### 第五节：递归类型理论以及实现
-  - $\mu$-操作符；链表、树的递归类型定义；有类型不动点组合子。
+  - $\mu$-构造器；链表、树的递归类型定义；有类型不动点组合子。
   - 在这一节，你将往类型检查器中加入对递归类型的支持。
 
 ### 第六节：总结和展望
@@ -380,7 +380,7 @@ TCS中的TT主要有两个分支：TT在编程语言中的应用；纯类型系�
 
 PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simply Typed Lambda Calculus, STLC)的基础上，组合三种正交的特性，我们可以得到8种不同的$\lambda$-演算的变体，从而画出如下类似立方体的图案。它叫做$\lambda$-cube。
 
-<img border="rounded" src="lambda-cube.jpeg" class="w-1/3 mx-auto">
+<img border="rounded" src="1/lambda-cube.jpeg" class="w-1/3 mx-auto">
 
 这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。
 
@@ -410,6 +410,116 @@ layout: section
 
 ---
 
+# JavaScript口味的无类型$\lambda$-演算
+
+##
+
+$\lambda$-演算(Lambda Calculus)是一种计算模型。它有三个要素：抽象(abstraction)、应用(application)、变量(Variable)。
+
+我们无意对$\lambda$-演算进行一个形式定义，在这门课程中你只需要直观地认识它即可。一个推荐的方式是：将它类比成JavaScript中的箭头函数，这样大多数关于箭头函数的直觉都可以沿用下来。**无类型**一词，指的是我们现在考虑的$\lambda$-演算还没有包含任何类型。下面是一些$\lambda$-演算和JavaScript中的对应物的例子。
+
+<div grid="~ cols-2 gap-2">
+
+```
+λx.x+1
+```
+
+```js
+x=>x+1
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+λx.λy.x+y
+```
+
+```js
+x=>y=>x+y
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+(λx.λy.x+y 1) 得到 λy.y+1
+```
+
+```js
+(x=>y=>x+y)(1) // 等价于 y=>y+1
+```
+
+</div>
+
+<div grid="~ cols-2 gap-2">
+
+```
+((λx.λy.x+y 1) 2) 得到 3
+λx.λy.x+y 1 2 括号可以省略，同样得到3
+```
+
+```js
+(x=>y=>x+y)(1)(2) // 3
+```
+
+</div>
+
+定义函数，$\lambda$-演算中叫做抽象(Abstraction)；调用函数，叫做应用(Application)；这些形式参数叫做变量(Variable)。
+
+
+<!-- 如果你关心$\lambda$-演算的历史，可以去看本章的延伸阅读中的相关材料。 -->
+
+---
+
+# 错误的本质是什么
+
+##
+
+我们刚刚看了一些$\lambda$-演算以及JavaScript的例子。
+但是，要是写下的JavaScript表达式不那么对劲，我们会得到什么？比如：
+
+```js
+x =>   // 故意不写返回值
+x =====> x // 箭头很长
+(1)()  // 故意把数字当成函数进行调用
+```
+
+JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会陷入迷茫 (Stuck)……此时就出现了错误。
+
+<!-- 这些例子都是没有**错误**、能**正常**跑起来的。
+但是，什么是错误？又如何定义正常？ -->
+
+<!-- 其实，JavaScript对表达式的求值遵循它的一套规则。JavaScript解释器对表达式求值的过程中，无法匹配到任何一条规则的时候，就会陷入迷茫…… -->
+
+<img src="1/我是谁.jpeg" class="w-1/4 mx-auto" />
+
+---
+
+# 错误的本质是什么（续）
+
+##
+
+解释器为什么会陷入迷茫？迷茫的本质在于，此时解释器无法按照对待正常的JavaScript表达式那样继续处理下去了。
+
+<img src="1/../public/1/js-the-good-parts-guide.jpg" class="w-1/2 mx-auto" />
+
+---
+
+# TypeScript口味的简单类型$\lambda$-演算
+
+---
+
+ <!-- $\lambda$-演算；类型；函数类型；元语言和目标语言；定型；定型环境；二元关系；定型关系；定型规则；自然演绎；类型系统的完备性以及可靠性。 -->
+
+# 定型关系，是一种二元关系
+
+## 二元关系
+
+---
+
 # 目标类型系统：TAT
 
 ## 名字的由来
@@ -419,6 +529,7 @@ layout: section
 ## 它的特性
 
 <!-- 命名有诸多候选：TNT for The New Type; ToT -->
+
 
 ---
 
@@ -441,6 +552,12 @@ const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
 ```
 
 ---
+
+# 扩展阅读
+
+## 
+
+[让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
 
 
 ---
