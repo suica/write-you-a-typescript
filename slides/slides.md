@@ -2,7 +2,7 @@
 theme: default
 class: text-center
 highlighter: shiki
-lineNumbers: false
+lineNumbers: true
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
@@ -11,7 +11,6 @@ info: |
 drawings:
   persist: false
 title: 类型系统入门
-monaco: dev
 ---
 
 # 类型系统入门
@@ -521,7 +520,7 @@ JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会�
 
 <!-- 其实，JavaScript对表达式的求值遵循它的一套规则。JavaScript解释器对表达式求值的过程中，无法匹配到任何一条规则的时候，就会陷入迷茫…… -->
 
-<img src="1/我是谁.jpeg" class="w-1/4 mx-auto" />
+<img src="/1/我是谁.jpeg" class="w-1/4 mx-auto" />
 
 ---
 
@@ -531,7 +530,7 @@ JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会�
 
 解释器为什么会陷入迷茫？迷茫的本质在于，此时解释器无法按照对待正常的JavaScript表达式那样继续处理下去了。
 
-<img src="1/../public/1/js-the-good-parts-guide.jpg" class="w-1/2 mx-auto" />
+<img src="/1/js-the-good-parts-guide.jpg" class="w-1/2 mx-auto" />
 
 ---
 
