@@ -440,7 +440,7 @@ layout: section
 
 <div class="mt-8rem">
 
-```mermaid {scale: 0.7}
+```mermaid {scale: 0.7, class: 'w-full overflow-auto'}
 graph LR
 
 StartHere(START!) --> ArrowFunction
