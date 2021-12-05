@@ -436,6 +436,30 @@ layout: section
 
 ---
 
+# 本节路线图
+
+<div class="mt-8rem">
+
+```mermaid {scale: 0.7}
+graph LR
+
+StartHere(START!) --> ArrowFunction
+ArrowFunction[JavaScript箭头函数] --> UTLC[无类型Lambda演算]
+UTLC --> STLC
+
+BinaryRelation[二元关系] -->|应用在类型系统上| TypingRelation[定型关系]
+TypingRelation --> STLC[简单类型Lambda演算]
+STLC --> FinalGoal
+STLC --> TAT
+TAT[类型系统TAT] --> FinalGoal
+
+FinalGoal(实现基本类型检查器)
+```
+
+</div>
+
+---
+
 # JavaScript口味的无类型$\lambda$-演算
 
 ##
@@ -497,6 +521,12 @@ x=>y=>x+y
 
 
 <!-- 如果你关心$\lambda$-演算的历史，可以去看本章的延伸阅读中的相关材料。 -->
+
+---
+
+# 错误的分类
+
+为了更好地理解类型系统到底避免了什么错误，我们有必要理解“错误”这个概念的本质。
 
 ---
 
