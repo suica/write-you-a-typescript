@@ -6,9 +6,12 @@
     "export": "slidev export"
   },
   "dependencies": {
-    "@slidev/cli": "^0.27.9",
+    "@slidev/cli": "0.27.17",
     "@slidev/theme-default": "*",
     "@slidev/theme-seriph": "*"
   },
-  "name": "slides"
+  "name": "slides",
+  "devDependencies": {
+    "playwright-chromium": "^1.16.3"
+  }
 }
