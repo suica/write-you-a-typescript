@@ -438,7 +438,7 @@ layout: section
 
 # 本节路线图
 
-<div class="mt-3.5rem">
+<div class="mt-3.5rem -ml-2rem">
 
 ```mermaid {scale: 0.9}
 flowchart LR
@@ -459,7 +459,7 @@ flowchart LR
     TAT[类型系统TAT] --> TATRules[TAT的定型规则]
   end
 
-  Start(第一节) --> Part1 --> Part2
+  Start(从这里开始!) --> Part1 --> Part2
   style Start fill:none,stroke:none
 
 
@@ -603,7 +603,7 @@ $$
 二元关系其实只是$n$元关系($n\in \N$)的特例。而关系也可以存在于不同的集合之间。
 
 - 0元关系。$\text{Trivial}=\{()\}$。其中$()$表示空元组。
-- 1元关系。$\text{IsPrime}=\{2,3,5, 7, \dots\}=\{(2), (3), (5), (7), \dots\} \subset \N$。一元关系也叫做**谓词**。
+- 1元关系。$\text{IsPrime}=\{2,3,5, 7, \dots\}=\{(2), (3), (5), (7), \dots\} \subset \N$。1元关系也叫做**谓词**。
 - 3元关系。$\text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots, \} \subset \text{Letter}\times \Z \times \text{HexNumber}$。
 
 ---
