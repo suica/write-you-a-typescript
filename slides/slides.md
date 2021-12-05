@@ -472,60 +472,33 @@ flowchart LR
 
 ##
 
-$\lambda$-演算(Lambda Calculus)是一种计算模型。它有三个要素：抽象(abstraction)、应用(application)、变量(Variable)。
+$\lambda$-演算(Lambda Calculus)是一种计算模型。它有两种基本操作：抽象(Abstraction)、应用(Application)。另外一个重要的概念就是变量(Variable)。
 
-我们无意对$\lambda$-演算进行一个形式定义，在这门课程中你只需要直观地认识它即可。一个推荐的方式是：将它类比成JavaScript中的箭头函数，这样大多数关于箭头函数的直觉都可以沿用下来。**无类型**一词，指的是我们现在考虑的$\lambda$-演算还没有包含任何类型。下面是一些$\lambda$-演算和JavaScript中的对应物的例子。
+在这门课程中，我们不会对$\lambda$-演算下一个形式定义，你只需要将它类比成JavaScript中的箭头函数即可。这样大多数关于箭头函数的直觉都可以沿用下来。
+**无类型**一词，指的是我们现在考虑的$\lambda$-演算还没有包含任何类型。
+
+下面是一些$\lambda$-演算和JavaScript中的对应物的例子。
 
 <div grid="~ cols-2 gap-2">
 
-```
+``` php
 λx.x+1
+λx.λy.x+y
+(λx.λy.x+y 1) // 得到 λy.y+1
+((λx.λy.x+y 1) 2) // 得到 3
+λx.λy.x+y 1 2 // 括号可以省略，同样得到3
 ```
 
 ```js
 x=>x+1
-```
-
-</div>
-
-<div grid="~ cols-2 gap-2">
-
-```
-λx.λy.x+y
-```
-
-```js
 x=>y=>x+y
-```
-
-</div>
-
-<div grid="~ cols-2 gap-2">
-
-```
-(λx.λy.x+y 1) 得到 λy.y+1
-```
-
-```js
 (x=>y=>x+y)(1) // 等价于 y=>y+1
-```
-
-</div>
-
-<div grid="~ cols-2 gap-2">
-
-```
-((λx.λy.x+y 1) 2) 得到 3
-λx.λy.x+y 1 2 括号可以省略，同样得到3
-```
-
-```js
 (x=>y=>x+y)(1)(2) // 3
 ```
 
 </div>
 
-定义函数，$\lambda$-演算中叫做抽象(Abstraction)；调用函数，叫做应用(Application)；这些形式参数叫做变量(Variable)。
+定义函数，$\lambda$-演算中叫做抽象；调用函数，叫做应用；函数的形式参数叫做变量。
 
 
 <!-- 如果你关心$\lambda$-演算的历史，可以去看本章的延伸阅读中的相关材料。 -->
@@ -534,7 +507,67 @@ x=>y=>x+y
 
 # 错误的分类
 
-为了更好地理解类型系统到底避免了什么错误，我们有必要理解“错误”这个概念的本质。
+<!-- 为了更好地理解类型系统到底避免了什么错误，我们有必要理解“错误”这个概念的本质。 -->
+##
+
+> 不严格的定义：如果程序不满足某些给定的**性质**，程序就是可以说是错误的。
+
+**性质**可以是**任意**的。下面看几个性质。
+
+<div v-click>
+
+- $P_0 \triangleq \text{在被执行之后，会在1s内给出问题的解；并能通过所有测试用例}$；
+- $P_1 \triangleq \text{能够在解释执行时被正确parse}$；
+- $P_2 \triangleq \text{不会让执行它的网页抛出\texttt{TypeError}异常}$；
+- $P_3 \triangleq \text{作为编译输入时，不会让\texttt{TypeScript}编译器报类型错误}$；
+- $P_4 \triangleq \text{能够通过 ``无冗余变量" 和 ``操作符两边无空格" 的Lint}$。
+
+问题：如果不满足这些性质，那么程序的错误对应**语法错误**、**语义错误**、**编译期错误**、**运行时错误**中的哪些呢？
+</div>
+
+<div v-click>
+
+- 语法错误: $P_1, P_4$；
+</div>
+<div v-click>
+
+- 语义错误: $P_0, P_2, P_3, P_4$；
+</div>
+<div v-click>
+
+- 编译期错误: $P_3, P_4$；
+</div>
+<div v-click>
+
+- 运行时错误: $P_1$。
+</div>
+
+<!-- 语法错误、语义错误、编译期类型错误、运行时类型错误、运行时异常，这些错误应该如何分类？ -->
+
+---
+
+```mermaid {scale: 0.9}
+graph LR
+  错误 --> 语法错误
+  语法错误 --> Haha
+  错误 --> 类型错误 --> 运行时类型错误
+  类型错误 --> 编译期类型错误
+  错误 --作为一种语言机制--> 异常[异常,Exception]
+```
+
+
+<!-- <div class="table-container">
+
+</div>
+
+<style>
+  div.table-container {
+    table {
+      width: 500px;
+      margin:0 auto;
+    }
+  }
+</style> -->
 
 ---
 
