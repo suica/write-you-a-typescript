@@ -407,7 +407,7 @@ TCS中的TT主要有两个分支：
 
 PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simply Typed Lambda Calculus, STLC)的基础上，组合三种正交的特性，我们可以得到8种不同的$\lambda$-演算的变体，从而画出如下类似立方体的图案。它叫做$\lambda$-cube。
 
-<img border="rounded" src="1/lambda-cube.jpeg" class="w-1/3 mx-auto">
+<img border="rounded" src="/1/lambda-cube.jpeg" class="w-1/3 mx-auto">
 
 这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。
 
@@ -540,9 +540,37 @@ JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会�
 
  <!-- $\lambda$-演算；类型；函数类型；元语言和目标语言；定型；定型环境；二元关系；定型关系；定型规则；自然演绎；类型系统的完备性以及可靠性。 -->
 
-# 定型关系，是一种二元关系
 
-## 二元关系
+<!-- ## 定型关系(Typing Relation)
+定义：在定型环境$\Gamma$，下 -->
+
+# 二元关系
+
+<!-- 一个关系$R$是一个元组形成的集合。 我们可以在集合$S$上定义一个二元关系$R\subseteq S\times S$。 -->
+
+在刻画集合内的元素之间的关联的时候，**关系**(Relation)是一个有力的工具。
+
+定义：若集合$R$满足$R\subseteq S\times S$，那么$R$就是一种集合$S$上的二元关系(Binary Relation)。
+
+> 二元关系的例子：自然数集$\N$上的**小于**关系$R$，即"$<$"。  
+> $$
+\begin{align}
+R & \triangleq \{(0, 1), (1, 2), (2, 3), \dots \} \\
+ & \triangleq \{ (n, n+1) : n\in \N \}
+\end{align}
+$$
+
+其中，$\triangleq$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
+
+二元关系其实只是$n$元关系($n\in \N$)的特例。而关系也可以存在于不同的集合之间。
+
+- 0元关系。$\text{Trivial}=\{()\}$。其中$()$表示空元组。
+- 1元关系。$\text{IsPrime}=\{2,3,5, 7, \dots\}=\{(2), (3), (5), (7), \dots\} \subset \N$。一元关系也叫做**谓词**。
+- 3元关系。$\text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots, \} \subset \text{Letter}\times \Z \times \text{HexNumber}$。
+
+---
+
+# 定型关系，是一种二元关系
 
 ---
 
