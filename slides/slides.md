@@ -438,39 +438,31 @@ layout: section
 
 # 本节路线图
 
-<div class="mt-4rem">
+<div class="mt-3.5rem">
 
 ```mermaid {scale: 0.9}
 flowchart LR
-  subgraph Basics[第一部分: 类型检查器的基础知识]
+  subgraph Part1[第一部分: 类型检查器的基础知识]
     direction TB
     ArrowFunction[JavaScript箭头函数] --> UTLC[无类型Lambda演算]
     UTLC --> STLC
     BinaryRelation[二元关系] --> TypingRelation[定型关系]
     TypingRelation --> TypingContext[定型环境和定型规则]
     TypingContext --> STLC[简单类型Lambda演算]
+    UTLC --> Error[错误的本质] --> STLC
     NaturalDeduction[自然推演] --> MetaLanguage
     MetaLanguage[元语言和目标语言] --> TypingContext
   end
 
-  Start(在这里开始) --> Basics --> SubGoal[实现基本的类型检查器!]
-
-```
-</div>
-
---- 
-
-# 本节路线图（续）
-
-<div class="mt-5rem ml-7rem">
-
-```mermaid {scale: 0.9}
-flowchart LR
-  subgraph SubGoal[第二部分: 实现基本的类型检查器]
+  subgraph Part2[第二部分: 实现类型检查器]
     direction TB
     TAT[类型系统TAT] --> TATRules[TAT的定型规则]
   end
-  Start(类型系统的基础知识!) --> SubGoal --> End(第二节结束!)
+
+  Start(第一节) --> Part1 --> Part2
+  style Start fill:none,stroke:none
+
+
 ```
 </div>
 
