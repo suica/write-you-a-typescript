@@ -79,7 +79,7 @@ layout: statement
 
 在一些编程语言中，变量的类型可以在运行程序之前就能确定下来。具有这种性质的语言，叫做静态类型语言；反之，则叫做动态类型语言。
 
-```cpp {monaco}
+```cpp
 // CPP 是一门静态类型语言
 int a = 10;
 a = 'b'; // 会在编译时报错
@@ -658,25 +658,92 @@ JavaScript解释器在这些不按套路出牌的表达式的时候，肯定会�
 
 # 二元关系
 
-在刻画集合内的元素之间的关联的时候，**关系**(Relation)是一个有力的工具。
+<!-- 在刻画集合内的元素之间的关联的时候，**关系**(Relation)是一个有力的工具。 -->
+
+##
 
 定义：若集合$R$满足$R\subseteq S\times S$，那么$R$就是一种集合$S$上的二元关系(Binary Relation)。
 
-> 二元关系的例子：自然数集$\N$上的**小于**关系$R$，即"$<$"。  
-> $$
+二元关系的例子：自然数集$\N$上的**小于**关系$R$，即我们通常所知的"$<$"。  
+$$
 \begin{align}
-R & \triangleq \{(0, 1), (1, 2), (2, 3), \dots \} \\
- & \triangleq \{ (n, n+1) : n\in \N \}
+R & := \{(0, 1), (1, 2), (2, 3), \dots \}, 或等价地 \\
+R & := \{ (n, n+1) : n\in \N \}
 \end{align}
 $$
 
-其中，$\triangleq$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
 
-二元关系其实只是$n$元关系($n\in \N$)的特例。而关系也可以存在于不同的集合之间。
+关于记号的一些说明：
 
-- 0元关系。$\text{Trivial}=\{()\}$。其中$()$表示空元组。
-- 1元关系。$\text{IsPrime}=\{2,3,5, 7, \dots\}=\{(2), (3), (5), (7), \dots\} \subset \N$。1元关系也叫做**谓词**。
-- 3元关系。$\text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots, \} \subset \text{Letter}\times \Z \times \text{HexNumber}$。
+<div v-click>
+
+1. $:=$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
+</div>
+<div v-click>
+
+2.  $\{ (n, n+1) : n\in \N \}$是 $\{(n, n+1)\mid n\in \N\}$的另外一种写法，也是一种可接受的集合记号。它用$:$代替了$\mid$。为了书写方便，我们会全部使用前面这种。
+</div>
+
+
+---
+
+# 二元关系（续）
+
+##
+
+<iframe class="w-full" src="https://q.uiver.app/?q=WzAsNSxbMSwwLCIxIl0sWzIsMCwiMiJdLFszLDAsIjMiXSxbMCwwLCIwIl0sWzQsMCwiXFxjZG90cyJdLFswLDFdLFszLDBdLFsxLDJdLFszLDEsIiIsMCx7ImN1cnZlIjotMn1dLFswLDIsIiIsMSx7ImN1cnZlIjotMn1dLFszLDIsIiIsMSx7ImN1cnZlIjotNX1dLFsyLDRdLFsxLDQsIiIsMSx7ImN1cnZlIjoyfV0sWzMsNCwiIiwxLHsib2Zmc2V0IjoyLCJjdXJ2ZSI6NX1dLFswLDQsIiIsMSx7ImN1cnZlIjo0fV1d&embed" width="788" height="286" style="border-radius: 8px; border: none;transform:scale(0.8);"></iframe>
+
+自然数集上的小于关系，$R := \{ (n, n+1) : n\in \N \}$
+可以省略地画成这样。
+1. 可以看到，有小于关系的两个数$x, y$都有一根有向箭头连接。
+2. 我们会说，$(0, 1)\in R$或者使用**中缀**的写法，写成$0R1$。
+
+---
+
+# $n$元关系
+
+## 
+二元关系其实只是$n$元关系($n\in \N$)的特例。而关系也可以存在于来自**自然数个不同的集合**的元素之间。
+
+- 2元关系。整除关系。
+  $$
+  \text{Divides} := \{ (n, m) : n\in \N^+, m\in \N, m\mod n = 0 \}，其中 \\
+  $$
+  
+  $x\mod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
+
+- 1元关系。是否是偶数。
+  $$ \begin{align}
+  \text{IsEven}:=\{0,2,4,6 \dots\}=\{n: n\in \N, 2\ \text{Divides}\ n\} \subset \N
+  \end{align}
+  $$
+
+  1元关系也叫做一元**谓词**(Predicate)。谓词也可以看成是接受若干个元素，返回`true`或者`false`的函数。
+
+---
+
+# $n$元关系（续）
+
+<!-- - 3元关系。
+$$
+\begin{align}
+\text{SumEquals} & := \{(0,0,0), (0,1,1), (0, 2, 2), \dots, (1, 0, 1), \dots \} \\
+                 & = \{(n, m, k) : n\in \N, m\in \N, k\in \N, n+m=k\}
+\end{align}
+$$ -->
+- 3元关系。
+$$
+\text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots, \} \subset \text{Letter}\times \Z \times \text{HexNumber}
+$$
+
+在本课程中，我们会主要使用二元关系和三元关系。它们是我们刻画**项**、**类型**、**定型环境**之间关系的有力工具。
+
+注意：关系的数学本质仅仅是一个集合。定义哪些元素之间存在关系的时候完全是任意的。不必像我们刚刚看的那些例子一样，非将每个关系都解释出现实意义不可。
+
+<div v-click class="my-10 text-center">
+练习：请举出一个4元关系的例子。
+</div>
+
 
 ---
 
