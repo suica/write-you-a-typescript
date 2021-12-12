@@ -619,6 +619,8 @@ null.toString();
 我们刚刚看了一些$\lambda$-演算以及JavaScript的例子。
 但是，要是写下的JavaScript表达式不那么对劲，我们会得到什么？比如： -->
 
+# 错误的本质是什么
+
 ```js
 x =>   // 故意不写返回值
 x =====> x // 箭头很长
@@ -707,10 +709,10 @@ $$
 
 - 2元关系。整除关系。
   $$
-  \text{Divides} := \{ (n, m) : n\in \N^+, m\in \N, m\mod n = 0 \}，其中 \\
+  \text{Divides} := \{ (n, m) : n\in \N^+, m\in \N, m\bmod n = 0 \}，其中 \\
   $$
   
-  $x\mod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
+  $x\bmod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
 
 - 1元关系。是否是偶数。
   $$ \begin{align}
