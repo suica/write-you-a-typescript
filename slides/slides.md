@@ -399,9 +399,7 @@ TCS中的TT主要有两个分支：
 1. TT在编程语言中的应用。这表现为编程语言的类型系统。TypeScript就是一个类型系统的非常好的应用；
 2. 纯类型系统(Pure Type System, PTS)。这个分支比较偏向理论，并不关注它在工业界的应用。但是编程语言的设计也时常能够从中汲取一些营养。
 
----
-
-# 纯类型系统
+<!-- # 纯类型系统
 
 ##
 
@@ -409,7 +407,7 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 
 <img border="rounded" src="/1/lambda-cube.jpeg" class="w-1/3 mx-auto">
 
-这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。
+这三种能力分别是：多态($\uparrow$)，类型操作符($\nearrow$)， 依值类型($\rightarrow$)。我们在这个课程中，将要构建出有其中两种特性（和TypeScript相同）的类型检查器，对应图中的$\lambda\omega$。 -->
 
 <!-- lambda cube -->
 <!-- https://twitter.com/cattheory/status/984976270772654080 -->
