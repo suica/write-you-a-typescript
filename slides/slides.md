@@ -24,20 +24,20 @@ title: 类型系统入门
 # 第一节：类型系统简介
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 直觉中的类型
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 命题 1：自然数 997 是一个质数。
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 命题 2：自然数 997 是一个跑。
 
@@ -101,7 +101,8 @@ a = 'b'; // 完全合法
 
 ---
 
-## layout: statement
+layout: statement
+---
 
 ## 什么是类型系统？
 
@@ -139,8 +140,8 @@ a = 'b'; // 完全合法
 [^ts]: [Type Systems](http://lucacardelli.name/papers/typesystems.pdf)
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 为什么要用类型系统？
 
@@ -177,8 +178,8 @@ a = 'b'; // 完全合法
 </style>
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 类型系统有哪些好处？
 
@@ -328,7 +329,8 @@ iframe{
 
 ---
 
-## layout: statement
+layout: statement
+---
 
 ## 为什么要学习类型系统？
 
@@ -390,8 +392,8 @@ iframe{
 -   在这一节，你将使用你自己写的类型检查器解决一系列有挑战性的问题，并了解这个玩具类型检查器还有什么特性可以添加。
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## 我们在哪里？
 
@@ -438,8 +440,8 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 [Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
 
 ---
-
-## layout: section
+layout: section
+---
 
 # 第二节：类型系统的基础
 
@@ -537,8 +539,8 @@ $\lambda$-演算(Lambda Calculus)是一种计算模型。它有两种基本操�
 程序在执行的时候，产生错误。
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 <div v-after>
 
@@ -549,8 +551,8 @@ $\lambda$-演算(Lambda Calculus)是一种计算模型。它有两种基本操�
 </div>
 
 ---
-
-## layout: statement
+layout: statement
+---
 
 ## “程序错误”的不严格的定义：
 
