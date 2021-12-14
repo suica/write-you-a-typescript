@@ -15,7 +15,7 @@ title: 类型系统入门
 
 # 类型系统入门
 
-吴登轲
+吴登轲 高洁璇
 
 ---
 layout: section
@@ -27,7 +27,7 @@ layout: section
 layout: statement
 ---
 
-## 什么是类型？
+## 直觉中的类型
 
 ---
 layout: statement
