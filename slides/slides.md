@@ -18,8 +18,8 @@ title: 类型系统入门
 吴登轲 高洁璇
 
 ---
-
-## layout: section
+layout: section
+---
 
 # 第一节：类型系统简介
 
@@ -319,16 +319,7 @@ iframe{
 }
 </style>
 
-<!-- ---
-
-# 类型系统能提供语言安全性
-
-这里需要一些例子。 -->
-
-<!-- TODO -->
-
 ---
-
 layout: statement
 ---
 
