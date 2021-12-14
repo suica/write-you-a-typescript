@@ -493,7 +493,7 @@ $\lambda$-演算(Lambda Calculus)是一种计算模型。它有两种基本操�
 
 ```js
 x => x + 1;
-x => y => x + y; 
+x => y => x + y;
 (x => y => x + y)(1); // 等价于 y=>y+1
 (x => y => x + y)(1)(2); // 3
 ```
@@ -746,7 +746,7 @@ $$ -->
 
 ---
 
-# 定型关系，是一种二元关系
+# 定型关系
 
 ##
 
@@ -758,9 +758,79 @@ $$
 
 其中，"$:$"是一个将项和类型连接的符号。
 
-因为这个关系涉及两个元素，因此它是一个二元关系。这个关系叫做**定型关系**(Typing Relation)。
+因为这个关系涉及项和类型两个元素，因此它是一个二元关系。这个关系就是**定型关系**(Typing Relation)。
+
+我们通常会把定型关系解读为「项$t$是一个类型$T$」。比如$🍎: 水果$就可以解读为，🍎是一个水果，或者是🍎是一个水果类型的实例。
+
+「水果」可以看成是一个集合，其中包含了一切水果，因此我们也可以说
+
+$$🍎 \in \text{水果}$$
 
 ---
+
+# 用自然推演来书写定型规则
+
+##
+
+接下来，我们开始逐渐往TAT中添加类型，丰富这个类型系统。 我们首先加入`Number`一种类型。
+
+对于二元的加法`+`来说，我们有：
+
+$$
+{x: \mathbf{Number},\ y: \mathbf{Number} \over x + y : \mathbf{Number} }\ (\text{N-Add})
+$$
+
+- 每个推演规则，都由横线上下分割。
+
+- 在横线之上的，是使用这条规则的前提；横线之下的，是在前提满足的情况下，使用这条规则能得到的结论。 
+
+- 横线右边的，是出于便于讨论的目的，给这条规则取的名字。这条规则叫做`N-Add`。
+
+
+`N-Add`这个规则的意思是说：若`x`的类型是`Number`，`y`的类型是`Number`，那么`x+y`也是`Number`。
+
+这种写法，叫做**自然推演**(Natural Deduction)。
+
+---
+
+# 使用自然推演来构造导出树
+
+##
+
+### 问题
+
+若已知 `x: Number`, `z: Number`，`y: Number`, 那么`x+z+y`是什么类型呢？
+
+### 思路
+
+1. 我们的`+`如同JavaScript中的`+`一样是左结合的，也就是说$x+z+y$等价于$(x+z)+y$。
+2. 那么，我们只需要知道$x+z$是什么类型，就可以知道$x+z+y$是什么类型……
+
+### 解法
+
+$$
+\frac{
+  \frac{ \displaystyle x:\ \mathbf{Number}, z:\ \mathbf{Number}}{ \displaystyle x+z:\ \mathbf{Number} } \qquad {y:\ \mathbf{Number}}
+} {
+  (x+z)+y:\ \mathbf{Number}
+}
+$$
+
+可以看到，我们将`x+z+y: Number`的推演过程组织成了一棵树，它叫做导出树(Derivation Tree)。同时，因为这棵树也构成了一个对`x+z+y: Number`的证明，因此它也叫做证明树(Proof Tree)。
+
+---
+
+# 类型系统中缺少的一环
+
+那么，问题来了：什么样的项，是`Number`类型呢？
+形式化地来说，就是下面这个式子的`???`部分，需要填上些什么：
+
+$$
+{??? \over x: \text{Number}}
+$$
+
+---
+
 
 # TypeScript 口味的简单类型$\lambda$-演算
 
@@ -781,9 +851,8 @@ $$
 
 ## 它的特性
 
-<!-- 命名有诸多候选：TNT for The New Type; ToT -->
 
----
+<!-- ---
 
 # TypeScript 的类型系统
 
@@ -791,17 +860,7 @@ $$
 
 在 TypeScript 4.5 中，我们有`number`, `boolean`, `string`, `bigint`, `symbol`，以及`undefined`, `null`[^1]这 7 个**原始类型(Primitive Type)**，还有`Array`, `Object`, `Function`等等**引用类型**。
 
-[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照 JavaScript 的提法，将其同样认为是原始类型。
-
----
-
-# 语言的分类
-
-```ts {monaco}
-type LanguageTaxonomy = ['动态定型' | '静态定型', '强类型' | '弱类型'];
-const CPP: LanguageTaxonomy = ['静态定型', '强类型'];
-const JavaScript: LanguageTaxonomy = ['动态定型', '弱类型'];
-```
+[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照 JavaScript 的提法，将其同样认为是原始类型。 -->
 
 ---
 
