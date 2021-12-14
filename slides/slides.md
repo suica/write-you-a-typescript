@@ -533,29 +533,17 @@ $\lambda$-演算(Lambda Calculus)是一种计算模型。它有两种基本操�
 layout: statement
 ---
 
-<div v-after>
-
-## 这些程序错误的背后是什么？
-
-## 我们可不可以找到一个定义什么是程序错误的通用框架？
-
-</div>
-
----
-layout: statement
----
-
-## “程序错误”的不严格的定义：
+## "程序错误"的不严格的定义：
 
 ## 如果程序不满足某些给定的**性质**，程序就是可以说是错误的。
 
 ---
 
-<!-- 为了更好地理解类型系统到底避免了什么错误，我们有必要理解“错误”这个概念的本质。 -->
+# 程序错误的分类（续）
 
-## 程序错误的分类（续）
+##
 
-**性质**可以是**任意**的：
+**性质**可以是**任意**的。我们定义了如下几种性质：
 
 <div v-click>
 
@@ -686,8 +674,8 @@ JavaScript 解释器在这些不按套路出牌的表达式的时候，肯定会
 
 $$
 \begin{align}
-R & := \{(0, 1), (1, 2), (2, 3), \dots \}, 或等价地 \\
-R & := \{ (n, n+1) : n\in \N \}
+R & := \{(0, 1), (0, 2), \dots, (1, 2), \dots \}, 或等价地 \\
+R & := \{ (n, n+m) : n\in \N, m\in \N^+ \}
 \end{align}
 $$
 
@@ -695,11 +683,11 @@ $$
 
 <div v-click>
 
-1. $:=$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
+- $:=$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
  </div>
  <div v-click>
 
-2. $\{ (n, n+1) : n\in \N \}$是 $\{(n, n+1)\mid n\in \N\}$的另外一种写法，也是一种可接受的集合记号。它用$:$代替了$\mid$。为了书写方便，我们会全部使用前面这种。
+- $\{ n : n\in \N \}$是 $\{n\mid n\in \N\}$的另外一种写法，也是一种可接受的集合记号。它用$:$代替了$\mid$，书写更加方便，我们会全部使用前者。
  </div>
 
 ---
@@ -710,7 +698,7 @@ $$
 
 <iframe class="w-full" src="https://q.uiver.app/?q=WzAsNSxbMSwwLCIxIl0sWzIsMCwiMiJdLFszLDAsIjMiXSxbMCwwLCIwIl0sWzQsMCwiXFxjZG90cyJdLFswLDFdLFszLDBdLFsxLDJdLFszLDEsIiIsMCx7ImN1cnZlIjotMn1dLFswLDIsIiIsMSx7ImN1cnZlIjotMn1dLFszLDIsIiIsMSx7ImN1cnZlIjotNX1dLFsyLDRdLFsxLDQsIiIsMSx7ImN1cnZlIjoyfV0sWzMsNCwiIiwxLHsib2Zmc2V0IjoyLCJjdXJ2ZSI6NX1dLFswLDQsIiIsMSx7ImN1cnZlIjo0fV1d&embed" width="788" height="286" style="border-radius: 8px; border: none;transform:scale(0.8);"></iframe>
 
-自然数集上的小于关系，$R := \{ (n, n+1) : n\in \N \}$
+自然数集上的小于关系，$R := \{ (n, n+m) : n\in \N, m\in \N^+ \}$
 可以省略地画成这样。
 
 1. 可以看到，有小于关系的两个数$x, y$都有一根有向箭头连接。
@@ -756,12 +744,12 @@ $$ -->
 
 -   三元关系。
     $$
-    \text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots, \} \subset \text{Letter}\times \Z \times \text{HexNumber}
+    \text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots \} \subset \text{Letter}\times \Z \times \text{HexNumber}
     $$
 
 在本课程中，我们会主要使用二元关系和三元关系。它们是我们刻画**项**、**类型**、**定型环境**之间关系的有力工具。
 
-注意：关系的数学本质仅仅是一个集合。定义哪些元素之间存在关系的时候完全是任意的。不必像我们刚刚看的那些例子一样，非将每个关系都解释出现实意义不可。
+注意：关系的数学本质仅仅是一个集合。定义哪些元素之间存在关系的时候完全是任意的。不必像我们刚刚看的那些例子一样，非得将每个关系都解释出现实意义不可。
 
 <div v-click class="my-10 text-center">
 练习：请举出一个四元关系的例子。
