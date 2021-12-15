@@ -842,7 +842,13 @@ $$
 
 同样地，我们可以利用AST上的节点的语法类别，继续扩张TAT的基本类型，定义布尔值字面量为`Bool`类型、字符串字面量为`Str`类型……
 
-问题来了，TAT的函数类型，就叫做`Fun`好了，它怎么定义呢？在回答这个问题之前，我们先参考一下JavaScript和TypeScript是怎么处理最最基本的函数类型的。
+问题来了，TAT的函数类型，就叫做`Fun`好了，它怎么定义呢？在回答这个问题之前，我们有必要先回顾一下JavaScript和TypeScript是怎么处理最最基本的函数类型的。
+
+<!-- 这里需要一个语法树的图，辅助理解 -->
+
+---
+
+# 无类型$\lambda$-演算：JavaScript函数背后的理论
 
 ---
 
@@ -850,14 +856,14 @@ $$
 
 ##
 
-JavaScript的箭头函数，和$\lambda$-演算(Lambda Calculus)关系密切。 它是一种非常重要的计算模型。
+JavaScript的箭头函数，和$\lambda$-演算(Lambda Calculus)关系密切。**无类型$\lambda$-演算**(UTLC, Untyped Lambda Calculus)，是一种非常重要的、图灵完备计算模型。
 
 它有两种基本操作：抽象(Abstraction)、应用(Application)。另外一个重要的概念就是变量(Variable)。
 
 在这门课程中，我们不会对$\lambda$-演算下一个形式定义，你只需要将它类比成 JavaScript 中的箭头函数即可。这样大多数关于箭头函数的直觉都可以沿用下来。
 **无类型**一词，指的是我们现在考虑的$\lambda$-演算还没有包含任何类型。
 
-下面是一些$\lambda$-演算和 JavaScript 中的对应物的例子。
+下面是一些$\lambda$-演算和 JavaScript 中的对应物的例子。其中，`=>`是右结合的，因此`x => y => x + y`等价于`x => (y => x + y)`。
 
 <div grid="~ cols-2 gap-2">
 
@@ -879,9 +885,55 @@ x => y => x + y;
 
 定义一个函数，$\lambda$-演算中叫做抽象；调用一个函数，叫做应用；函数的形式参数叫做变量。
 
+--- 
+
+# 无类型$\lambda$-演算的问题
+
+---
+
+# 简单类型$\lambda$-演算到TypeScript的类型标记
+
 ---
 
 # TypeScript 口味的简单类型$\lambda$-演算
+
+## 
+我们先回顾一下在TypeScript中是如何标注一个箭头函数的类型的。
+
+```typescript  {monaco}
+((x: number) => x + 1)(1);
+((x: number) => (y: number) => x + y)(2)(3);
+```
+
+<!-- 接下来，我们来仿照着这种记号，在TAT中定义函数类型。 -->
+
+`number`类型对应着TAT中的`Num`类型。因此，只需要简单地更换类型，我们就得到的合法的TAT代码：
+
+```typescript
+((x: Num) => x + 1)(1);
+((x: Num) => (y: Num) => x + y)(2)(3);
+```
+
+下面这两行代码，就不能通过TAT的类型检查了：
+```typescript
+((x: Num) => x + 1)("1");
+((x: Num) => (y: Num) => x + y)(2)("3");
+```
+
+<!-- 
+```typescript {monaco}
+
+const f1: (x:number) => (y:number) => number = x => y => x + y;
+const f2 = (x:number) => (y:number)=> x + y;
+const f3: (x:number) => (y:number) => number = (x:number) => (y:number) => x + y;
+```
+
+`f1`/`f2`/`f3`分别是三种不同的标注方式。
+1. `f1`。在`f1`这个变量上，标注了类型。而赋给这个变量的值的类型，则可以从变量的类型推断得到；
+2. `f2`。标注了值的类型，变量的类型由值的类型推断得到；
+3. `f3`。在变量上和值上都标注了类型，不需要进行任何类型推断。 
+
+-->
 
 ---
 
