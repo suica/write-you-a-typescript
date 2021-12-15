@@ -481,8 +481,6 @@ flowchart LR
 
 - 它的基本类型命名会尽量避免和JavaScript已经有的类型名字冲突。比如，我们会用`Num`来表示TAT中的数字类型，而不是`number`。`number`会用来特指JavaScript或者TypeScript中的数字类型。
 
-
-
 ---
 
 # 程序错误的分类
@@ -753,12 +751,12 @@ $$\text{🍎} \in \text{水果}$$
 
 ##
 
-接下来，我们开始逐渐往TAT中添加类型，丰富这个类型系统。 我们首先加入`Number`一种类型。
+接下来，我们开始逐渐往TAT中添加类型，丰富这个类型系统。 我们首先加入`Num`这种类型。
 
 对于二元的加法`+`来说，我们有：
 
 $$
-{x: \mathbf{Number},\ y: \mathbf{Number} \over x + y : \mathbf{Number} }\ (\text{N-Add})
+{x: \mathbf{Num},\ y: \mathbf{Num} \over x + y : \mathbf{Num} }\ (\text{N-Add})
 $$
 
 - 每个推演规则，都由横线上下分割。
@@ -768,7 +766,7 @@ $$
 - 横线右边的，是出于便于讨论的目的，给这条规则取的名字。这条规则叫做`N-Add`。
 
 
-`N-Add`这个规则的意思是说：若`x`的类型是`Number`，`y`的类型是`Number`，那么`x+y`也是`Number`。
+`N-Add`这个规则的意思是说：若`x`的类型是`Num`，`y`的类型是`Num`，那么`x+y`也是`Num`。
 
 这种写法，叫做**自然推演**(Natural Deduction)。
 
@@ -780,7 +778,7 @@ $$
 
 ### 问题
 
-若已知 `x: Number`, `z: Number`，`y: Number`, 那么`x+z+y`是什么类型呢？
+若已知 `x: Num`, `z: Num`，`y: Num`, 那么`x+z+y`是什么类型呢？
 
 ### 思路
 
@@ -791,13 +789,15 @@ $$
 
 $$
 \frac{
-  \frac{ \displaystyle x:\ \mathbf{Number}, z:\ \mathbf{Number}}{ \displaystyle x+z:\ \mathbf{Number} } \qquad {y:\ \mathbf{Number}}
+  \frac{ \displaystyle x:\ \mathbf{Num}, z:\ \mathbf{Num}}{ \displaystyle x+z:\ \mathbf{Num} } \qquad {y:\ \mathbf{Num}}
 } {
-  (x+z)+y:\ \mathbf{Number}
+  (x+z)+y:\ \mathbf{Num}
 }
 $$
 
-可以看到，我们将`x+z+y: Number`的推演过程组织成了一棵树，它叫做导出树(Derivation Tree)。同时，因为这棵树也构成了一个对`x+z+y: Number`的证明，因此它也叫做证明树(Proof Tree)。
+可以看到，我们将多次应用规则$\text{N-Add}$和其他已知前提，最终得到`x+z+y: Num`的推演过程组织成了一棵树。
+它叫做导出树(Derivation Tree)。同时，因为这棵树也构成了一个对`x+z+y: Num`的证明，因此它也叫做证明树(Proof Tree)。
+**类型检查，就是隐式地构造这棵导出树，或者检查这个导出树是否正确**。
 
 ---
 
@@ -815,7 +815,7 @@ $$
 $$
 
 
-形式化地来说，下面这个式子的`???`部分，需要填上些什么呢？
+形式化地来说，下面这个式子横线之上的`???`部分，需要填上些什么呢？
 
 $$
 {??? \over x: \mathbf{Num}}
@@ -829,26 +829,102 @@ $$
 
 ---
 
-# 利用类型系统之外的结构来定义原始类型
-
-##
+## 利用类型系统之外的结构来定义原始类型
 
 ### 解法
 
 而在JavaScript当中，通过语法分析得到的AST节点恰好有NumberLiteral (具体名字待定，数字字面量)这种语法类别(Syntax Kind)，完全符合JavaScript对`number`类型实例的定义。
 因此，我们可以将具有NumberLiteral这种类型的节点对应的项，`Num`类型的实例。
 
+若`x`为TAT中的项，$\bar{x}$是这个项对应的语法树上的节点，$\text{IsNumberLiteral}$是parser提供的判断一个语法树节点是否为NumberLiteral的谓词，那么`x: Num`的规则为：
+
+$$
+{\text{IsNumberLiteral}(\bar{x}) \over x: \mathbf{Num}}
+$$
+
 ### 类比
 
-同样地，我们可以利用AST上的节点的语法类别，继续扩张TAT的基本类型，定义布尔值字面量为`Bool`类型、字符串字面量为`Str`类型……
+同样地，我们可以利用AST上的节点的语法类别，继续扩张TAT的基本类型：
 
-问题来了，TAT的函数类型，就叫做`Fun`好了，它怎么定义呢？在回答这个问题之前，我们有必要先回顾一下JavaScript和TypeScript是怎么处理最最基本的函数类型的。
+<div v-click>
+
+- 定义布尔值字面量为`Bool`类型；
+</div>
+
+<div v-click>
+
+- 字符串字面量为`Str`类型；
+</div>
+
+<div v-click>
+
+- 函数为`Func`类型……？
+</div>
+
+---
+
+## 如何定义函数类型？
+
+问：TAT的函数类型，就叫做`Func`好了，我们要如何从语法上定义这个类型？
+
+### 思路
+
+<div v-click>
+
+- 尝试1：**继续用语法树上的节点类别来判断**。节点类别有数字字面量、布尔值字面量、字符串字面量，当然也有函数。能不能将函数节点对应的项，认为是`Func`类型的实例呢？
+
+$$
+{\text{IsFunction}(\bar{x}) \over x: \mathbf{Func}}
+$$
+</div>
+
+<div v-click>
+
+- 失败1：如果有`f: Func, x: Num`，那么试回答：`f`有几个参数，各自的类型是什么，能够接受一个`x: Num`吗？`f(x)`的类型又是什么呢？
+
+  答案是：不知道！ 因为`Func`丢失了我们希望保留的函数入参的类型，和返回值类型。我们无从判断。如果我们接受这种规则，TAT对函数调用的类型正确与否就几乎起不到任何检查作用了。
+
+  所以，若是仅仅只定义一个`Func`类型，而没有关于函数入参和返回值的细节，这种函数类型几乎没有用处。
+
+</div>
+
+---
+
+## 如何定义函数类型？
+
+### 思路
+
+- 尝试2：那么我们只需要把函数多个的参数类型、返回值类型全部放到一个函数实例的类型中就行了。
+
+  <!-- 原则上来说，函数参数数量可以是任意自然数，各个参数的类型、返回值类型也可以是类型系统中的任意类型。那么，也就是说Java，在TAT中，会有无数种函数类型！听起来很离谱，但是考虑到函数种类确实多种多样，倒也正常。 -->
+
 
 <!-- 这里需要一个语法树的图，辅助理解 -->
 
 ---
 
-# 无类型$\lambda$-演算：JavaScript函数背后的理论
+# 无类型$\lambda$-演算：JavaScript箭头函数背后的理论
+
+##
+
+JavaScript的箭头函数在ES6中被初次引入。它又被称作Lambda 表达式。有了它，函数的定义就变得简洁而优美起来。
+
+纵观现代编程语言，Lambda 表达式这个概念比比皆是：JavaScript, Java, C++, C#, Python, Ruby，Rust，GoLang……如果继续溯源Lambda表达式的源头，我们最终便会找到：
+
+<div v-click>
+
+- 无类型$\lambda$-演算(UTLC, Untyped Lambda Calculus)，和其有类型的变体
+</div>
+
+<div v-click>
+
+- 有类型$\lambda$-演算(STLC, Simply Typed Lambda Calculus)。
+</div>
+
+<div v-click>
+
+问题：我只是想定义一下TAT的`Fun`类型，并寻找一个标记函数的类型的方法，有什么研究$\lambda$-演算的必要吗？
+</div>
 
 ---
 
