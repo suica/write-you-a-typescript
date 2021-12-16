@@ -980,10 +980,10 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 回顾一下定型关系的语法：
 
 $$
-t: \text{T}
+t: T
 $$
 
-这里的$t$是一个元变量，它指代的是类型系统中的某一个项；同样的，$\text{T}$也是一个元变量，它指代的是类型系统中的一个类型。
+这里的$t$是一个元变量，它指代的是类型系统中的某一个项；同样的，$T$也是一个元变量，它指代的是类型系统中的一个类型。
 
 特别注意：元变量一般会避免取为对象语言中的符号，否则会给读者带来混乱。
 
@@ -1022,7 +1022,24 @@ $$
 \Gamma \vdash t: T
 $$
 
-这个式子的意思是，**在定型环境$\Gamma$下，我们可以通过应用规则，得到项$t$的类型是$T$**。
+"$\vdash$" ($\LaTeX$:`\vdash`) 的左边是一些前提，右边是形如$t: T$的结论。
+它的意思是说，**在定型环境$\Gamma$(Gamma)下，我们可以通过应用一些推演规则，推演出项$t$的类型是$T$这个结论**。
+
+$\vdash$的左侧为$\varnothing$时，通常略去不写，如：
+
+$$
+\vdash 1: \text{Num}
+$$
+
+$\vdash$也可以在一行内连续使用，比如：
+
+$$
+\vdash 1: \text{Num} \vdash \text{true}: \text{Bool}
+$$
+
+上面这个式子，等价于在说$\vdash 1: \text{Num}$且$1: \text{Num}\vdash \text{true}: \text{Bool}$。
+
+上面给出的两个式子在TAT中都是正确的，我们之后会证明。
 
 ---
 
