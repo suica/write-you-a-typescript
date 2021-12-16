@@ -908,13 +908,13 @@ $$
 
 在研究编程语言的时候，我们经常需要用另外一套记号，来描述编程语言本身。
 
-下面，是MDN上关于`Array.prototype.reduce`的句法的描述。
+下面，是MDN上关于`Array.prototype.reduce`的语法的描述。
 
 ```js
 arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
 ```
 
-这些记号，都不是JavaScript的一部分，而只是起到了描述句法模式的作用：
+这些记号，都不是JavaScript的一部分，而只是起到了描述语法模式的作用：
 - `arr, callback, accumulator, currentValue, index, array, initialValue`；
 - 用来表示可选的`[]`，以及`callback`中用来表示函数参数的`()`。
 
@@ -928,19 +928,26 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 
 ---
 
-## 元语言和对象语言（续）
+## 元语言和元变量
 
 下面是几个元语言的经典例子。
 
-1. BNF(Backus-Naur Form或者Backus Normal Form)。
-  BNF是一种形式语言，它可以用来描写任何一种上下文无关语言。
+1. BNF(Backus-Naur Form，或Backus Normal Form)。
+  BNF是一种形式语言，它可以用来描写任何一种上下文无关语言的语法，包括它自己。
 
-```text
+  下面，我们用BNF定义了简单的算术表达式语言。此时BNF是元语言，被刻画的算术表达式语言是对象语言。
+
+```bnf
 <Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-<Expression>  ::= <Digit> "-" <Expression> | <Digit> "+" <Expression> | "(" <Expression> ")" | <Digit>
+<Expr>  ::= <Expr> "-" <Expr> | <Expr> "+" <Expr> | "(" <Expr> ")" | <Digit>
 ```
 
+`0`, `1+2`, `(1+2)`, `1-(2-3)`, `(1-2)-3`都是合法的表达式。
 
+像`<Digit>`和`<Expr>`这样的，能指代一系列对象语言符号中的元语言符号，也被称为**元变量**(Meta Variable)或者**非终止符**(Nonterminal)。元变量一般不是对象语言中的符号。
+
+
+2. 汉语。我们用汉语谈论JavaScript语法或者TAT的语法的时候，汉语就是元语言，被谈论的语言就是对象语言。
 
 ---
 
