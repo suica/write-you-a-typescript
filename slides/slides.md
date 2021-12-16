@@ -923,13 +923,20 @@ $$
 
 ## 无类型$\lambda$-演算：JavaScript函数背后的理论模型
 
-现代编程语言的函数，本质上其实是对$\lambda$-演算的一种模仿。自从20世纪30年代Alonzo Church发明了$\lambda$-演算之后，它的简洁、优美、深刻，吸引了无数人。
+现代编程语言的函数，本质上其实是对$\lambda$-演算的一种模仿。自从20世纪30年代Alonzo Church发明了$\lambda$-演算之后，它的简洁、优美、深刻，吸引了无数人。下面是$\lambda$-演算的一个例子，**Y组合子**(Y Combinator)：
+
+$$
+\lambda f.\ (\lambda x.\ f\ (x\ x)) (\lambda x.\ f\ (x\ x))
+$$
 
 在现代编程语言中，$\lambda$-演算摇身一变，成为了Lambda 表达式。我们可以看到，Lambda 表达式能让函数的定义变得简洁而优美，这使得包括Java, C++, C#, Python, Ruby, Rust, GoLang在内的各路编程语言纷纷引入了它。
-
 而JavaScript也不例外。Lambda表达式在ES6中正式引入，叫做箭头函数。
 
-为了更好地定义TAT的函数类型，我们应当需要了解一下$\lambda$-演算。最基本的$\lambda$-演算如下：
+有类型$\lambda$-演算，构成了类型论研究的基石。
+
+通过研究一个最小化的模型，我们更容易地可以建立起对更加复杂的事物的原理的深刻认识。
+类型系统中函数的研究，离不开这个最小化的计算模型。
+而为了更好地定义TAT的函数类型，我们需要研究一下最基本的$\lambda$-演算，及其有类型的变体：
 
 <div v-click>
 
@@ -945,7 +952,7 @@ $$
 
 ## JavaScript 口味的无类型$\lambda$-演算
 
-JavaScript的箭头函数，和$\lambda$-演算(Lambda Calculus)关系密切。**无类型$\lambda$-演算**(UTLC, Untyped Lambda Calculus)，是一种非常重要的、图灵完备计算模型。
+**无类型$\lambda$-演算**(UTLC, Untyped Lambda Calculus)，是一种非常重要的、图灵完备计算模型。
 
 它有两种基本操作：抽象(Abstraction)、应用(Application)。另外一个重要的概念就是变量(Variable)。
 
