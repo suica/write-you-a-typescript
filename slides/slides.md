@@ -906,15 +906,17 @@ $$
 
 ## 元语言和对象语言
 
-在研究编程语言的时候，我们经常需要用另外一套记号，来描述编程语言本身。
 
-下面，是MDN上关于`Array.prototype.reduce`的语法的描述。
+我们可以广义地将一些带有规则的元素称为语言。而我们在研究形式语言的时候，经常需要用另外一种语言描述所研究的那门语言。
+研究编程语言时，我们更是经常需要用另外一套记号，来描述编程语言本身。
+
+下面，是MDN上关于JavaScript中`Array.prototype.reduce`的语法的描述。
 
 ```js
 arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
 ```
 
-这些记号，都不是JavaScript的一部分，而只是起到了描述语法模式的作用：
+下面这些记号，都不是JavaScript的一部分，而只是起到了描述语法模式的作用：
 - `arr, callback, accumulator, currentValue, index, array, initialValue`；
 - 用来表示可选的`[]`，以及`callback`中用来表示函数参数的`()`。
 
