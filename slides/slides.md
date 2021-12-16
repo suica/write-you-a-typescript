@@ -451,7 +451,7 @@ flowchart LR
     TypingRelation --> TypingContext[定型环境和定型规则]
     TypingContext --> STLC[简单类型Lambda演算]
     NaturalDeduction[自然推演] --> MetaLanguage
-    MetaLanguage[元语言和目标语言] --> TypingContext
+    MetaLanguage[元语言和对象语言] --> TypingContext
   end
 
   subgraph Part2[第二部分: 实现类型检查器]
@@ -923,17 +923,18 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 ```js
 [1,2,3].reduce((acc, cur, ind,) => acc + cur + ind, -1)
 ```
-
-这种用来描述一种语言的语言，叫做**元语言**(Meta Language)。被描述的语言，叫做**对象语言**(Object Language)。
+像这样用来描述一种语言的语言，是**元语言**(Meta Language)。被描述的语言，则是**对象语言**(Object Language)。
 
 ---
 
-## 元语言和元变量
+## 熟悉元语言和元变量
 
-下面是几个元语言的经典例子。
+"元语言"和"对象语言"这两个词，只是对于语言在发挥其作用时，所处的地位的描述。
+
+下面是几个元语言的例子。
 
 1. BNF(Backus-Naur Form，或Backus Normal Form)。
-  BNF是一种形式语言，它可以用来描写任何一种上下文无关语言的语法，包括它自己。
+  BNF是一种上下文无关的形式语言，它可以用来描写任何一种上下文无关语言的语法——包括它自己。
 
   下面，我们用BNF定义了简单的算术表达式语言。此时BNF是元语言，被刻画的算术表达式语言是对象语言。
 
@@ -944,10 +945,45 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 
 `0`, `1+2`, `(1+2)`, `1-(2-3)`, `(1-2)-3`都是合法的表达式。
 
-像`<Digit>`和`<Expr>`这样的，能指代一系列对象语言符号中的元语言符号，也被称为**元变量**(Meta Variable)或者**非终止符**(Nonterminal)。元变量一般不是对象语言中的符号。
+像`<Digit>`和`<Expr>`这样的，能指代一系列对象语言符号中的元语言符号，也被称为**元变量**(Meta Variable)或者**非终止符**(Nonterminal)。
+
+<div v-click>
+
+- 带有"元"这个前缀，是因为它不存在于对象语言之中，而存在于元语言中。`<Digit>`不是一个算术表达式。
+</div>
+
+<div v-click>
+
+- 叫做"变量"，是因为它可以被"赋值为"它所指代的任何一个对象语言符号，而不是特定的对象语言符号。
+</div>
 
 
-2. 汉语。我们用汉语谈论JavaScript语法或者TAT的语法的时候，汉语就是元语言，被谈论的语言就是对象语言。
+---
+
+## 熟悉元语言和元变量（续）
+
+<div class="mt-10px"></div>
+
+2. `Array.prototype.reduce`语法的描述语言。我们将其语法高亮着色：其中<span class="text-rose-400">粉色</span>的是元变量，<span class="text-blue-400">蓝色</span>的是居于辅助地位的元变量。而剩下的是对象语言的符号。
+
+<div class="mt-10px mb-20px">
+<code>
+<span class="text-rose-400">arr</span>.reduce(<span class="text-blue-400"><span class="text-rose-400">callback</span>(<span class="text-rose-400">accumulator</span></span>, <span class="text-blue-400"><span class="text-rose-400">currentValue</span>[,<span class="text-rose-400">index</span>[, <span class="text-rose-400">array</span>]])[, <span class="text-rose-400">initialValue</span>]</span>)
+</code>
+</div>
+
+3. 汉语。我们用汉语谈论JavaScript语法或者TAT的语法的时候，汉语就是元语言，被谈论的语言就是对象语言。在用谈论汉语本身的时候，汉语也是对象语言。比如，"形容词"这个术语就是一个元变量。
+
+4. 数学语言。我们在用数学语言描述类型系统中的定型关系的时候，数学语言就是元语言，被描述的定型关系语言就是对象语言。
+回顾一下定型关系的语法：
+
+$$
+t: \text{T}
+$$
+
+这里的$t$是一个元变量，它指代的是类型系统中的某一个项；同样的，$\text{T}$也是一个元变量，它指代的是类型系统中的一个类型。
+
+特别注意：元变量一般会避免取为对象语言中的符号，否则会给读者带来混乱。
 
 ---
 
