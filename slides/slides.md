@@ -1,7 +1,7 @@
 ---
 theme: default
 class: text-center
-highlighter: shiki
+highlighter: prism
 lineNumbers: true
 info: |
     ## Slidev Starter Template
@@ -100,7 +100,6 @@ a = 'b'; // 完全合法
 > 注意：强弱类型其实是一个比较主观的概念，并没有非常严格的定义。
 
 ---
-
 layout: statement
 ---
 
@@ -902,6 +901,46 @@ $$
 - 出问题了：`x + 1`中，`x`的类型是什么？ 我们其实并不知道变量`x`的类型！我们现在只知道类似`1: Num`、`0.2: Num`这样光从语法层面就能得到的结果，尚未把这种针对变量的手工类型标注引入成为已知条件。
 
 为了**引入**变量的手工类型标注，我们需要从根本上修改定型关系，使得TAT能够把`x: Num`这个手工类型标注，看做已知条件。
+
+---
+
+## 元语言和对象语言
+
+在研究编程语言的时候，我们经常需要用另外一套记号，来描述编程语言本身。
+
+下面，是MDN上关于`Array.prototype.reduce`的句法的描述。
+
+```js
+arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+```
+
+这些记号，都不是JavaScript的一部分，而只是起到了描述句法模式的作用：
+- `arr, callback, accumulator, currentValue, index, array, initialValue`；
+- 用来表示可选的`[]`，以及`callback`中用来表示函数参数的`()`。
+
+之所以说它是模式描述，是因为我们在真实调用的时候，不一定非得传入完全相同的名字的参数，只要匹配上了这个模式就行。比如，这样也是完全可以的：
+
+```js
+[1,2,3].reduce((acc, cur, ind,) => acc + cur + ind, -1)
+```
+
+这种用来描述一种语言的语言，叫做**元语言**(Meta Language)。被描述的语言，叫做**对象语言**(Object Language)。
+
+---
+
+## 元语言和对象语言（续）
+
+下面是几个元语言的经典例子。
+
+1. BNF(Backus-Naur Form或者Backus Normal Form)。
+  BNF是一种形式语言，它可以用来描写任何一种上下文无关语言。
+
+```text
+<Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<Expression>  ::= <Digit> "-" <Expression> | <Digit> "+" <Expression> | "(" <Expression> ")" | <Digit>
+```
+
+
 
 ---
 
