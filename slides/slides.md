@@ -921,17 +921,19 @@ $$
 
 ---
 
-# 无类型$\lambda$-演算：JavaScript箭头函数背后的理论
+## 无类型$\lambda$-演算：JavaScript函数背后的理论模型
 
-##
+现代编程语言的函数，本质上其实是对$\lambda$-演算的一种模仿。自从20世纪30年代Alonzo Church发明了$\lambda$-演算之后，它的简洁、优美、深刻，吸引了无数人。
 
-JavaScript的箭头函数在ES6中被初次引入。它又被称作Lambda 表达式。有了它，函数的定义就变得简洁而优美起来。
+在现代编程语言中，$\lambda$-演算摇身一变，成为了Lambda 表达式。我们可以看到，Lambda 表达式能让函数的定义变得简洁而优美，这使得包括Java, C++, C#, Python, Ruby, Rust, GoLang在内的各路编程语言纷纷引入了它。
 
-纵观现代编程语言，Lambda 表达式这个概念比比皆是：JavaScript, Java, C++, C#, Python, Ruby，Rust，GoLang……如果继续溯源Lambda表达式的源头，我们最终便会找到：
+而JavaScript也不例外。Lambda表达式在ES6中正式引入，叫做箭头函数。
+
+为了更好地定义TAT的函数类型，我们应当需要了解一下$\lambda$-演算。最基本的$\lambda$-演算如下：
 
 <div v-click>
 
-- 无类型$\lambda$-演算(UTLC, Untyped Lambda Calculus)，和其有类型的变体
+- 无类型$\lambda$-演算(UTLC, Untyped Lambda Calculus)，和其**有类型**的变体
 </div>
 
 <div v-click>
@@ -939,16 +941,9 @@ JavaScript的箭头函数在ES6中被初次引入。它又被称作Lambda 表达
 - 有类型$\lambda$-演算(STLC, Simply Typed Lambda Calculus)。
 </div>
 
-<div v-click>
-
-问题：我只是想定义一下TAT的`Fun`类型，并寻找一个标记函数的类型的方法，有什么研究$\lambda$-演算的必要吗？
-</div>
-
 ---
 
-# JavaScript 口味的无类型$\lambda$-演算
-
-##
+## JavaScript 口味的无类型$\lambda$-演算
 
 JavaScript的箭头函数，和$\lambda$-演算(Lambda Calculus)关系密切。**无类型$\lambda$-演算**(UTLC, Untyped Lambda Calculus)，是一种非常重要的、图灵完备计算模型。
 
@@ -981,18 +976,17 @@ x => y => x + y;
 
 --- 
 
-# 无类型$\lambda$-演算的问题
+## 无类型$\lambda$-演算的问题
 
 ---
 
-# 简单类型$\lambda$-演算到TypeScript的类型标记
+## 简单类型$\lambda$-演算到TypeScript的类型标记
 
 ---
 
-# TypeScript 口味的简单类型$\lambda$-演算
+## TypeScript 口味的简单类型$\lambda$-演算
 
-## 
-我们先回顾一下在TypeScript中是如何标注一个箭头函数的类型的。
+我们先回顾一下，在TypeScript中是如何标注一个箭头函数的类型的。
 
 ```typescript  {monaco}
 ((x: number) => x + 1)(1);
@@ -1014,39 +1008,6 @@ x => y => x + y;
 ((x: Num) => (y: Num) => x + y)(2)("3");
 ```
 
-<!-- 
-```typescript {monaco}
-
-const f1: (x:number) => (y:number) => number = x => y => x + y;
-const f2 = (x:number) => (y:number)=> x + y;
-const f3: (x:number) => (y:number) => number = (x:number) => (y:number) => x + y;
-```
-
-`f1`/`f2`/`f3`分别是三种不同的标注方式。
-1. `f1`。在`f1`这个变量上，标注了类型。而赋给这个变量的值的类型，则可以从变量的类型推断得到；
-2. `f2`。标注了值的类型，变量的类型由值的类型推断得到；
-3. `f3`。在变量上和值上都标注了类型，不需要进行任何类型推断。 
-
--->
-
----
-
- <!-- 函数类型；元语言和目标语言；定型环境；类型系统的完备性以及可靠性。 -->
-
-<!-- ## 定型关系(Typing Relation)
-定义：在定型环境$\Gamma$，下 -->
-
-
-<!-- ---
-
-# TypeScript 的类型系统
-
-## TypeScript 中的类型概览
-
-在 TypeScript 4.5 中，我们有`number`, `boolean`, `string`, `bigint`, `symbol`，以及`undefined`, `null`[^1]这 7 个**原始类型(Primitive Type)**，还有`Array`, `Object`, `Function`等等**引用类型**。
-
-[^1]: `null`和`undefined`可以解释为字面量类型，但是这里还是按照 JavaScript 的提法，将其同样认为是原始类型。 -->
-
 ---
 layout: section
 ---
@@ -1056,15 +1017,13 @@ layout: section
 ---
 layout: section
 ---
-## 实现类型检查器：TAT-LC
+## 第二部分：实现类型检查器TAT-LC
 ---
 
 ## 实现TAT-LC
 
 ---
 
-# 扩展阅读
-
-##
+## 扩展阅读
 
 [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
