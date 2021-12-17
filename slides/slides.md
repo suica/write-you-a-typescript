@@ -974,7 +974,11 @@ $$
 
 ## JavaScript 口味的无类型$\lambda$-演算
 
-下面是一些$\lambda$-演算和 JavaScript 中的对应物的例子。其中，`=>`是右结合的，因此`x => y => x + y`等价于`x => (y => x + y)`。
+下面是一些$\lambda$-演算的式子，在JavaScript 中的对应的箭头函数的例子。
+
+> 提示： JavaScript中的`=>`的记号，会对右边部分绑定更紧(它不是操作符，因此很难说它是右结合的)。
+> 
+> 因此`x => y => x + y`等价于`x => (y => x + y)`。
 
 <div grid="~ cols-2 gap-2">
 
