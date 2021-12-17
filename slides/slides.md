@@ -917,8 +917,6 @@ $$
 
 上面这个式子，等价于在说$\vdash 1: \text{Num}$且$1: \text{Num}\vdash \text{true}: \text{Bool}$。
 
-上面给出的两个式子在TAT中都是正确的，我们之后会证明。
-
 ---
 
 ## 无类型$\lambda$-演算：JavaScript函数背后的理论模型
