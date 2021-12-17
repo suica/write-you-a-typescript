@@ -1181,8 +1181,12 @@ layout: section
 ---
 ## 第二部分：实现类型检查器TAT-LC
 ---
+layout: section
+---
 
 ## 实现TAT-LC
+
+To be continued……！
 
 ---
 
