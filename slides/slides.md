@@ -1179,25 +1179,11 @@ $$
 layout: section
 ---
 ## 第二部分：类型检查器TAT-LC的设计与实现
----
-layout: section
----
 
-## 完善TAT-LC的定型规则
+<div class="mt-10px">
 
----
-
-## 函数类型
-
-让我们趁热打铁，来完成函数类型的定型规则。
-
----
-
-## 字符串
-
-## 实现TAT-LC
-
-To be continued……！
+### To be continued...!
+</div>
 
 ---
 
