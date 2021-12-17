@@ -938,12 +938,12 @@ $$
 
 <div v-click>
 
-- 无类型$\lambda$-演算(UTLC, Untyped Lambda Calculus)，
+- 无类型$\lambda$-演算，
 </div>
 
 <div v-click>
 
-- 有类型$\lambda$-演算(STLC, Simply Typed Lambda Calculus)。
+- 简单类型$\lambda$-演算。
 </div>
 
 ---
@@ -1020,11 +1020,35 @@ $$
 
 当程序规模增大的时候，一些错误就只能通过运行程序发现了。这个问题，其实只是无类型编程语言的通病。
 
-为了解决这个问题，可以往$\lambda$-演算中引入一个简单类型系统；这正如同我们往JavaScript中引入TAT。
+为了解决这个问题，可以往$\lambda$-演算中引入一个简单类型系统；
+
+这和我们往JavaScript中引入类型系统的动机相同。
 
 ---
 
-## 简单类型$\lambda$-演算到TypeScript的类型标记
+## 简单类型$\lambda$-演算
+
+简单类型$\lambda$-演算(STLC, Simply Typed Lambda Calculus)中的简单二字，指的是它的类型系统是简单的，只有**函数类型**($\to$类型)和一些无关紧要的**基本类型**，没有子类型、多态、递归类型等等其他特性。
+
+只要对函数的变量的类型进行标注即可。下面就是一个合法的STLC表达式：
+
+$$
+\lambda x: \text{Num}.\ x + 1
+$$
+
+而下面这个就不是一个合法的STLC表达式，因为我们无法为$x+y$这个子表达式确定类型。
+
+$$
+\lambda x: \text{Num}.\ \lambda y: \text{Str}.\ x+y
+$$
+
+函数还能作为参数，构造泛函。这使得我们需要标注函数的类型。我们可以使用$\to$来标注函数的类型。
+
+$$
+\lambda f: \text{Num}\to \text{Str}.\ \lambda x: \text{Num}.\ f\ x
+$$
+
+其中，$f: \text{Num}\to \text{Str}$表示一个**接受一个$\text{Num}$类型的值，返回一个$\text{Str}$类型的值的函数**。
 
 ---
 
@@ -1032,14 +1056,12 @@ $$
 
 我们先回顾一下，在TypeScript中是如何标注一个箭头函数的类型的。
 
-```typescript  {monaco}
+```typescript
 ((x: number) => x + 1)(1);
 ((x: number) => (y: number) => x + y)(2)(3);
 ```
 
-<!-- 接下来，我们来仿照着这种记号，在TAT中定义函数类型。 -->
-
-`number`类型对应着TAT中的`Num`类型。因此，只需要简单地更换类型，我们就得到的合法的TAT代码：
+`number`类型对应着TAT中的`Num`类型。因此，只需要简单地替换TypeScript类型至TAT类型，我们就得到的合法的TAT代码：
 
 ```typescript
 ((x: Num) => x + 1)(1);
