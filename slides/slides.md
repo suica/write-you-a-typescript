@@ -937,10 +937,10 @@ $$
 
 ## 无类型$\lambda$-演算：JavaScript函数背后的理论模型
 
-现代编程语言的函数，本质上其实是对$\lambda$-演算的一种模仿。自从20世纪30年代Alonzo Church发明了$\lambda$-演算之后，它的简洁、优美、深刻，吸引了无数人。下面是$\lambda$-演算的一个例子，**Y组合子**(Y Combinator)：
+现代编程语言的函数，本质上其实是对$\lambda$-演算的一种模仿。自从20世纪30年代Alonzo Church发明了$\lambda$-演算之后，它的简洁、优美、深刻，吸引了无数人。下面是$\lambda$-演算的一个例子，计算两个变量的平方和：
 
 $$
-\lambda f.\ (\lambda x.\ f\ (x\ x)) (\lambda x.\ f\ (x\ x))
+\lambda x.\lambda y. x^2 + y^2
 $$
 
 在现代编程语言中，$\lambda$-演算摇身一变，成为了Lambda 表达式。Lambda 表达式能让函数的定义变得简洁而优美，这使得包括Java, C++, C#, Python, Ruby, Rust, GoLang在内的各路编程语言纷纷引入了它。
