@@ -433,6 +433,14 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 layout: section
 ---
 
+# 类型系统入门
+
+吴登轲 高洁璇
+
+---
+layout: section
+---
+
 # 第二节：类型系统的基础
 
 ---
