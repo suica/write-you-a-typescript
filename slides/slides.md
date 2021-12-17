@@ -439,14 +439,14 @@ layout: section
 
 # 本节路线图
 
-<div class="mt-3.5rem -ml-2rem">
+<div class="mt-1.5rem -ml-2rem">
 
 ```mermaid {scale: 0.9}
 flowchart LR
   subgraph Part1[第一部分: 类型检查器的基础知识]
     direction TB
     ArrowFunction[JavaScript箭头函数] --> UTLC[无类型Lambda演算]
-    UTLC --> STLC
+    UTLC --> STLC --> 宇宙的层级
     BinaryRelation[二元关系] --> TypingRelation[定型关系]
     TypingRelation --> TypingContext[定型环境和定型规则]
     TypingContext --> STLC[简单类型Lambda演算]
@@ -454,14 +454,14 @@ flowchart LR
     NaturalDeduction --> TypingContext
   end
 
-  subgraph Part2[第二部分: 实现类型检查器]
+  subgraph Part2[第二部分: 类型检查器TAT-LC]
     direction TB
-    TAT[类型系统TAT] --> TATRules[TAT的定型规则]
+    TATRules[TAT-LC的类型系统] --> TATFrameWork[类型检查器的实现框架]
+    TATFrameWork --> TATTypeScriptImpl[TAT-LC的类型系统实现] --> TATEval[TAT-LC的求值和运行]
   end
 
   Start(从这里开始!) --> Part1 --> Part2
   style Start fill:none,stroke:none
-
 
 ```
 
@@ -470,15 +470,23 @@ flowchart LR
 ---
 
 
-# 目标类型系统：TAT
+## 目标类型检查器：TAT
 
-## 名字的由来
+### 名字的由来
 
-在这个课程中，我们会实现一个自己的类型检查器，我把它叫做**TAT**(发音:/tæt/)。没有什么特别的原因，只是因为它像一个哭脸的颜文字 😭，而且是个回文串，非常有意思。
+在这个课程中，我们会实现一个自己的类型检查器，我们把它叫做**TAT**(发音:/tæt/)。没有什么特别的原因，只是因为它像一个哭脸的颜文字 😭，而且是个回文串，非常有意思。
 
-## 它的特性
+### 它的特性
 
-- 它的基本类型命名会尽量避免和JavaScript已经有的类型名字冲突。比如，我们会用`Num`来表示TAT中的数字类型，而不是`number`。`number`会用来特指JavaScript或者TypeScript中的数字类型。
+它的基本类型命名会尽量避免和JavaScript已经有的类型名字冲突。比如，我们会用`Num`来表示TAT中的数字类型，而不是`number`。`number`会用来特指JavaScript或者TypeScript中的数字类型。
+
+它是JavaScript的一个超集，且它在语法上是TypeScript的一个子集。
+
+### 建构的方式
+
+在这个课程的第一部分，我们会提到TAT的一些特性，局部地讨论一些TAT的定型规则。
+
+并且在第二部分，我们会正式开始介绍TAT的实现框架，和它在根据本节课程裁剪后的变体：TAT-LC的具体设计和实现。
 
 ---
 layout: statement
@@ -1072,21 +1080,12 @@ $$
 ((x: Num) => (y: Num) => x + y)(2)("3");
 ```
 
----
-layout: section
----
-
-## 完善TAT-LC的定型规则
-
----
-
-## 函数类型
 
 ---
 layout: statement
 ---
 
-## 两种不同角度的宇宙观
+## 宇宙的层级
 
 ---
 ## 宇宙的层级：从字符串宇宙下行
@@ -1179,10 +1178,22 @@ $$
 ---
 layout: section
 ---
-## 第二部分：实现类型检查器TAT-LC
+## 第二部分：类型检查器TAT-LC的设计与实现
 ---
 layout: section
 ---
+
+## 完善TAT-LC的定型规则
+
+---
+
+## 函数类型
+
+让我们趁热打铁，来完成函数类型的定型规则。
+
+---
+
+## 字符串
 
 ## 实现TAT-LC
 
