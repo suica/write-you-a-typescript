@@ -1412,7 +1412,7 @@ $$
         \Gamma \vdash !y: \mathbf{Bool}
         }
         \over
-        \Gamma \vdash (!x \mathtt{\&\& } \text{!y}): \mathbf{Bool}
+        \Gamma \vdash (!x \mathtt{\&\& } !y): \mathbf{Bool}
       }
     \quad
     {
