@@ -1276,16 +1276,16 @@ $$
 
 对这种情况，处于简单起见，我们将关于JavaScript语法的先验知识作为“公理”——即不言自明，无需任何前提就能得出的结论。
 
-这个改动反映在定型规则上，就是对所有的常量，将其前提去除，表示它们无需任何前提即可得到。
+这个改动反映在定型规则上，就是对所有的常量，将其前提去除，且一切定型环境下都可以直接得到它的类型。
 
 </div>
 
 <div v-click>
 
-由此，我们有如下导出树：
+由此，我们有如下导出树，对一切$\Gamma$都成立：
 
 $$
-{\over 1: \mathbf{Num}}和 {\over 0.2: \mathbf{Num}} 还有 {\over -1e15: \mathbf{Num}}
+{\over \Gamma \vdash 1: \mathbf{Num}}和 {\over \Gamma \vdash 0.2: \mathbf{Num}} 还有 {\over \Gamma \vdash -1e15: \mathbf{Num}}
 $$
 </div>
 
@@ -1366,13 +1366,77 @@ $$
 }
 $$
 
-可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们还没有TypeScript那样的并类型(Union Type)。
+可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们没有TypeScript那样的并类型(Union Type)来描写这种情况所需要的类型。
 
 ---
 
 ## 定型规则的使用
 
-为了理解这些定型规则的使用例，我们来看几个TAT表达式的导出树。
+为了更好理解这些定型规则的使用，我们来看一个比较复杂的根据TAT表达式来构造导出树的例子。
+
+请注意，为一个表达式构造导出树的过程，其实就是对这个表达式做类型检查的过程。一旦其中有一个子表达式的类型无法被检查，那么这个表达式就包含类型错误，不是一个合法的TAT表达式。
+
+`(x: Num) => (y: Str) => ((x && !!y) ? 1 : 2)`
+
+为了使表达式缩短，我们在这里使得 $\Gamma = x: \mathbf{Num}, y: \mathbf{Str}$。那么就有
+
+$$
+{
+    \displaystyle
+  {
+    \displaystyle
+    {
+        \displaystyle
+      {
+        \displaystyle
+        {
+            \displaystyle
+          {
+            \displaystyle
+            x: \mathbf{Num} \in \Gamma
+            \over
+            \Gamma \vdash x: \mathbf{Num}
+          }
+        \over
+        \Gamma \vdash !x: \mathbf{Bool}
+        }
+        {
+            \displaystyle
+          {
+            \displaystyle
+            y: \mathbf{Str} \in \Gamma
+            \over
+            \Gamma \vdash y: \mathbf{Str}
+          }
+        \over
+        \Gamma \vdash !y: \mathbf{Bool}
+        }
+        \over
+        \Gamma \vdash (!x \mathtt{\&\& } \text{!y}): \mathbf{Bool}
+      }
+    \quad
+    {
+      \over
+      \Gamma \vdash 1: \mathbf{Num}
+    }
+    \quad
+    {
+      \over
+      \Gamma \vdash 2: \mathbf{Num}
+    }
+    \over
+    \Gamma \vdash
+    ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): \mathbf{Num}
+    }
+    \over
+    x: \mathbf{Num} \vdash 
+(y: \mathbf{Str}) \Rightarrow ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): (y: \mathbf{Str}) \Rightarrow \mathbf{Num}
+  }
+  \over
+  \vdash (x: \mathbf{Num}) \Rightarrow (y: \mathbf{Str}) \Rightarrow ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): (x: \mathbf{Num}) \Rightarrow (y: \mathbf{Str}) \Rightarrow \mathbf{Num}
+}
+$$
+
 
 ---
 
