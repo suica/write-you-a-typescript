@@ -447,7 +447,7 @@ layout: section
 
 # 本节路线图
 
-<div class="mt-1.5rem -ml-2rem">
+<div class="mt-1.5rem -ml-3rem">
 
 ```mermaid {scale: 0.9}
 flowchart LR
@@ -462,10 +462,10 @@ flowchart LR
     NaturalDeduction --> TypingContext
   end
 
-  subgraph Part2[第二部分: 类型检查器TAT-LC]
+  subgraph Part2[第二部分: 类型检查器TAT-STLC]
     direction TB
-    TATRules[TAT-LC的类型系统] --> TATFrameWork[类型检查器的实现框架]
-    TATFrameWork --> TATTypeScriptImpl[TAT-LC的类型系统实现] --> TATEval[TAT-LC的求值和运行]
+    TATRules[TAT-STLC的类型系统] --> TATFrameWork[类型检查器的实现框架]
+    TATFrameWork --> TATTypeScriptImpl[TAT-STLC的类型系统实现] --> TATEval[TAT-STLC的求值和运行]
   end
 
   Start(从这里开始!) --> Part1 --> Part2
@@ -494,7 +494,7 @@ flowchart LR
 
 在这个课程的第一部分，我们会提到TAT的一些特性，局部地讨论一些TAT的定型规则。
 
-并且在第二部分，我们会正式开始介绍TAT的实现框架，和它在根据本节课程裁剪后的变体：TAT-LC的具体设计和实现。
+并且在第二部分，我们会正式开始介绍TAT的实现框架，和它在根据本节课程裁剪后的变体：TAT-STLC的具体设计和实现。
 
 ---
 layout: statement
@@ -1200,12 +1200,12 @@ $$
 ---
 layout: section
 ---
-## 第二部分：类型检查器TAT-LC的设计与实现
+## 第二部分：类型检查器TAT-STLC的设计与实现
 ---
 layout: section
 ---
 
-## 完善TAT-LC的定型规则
+## 完善TAT-STLC的定型规则
 
 ---
 
@@ -1440,7 +1440,7 @@ $$
 
 ---
 
-## 实现TAT-LC
+## 实现TAT-STLC
 
 To be continued……！
 
