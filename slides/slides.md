@@ -1490,7 +1490,9 @@ $$
 
 TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环境解释执行。
 
-> 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了。
+> 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了，而不在课程内进行详细介绍。
+> 如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们。
+<!-- 参考扩展阅读内的实现方法 -->
 
 ---
 
@@ -1500,4 +1502,6 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 
 ## 扩展阅读
 
-[让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
+### 如果你想进一步了解$\lambda$-演算
+
+- [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
