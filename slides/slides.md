@@ -465,7 +465,7 @@ flowchart LR
   subgraph Part2[第二部分: 类型检查器TAT-STLC]
     direction TB
     TATRules[TAT-STLC的类型系统] --> TATFrameWork[类型检查器的实现框架]
-    TATFrameWork --> TATTypeScriptImpl[TAT-STLC的类型系统实现] --> TATEval[TAT-STLC的求值和运行]
+    TATFrameWork --> TATTypeScriptImpl[TAT-STLC的实现] --> TATEval[TAT-STLC的求值和运行]
   end
 
   Start(从这里开始!) --> Part1 --> Part2
@@ -1205,7 +1205,7 @@ layout: section
 layout: section
 ---
 
-## 完善TAT-STLC的定型规则
+## TAT-STLC的类型系统
 
 ---
 
@@ -1440,9 +1440,15 @@ $$
 
 ---
 
-## 实现TAT-STLC
+## 类型检查器的实现框架
 
-To be continued……！
+---
+
+## TAT-STLC的实现
+
+---
+
+## TAT-STLC程序的求值和运行
 
 ---
 
