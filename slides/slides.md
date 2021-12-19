@@ -1207,13 +1207,72 @@ layout: section
 
 ---
 
-## 函数类型
+## 函数的定型规则: T-Var
 
-让我们趁热打铁，来完成函数类型的定型规则。
+我们来设计函数的定型规则。
+
+1. TAT中，一个变量的类型，就是定型环境中所存储的类型。
+
+$$
+{v: T\in \Gamma \over \Gamma \vdash v: T} \tag{\text{T-Var}}
+$$
+
+我们在这里，用了集合论语言(即$v: T\in \Gamma$)来描述前提。
+
+例如，`(x: Num) => x + 1`中，就有$\Gamma = x: \mathbf{Num}$。那么有：
+
+$$
+{x: \mathbf{Num} \in \Gamma \over \Gamma \vdash x: \mathbf{Num}}
+$$
+
+---
+
+## 函数的定型规则: T-Abs
+
+2. TAT中，定义函数时，需要其参数存在于定型环境之中。只有这样才能保证参数和返回值的类型都存在，最终推出函数实例的类型。
+
+$$
+{\Gamma, x: T_1 \vdash t_2: T_2 \over \Gamma \vdash (x: T_1) \Rightarrow t_2 : ({\color{magenta}k}: T_1) \Rightarrow T_2} \tag{T-Abs}
+$$
+
+需要注意的是，函数类型中的参数名$\color{magenta}k$是任意的。这是因为：
+
+- ($\beta$-等价)在$\lambda$-演算中或是TAT中，对一个函数所约束的变量进行无冲突的统一换名，得到的新函数本质上和原来的函数相等。这也是IDE的重命名功能背后的原理。
+
+  比如，`(x: Num)=>x+1`就其计算的功能上等价于`(y: Num)=>y+1`。
+
+  因此，光看这两个函数的调用(应用)结果，是没法区分它们的。在这个意义上，它们等价。
+
+---
+
+## 函数的定型规则: T-App
+
+3. 函数应用，也需要入参类型和实际传入的参数类型匹配。
+
+$$
+{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11} 
+\over 
+\Gamma \vdash t_1(t_2) : T_{12}
+} \tag{T-App}
+$$
+
+---
+
+## 数字
 
 ---
 
 ## 字符串
+
+---
+
+## 布尔值
+
+---
+
+## 操作符的定型
+
+---
 
 ## 实现TAT-LC
 
