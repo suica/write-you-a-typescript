@@ -1260,19 +1260,119 @@ $$
 
 ---
 
-## 数字
+## 数字类型
+
+还记得我们一开始如何定义数字类型的吗？我们使用了JavaScript语法树节点的NumberLiteral来判断一个项是否是数字常量，并把所有数字常量作为`Num`类型的基本元素。
+
+那个时候，我们将规则写成
+
+$$
+{\text{IsNumberLiteral}(\bar{x}) \over x: \mathbf{Num}}
+$$
+
+<div v-click>
+
+但是，我们发现，前提部分其实用到了类型系统之外的谓词：`IsNumberLiteral`。换句话说，我们从类型系统之外引入了关于JavaScript语法的先验知识。而这种先验知识，在类型系统内是很难表示出来的！
+
+对这种情况，处于简单起见，我们将关于JavaScript语法的先验知识作为“公理”——即不言自明，无需任何前提就能得出的结论。
+
+这个改动反映在定型规则上，就是对所有的常量，将其前提去除，表示它们无需任何前提即可得到。
+
+</div>
+
+<div v-click>
+
+由此，我们有如下导出树：
+
+$$
+{\over 1: \mathbf{Num}}和 {\over 0.2: \mathbf{Num}} 还有 {\over -1e15: \mathbf{Num}}
+$$
+</div>
 
 ---
 
-## 字符串
+## 数字类型上的运算符
+
+我们先定义`+-*/`等二元运算的定型规则。因为它们十分相似，我们在描述这四个运算符的时候，令op为元变量，指代`+-*/`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Num} \quad \Gamma \vdash t_2:\mathbf{Num} \over \Gamma \vdash t_1\ \text{op}\ t_2 : \mathbf{Num}} \tag{N-BinOp}
+$$
+
+`+-`还有一元运算符的性质。令op为元变量，指代`+-`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Num} \over \Gamma \vdash \text{op}\ t_1\ : \mathbf{Num}} \tag{N-UnOp}
+$$
 
 ---
 
-## 布尔值
+## 字符串类型
+
+出于同样的考虑，我们也将字符串常量的定型规则写成公理。那么就有如下导出树：
+
+$$
+{\over \mathtt{""}: \mathbf{Str}}
+$$
+还有：
+$$
+{\over \mathtt{"abc"}: \mathbf{Str}}
+$$
+等等。
+
+对于字符串连接意义上的`+`运算，我们有：
+
+$$
+{t_1: \mathbf{Str} \quad t_2: \mathbf{Str}\over t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
+$$
 
 ---
 
-## 操作符的定型
+## 布尔类型
+
+布尔类型`Bool`，可以看成是一个只有两个元素的集合
+
+$$
+\mathbb{B}:= \{\mathtt{true}, \mathtt{false}\}
+$$
+
+同样，我们有`&&`和`||`两个常用二元布尔运算符的定型规则。令op为元变量，指代`&&`或`||`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Bool} \quad \Gamma \vdash t_2:\mathbf{Bool}
+\over
+\Gamma \vdash t_1\ \text{op} \ t_2 : \mathbf{Bool}} \tag{B-BinOp}
+$$
+
+需要注意的是，我们这个定型规则和TypeScript相比更加严格，强制要求两个操作数都是`Bool`类型的。而在TypeScript中，可以写出`1 && true`这样无类型错误的表达式。这就是为什么TAT是TypeScript的一个子集。
+
+当然，也不能忘记一元布尔运算符取非`!`。根据JavaScript中的定义，它可以将任何类型转化为布尔类型。
+
+$$
+{\Gamma \vdash t_1: T_1 \over \Gamma \vdash \text{!}\ t_1 : \mathbf{Bool}} \tag{B-Not}
+$$
+
+---
+
+## 布尔类型上的条件运算符
+
+我们还能为布尔类型上的三元条件运算符，即`?:`作出定型。
+
+$$
+{
+  \Gamma \vdash t_1:\mathbf{Bool} \quad \Gamma \vdash t_2: T \quad \Gamma \vdash t_3: T
+  \over
+  \Gamma \vdash (t_1\ ?\ t_2\ \text{:}\ t_3) : \mathbf{Bool} \tag{B-Cond}
+}
+$$
+
+可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们还没有TypeScript那样的并类型(Union Type)。
+
+---
+
+## 定型规则的使用
+
+为了理解这些定型规则的使用例，我们来看几个TAT表达式的导出树。
 
 ---
 
