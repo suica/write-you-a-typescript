@@ -464,7 +464,7 @@ flowchart LR
 
   subgraph Part2[第二部分: 类型检查器TAT-STLC]
     direction TB
-    TATRules[TAT-STLC的类型系统] --> TATFrameWork[类型检查器的实现框架]
+    TATRules[TAT-STLC的类型系统设计] --> TATFrameWork[类型检查器的实现框架]
     TATFrameWork --> TATTypeScriptImpl[TAT-STLC的实现] --> TATEval[TAT-STLC的求值和运行]
   end
 
@@ -1205,7 +1205,7 @@ layout: section
 layout: section
 ---
 
-## TAT-STLC的类型系统
+## TAT-STLC的类型系统设计
 
 ---
 
@@ -1439,12 +1439,33 @@ $$
 
 
 ---
-
-## 类型检查器的实现框架
-
+layout: section
 ---
 
 ## TAT-STLC的实现
+
+---
+
+## 类型检查器的实现框架
+
+### 部分编译流程
+
+$$
+\begin{aligned}
+& 源代码 & \\
+& \quad \Downarrow & {\cdots \small \text{分词器(Tokenizer)}} \\
+& 符号流 & \\
+& \quad \Downarrow & {\cdots \small \text{解析器(Parser)}}  \\
+& \hspace{-0.9em} 抽象语法树 & \\
+& \quad \Downarrow & {\cdots \small \text{\color{magenta}语义分析(Semantic Analysis)}} \\
+& \hspace{1.5em} \vdots &
+\end{aligned}
+$$
+
+
+---
+
+## 实现TAT-STLC
 
 ---
 
