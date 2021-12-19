@@ -1446,9 +1446,9 @@ layout: section
 
 ---
 
-## 类型检查器的实现框架
+## TAT的类型检查、转译和执行
 
-### 部分编译流程
+### 经典编译流程
 
 $$
 \begin{aligned}
@@ -1461,6 +1461,32 @@ $$
 & \hspace{1.5em} \vdots &
 \end{aligned}
 $$
+
+而类型检查(Type Checking)在经典的编译流程中，属于语义分析的一部分。
+
+---
+
+## TAT的类型检查、转译和执行（续）
+
+TAT，是附属于TypeScript的一门语言。它和TypeScript类似，同样需要在类型擦除后生成为JavaScript代码，才能进行执行。因此，它的编译流程和经典流程有些微不同。
+
+### TAT的编译流程
+
+$$
+\begin{aligned}
+& \hspace{-1em} \text{TAT源代码} & \\
+& \quad \Downarrow & {\cdots \small \text{TypeScript解析器(TypeScript Parser)}} \\
+& \hspace{-0.9em} 抽象语法树 & \\
+& \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
+& \hspace{-2.4em} 有类型信息的代码 & \\
+& \quad \Downarrow & {\cdots \small \text{类型擦除(Type Erasing)}} \\
+& \hspace{-1.5em} \text{JavaScript代码} & \\
+\end{aligned}
+$$
+
+### TAT的执行
+
+转译为JavaScript之后，在node环境或者浏览器环境解释执行。
 
 
 ---
