@@ -447,7 +447,7 @@ layout: section
 
 # 本节路线图
 
-<div class="mt-1.5rem -ml-2rem">
+<div class="mt-1.5rem -ml-3rem">
 
 ```mermaid {scale: 0.9}
 flowchart LR
@@ -462,10 +462,10 @@ flowchart LR
     NaturalDeduction --> TypingContext
   end
 
-  subgraph Part2[第二部分: 类型检查器TAT-LC]
+  subgraph Part2[第二部分: 类型检查器TAT-STLC]
     direction TB
-    TATRules[TAT-LC的类型系统] --> TATFrameWork[类型检查器的实现框架]
-    TATFrameWork --> TATTypeScriptImpl[TAT-LC的类型系统实现] --> TATEval[TAT-LC的求值和运行]
+    TATRules[TAT-STLC的类型系统设计] --> TATFrameWork[类型检查器的实现框架]
+    TATFrameWork --> TATTypeScriptImpl[TAT-STLC的实现] --> TATEval[TAT-STLC的求值和运行]
   end
 
   Start(从这里开始!) --> Part1 --> Part2
@@ -494,7 +494,7 @@ flowchart LR
 
 在这个课程的第一部分，我们会提到TAT的一些特性，局部地讨论一些TAT的定型规则。
 
-并且在第二部分，我们会正式开始介绍TAT的实现框架，和它在根据本节课程裁剪后的变体：TAT-LC的具体设计和实现。
+并且在第二部分，我们会正式开始介绍TAT的实现框架，和它在根据本节课程裁剪后的变体：TAT-STLC的具体设计和实现。
 
 ---
 layout: statement
@@ -1101,7 +1101,7 @@ layout: statement
 
 我们不是在讨论天文学。只是，在讨论某个系统的时候，我们会把这个系统中的一切事物形成的那个搜集，叫做**宇宙**(Universe)。讨论宇宙及宇宙之间的联系和转化，可以使得我们对我们所研究的东西（类型系统和编程语言）有更深刻的认识。
 
-- 字符串宇宙。可被人类区分的一切可枚举的字母表上的所有字符串，构成的宇宙；
+- 字符串宇宙。可被一切可枚举的字母表上的所有字符串构成的宇宙；
 - 形式语言宇宙。字符串宇宙中，一切可依据某种形式语言的语法规则产生的字符串构成的宇宙；这个宇宙很可能和字符串宇宙相同；
 - JavaScript程序宇宙。形式语言宇宙中，可被特定JavaScript语言规范所定义的语法解析的字符串形成的宇宙；
 - 在运行时不会报错的JavaScript程序宇宙；
@@ -1184,7 +1184,7 @@ $$
  
 ## 宇宙的层级：二阶类型宇宙和高阶类型宇宙
 
-- 二阶类型(Kind)宇宙。如果把$\to$视作是一种在类型宇宙中的函数，接受两个类型参数，返回一个新的类型，那么我们也可以给$\to$定义其元类型(Kind，没有很好的中文翻译，个人认为可以叫做元类型或者二阶类型)。
+- 二阶类型(Kind)宇宙。如果把$\to$视作是一种在类型宇宙中的函数，接受两个类型参数，返回一个新的类型，那么我们也可以给$\to$定义其二阶类型(Kind，没有很好的中文翻译，试译作二阶类型)。
 
 我们再次将类型语言作为对象语言进行扩张，引入新的记号，得到了二阶类型语言。
 
@@ -1192,21 +1192,316 @@ $$
 \to\ :: * \Rightarrow *
 $$
 
+其中，$::$是$:$的升级版，$\Rightarrow$是$\to$的升级版，一般都只用在高阶类型上面。
+
 - 三阶类型宇宙(类型的类型的类型宇宙)。构造高阶类型的这个过程可以一直持续下去……但是我们一般只走到二阶类型宇宙为止，更高阶的类型，通常会纳入二阶类型语言的框架中进行描写。
 
 
 ---
 layout: section
 ---
-## 第二部分：类型检查器TAT-LC的设计与实现
+## 第二部分：类型检查器TAT-STLC的设计与实现
+---
+layout: section
+---
 
-<div class="mt-10px">
+## TAT-STLC的类型系统设计
 
-### To be continued...!
+---
+
+## 函数的定型规则: T-Var
+
+我们来设计函数的定型规则。
+
+1. TAT中，一个变量的类型，就是定型环境中所存储的类型。
+
+$$
+{v: T\in \Gamma \over \Gamma \vdash v: T} \tag{\text{T-Var}}
+$$
+
+我们在这里，用了集合论语言(即$v: T\in \Gamma$)来描述前提。
+
+例如，`(x: Num) => x + 1`中，就有$\Gamma = x: \mathbf{Num}$。那么有：
+
+$$
+{x: \mathbf{Num} \in \Gamma \over \Gamma \vdash x: \mathbf{Num}}
+$$
+
+---
+
+## 函数的定型规则: T-Abs
+
+2. TAT中，定义函数时，需要其参数存在于定型环境之中。只有这样才能保证参数和返回值的类型都存在，最终推出函数实例的类型。
+
+$$
+{\Gamma, x: T_1 \vdash t_2: T_2 \over \Gamma \vdash (x: T_1) \Rightarrow t_2 : ({\color{magenta}k}: T_1) \Rightarrow T_2} \tag{T-Abs}
+$$
+
+需要注意的是，函数类型中的参数名$\color{magenta}k$是任意的。这是因为：
+
+- ($\beta$-等价)在$\lambda$-演算中或是TAT中，对一个函数所约束的变量进行无冲突的统一换名，得到的新函数本质上和原来的函数相等。这也是IDE的重命名功能背后的原理。
+
+  比如，`(x: Num)=>x+1`就其计算的功能上等价于`(y: Num)=>y+1`。
+
+  因此，光看这两个函数的调用(应用)结果，是没法区分它们的。在这个意义上，它们等价。
+
+---
+
+## 函数的定型规则: T-App
+
+3. 函数应用，也需要入参类型和实际传入的参数类型匹配。
+
+$$
+{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11} 
+\over 
+\Gamma \vdash t_1(t_2) : T_{12}
+} \tag{T-App}
+$$
+
+---
+
+## 数字类型
+
+还记得我们一开始如何定义数字类型的吗？我们使用了JavaScript语法树节点的NumberLiteral来判断一个项是否是数字常量，并把所有数字常量作为`Num`类型的基本元素。
+
+那个时候，我们将规则写成
+
+$$
+{\text{IsNumberLiteral}(\bar{x}) \over x: \mathbf{Num}}
+$$
+
+<div v-click>
+
+但是，我们发现，前提部分其实用到了类型系统之外的谓词：`IsNumberLiteral`。换句话说，我们从类型系统之外引入了关于JavaScript语法的先验知识。而这种先验知识，在类型系统内是很难表示出来的！
+
+对这种情况，处于简单起见，我们将关于JavaScript语法的先验知识作为“公理”——即不言自明，无需任何前提就能得出的结论。
+
+这个改动反映在定型规则上，就是对所有的常量，将其前提去除，且一切定型环境下都可以直接得到它的类型。
+
 </div>
+
+<div v-click>
+
+由此，我们有如下导出树，对一切$\Gamma$都成立：
+
+$$
+{\over \Gamma \vdash 1: \mathbf{Num}}和 {\over \Gamma \vdash 0.2: \mathbf{Num}} 还有 {\over \Gamma \vdash -1e15: \mathbf{Num}}
+$$
+</div>
+
+---
+
+## 数字类型上的运算符
+
+我们先定义`+-*/`等二元运算的定型规则。因为它们十分相似，我们在描述这四个运算符的时候，令op为元变量，指代`+-*/`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Num} \quad \Gamma \vdash t_2:\mathbf{Num} \over \Gamma \vdash t_1\ \text{op}\ t_2 : \mathbf{Num}} \tag{N-BinOp}
+$$
+
+`+-`还有一元运算符的性质。令op为元变量，指代`+-`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Num} \over \Gamma \vdash \text{op}\ t_1\ : \mathbf{Num}} \tag{N-UnOp}
+$$
+
+---
+
+## 字符串类型
+
+出于同样的考虑，我们也将字符串常量的定型规则写成公理。那么就有如下导出树：
+
+$$
+{\over \mathtt{""}: \mathbf{Str}}
+$$
+还有：
+$$
+{\over \mathtt{"abc"}: \mathbf{Str}}
+$$
+等等。
+
+对于字符串连接意义上的`+`运算，我们有：
+
+$$
+{t_1: \mathbf{Str} \quad t_2: \mathbf{Str}\over t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
+$$
+
+---
+
+## 布尔类型
+
+布尔类型`Bool`，可以看成是一个只有两个元素的集合
+
+$$
+\mathbb{B}:= \{\mathtt{true}, \mathtt{false}\}
+$$
+
+同样，我们有`&&`和`||`两个常用二元布尔运算符的定型规则。令op为元变量，指代`&&`或`||`之中的任意一个。
+
+$$
+{\Gamma \vdash t_1:\mathbf{Bool} \quad \Gamma \vdash t_2:\mathbf{Bool}
+\over
+\Gamma \vdash t_1\ \text{op} \ t_2 : \mathbf{Bool}} \tag{B-BinOp}
+$$
+
+需要注意的是，我们这个定型规则和TypeScript相比更加严格，强制要求两个操作数都是`Bool`类型的。而在TypeScript中，可以写出`1 && true`这样无类型错误的表达式。这就是为什么TAT是TypeScript的一个子集。
+
+当然，也不能忘记一元布尔运算符取非`!`。根据JavaScript中的定义，它可以将任何类型转化为布尔类型。
+
+$$
+{\Gamma \vdash t_1: T_1 \over \Gamma \vdash \text{!}\ t_1 : \mathbf{Bool}} \tag{B-Not}
+$$
+
+---
+
+## 布尔类型上的条件运算符
+
+我们还能为布尔类型上的三元条件运算符，即`?:`作出定型。
+
+$$
+{
+  \Gamma \vdash t_1:\mathbf{Bool} \quad \Gamma \vdash t_2: T \quad \Gamma \vdash t_3: T
+  \over
+  \Gamma \vdash (t_1\ ?\ t_2\ \text{:}\ t_3) : \mathbf{Bool} \tag{B-Cond}
+}
+$$
+
+可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们没有TypeScript那样的并类型(Union Type)来描写这种情况所需要的类型。
+
+---
+
+## 定型规则的使用
+
+为了更好理解这些定型规则的使用，我们来看一个比较复杂的根据TAT表达式来构造导出树的例子。
+
+请注意，为一个表达式构造导出树的过程，其实就是对这个表达式做类型检查的过程。一旦其中有一个子表达式的类型无法得到，那么这个表达式就包含类型错误，不是一个合法的TAT表达式。
+
+`(x: Num) => (y: Str) => ((!x && !y) ? 1 : 2)`
+
+为了使表达式缩短，我们在这里使得 $\Gamma = x: \mathbf{Num}, y: \mathbf{Str}$。那么就有
+
+$$
+{
+    \displaystyle
+  {
+    \displaystyle
+    {
+        \displaystyle
+      {
+        \displaystyle
+        {
+            \displaystyle
+          {
+            \displaystyle
+            x: \mathbf{Num} \in \Gamma
+            \over
+            \Gamma \vdash x: \mathbf{Num}
+          }
+        \over
+        \Gamma \vdash !x: \mathbf{Bool}
+        }
+        {
+            \displaystyle
+          {
+            \displaystyle
+            y: \mathbf{Str} \in \Gamma
+            \over
+            \Gamma \vdash y: \mathbf{Str}
+          }
+        \over
+        \Gamma \vdash !y: \mathbf{Bool}
+        }
+        \over
+        \Gamma \vdash (!x \mathtt{\&\& } !y): \mathbf{Bool}
+      }
+    \quad
+    {
+      \over
+      \Gamma \vdash 1: \mathbf{Num}
+    }
+    \quad
+    {
+      \over
+      \Gamma \vdash 2: \mathbf{Num}
+    }
+    \over
+    \Gamma \vdash
+    ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): \mathbf{Num}
+    }
+    \over
+    x: \mathbf{Num} \vdash 
+(y: \mathbf{Str}) \Rightarrow ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): (y: \mathbf{Str}) \Rightarrow \mathbf{Num}
+  }
+  \over
+  \vdash (x: \mathbf{Num}) \Rightarrow (y: \mathbf{Str}) \Rightarrow ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): (x: \mathbf{Num}) \Rightarrow (y: \mathbf{Str}) \Rightarrow \mathbf{Num}
+}
+$$
+
+
+---
+layout: section
+---
+
+## TAT-STLC的实现
+
+---
+
+## TAT的类型检查和转译
+
+### 经典编译流程
+
+$$
+\begin{aligned}
+& 源代码 & \\
+& \quad \Downarrow & {\cdots \small \text{分词器(Tokenizer)}} \\
+& 符号流 & \\
+& \quad \Downarrow & {\cdots \small \text{解析器(Parser)}}  \\
+& \hspace{-0.9em} 抽象语法树 & \\
+& \quad \Downarrow & {\cdots \small \text{\color{magenta}语义分析(Semantic Analysis)}} \\
+& \hspace{1.5em} \vdots &
+\end{aligned}
+$$
+
+而类型检查(Type Checking)在经典的编译流程中，属于语义分析的一部分。
+
+---
+
+## TAT的类型检查和转译（续）
+
+在本课程中的TAT实现里，TAT是依附于JavaScript的一门语言。它和TypeScript类似，同样需要在类型擦除后生成为JavaScript代码，才能借助JavaScript解释器进行执行。因此，它的编译流程和经典流程有些微不同。
+
+### TAT的编译流程
+
+$$
+\begin{aligned}
+& \hspace{-1em} \text{TAT源代码} & \\
+& \quad \Downarrow & {\cdots \small \text{TypeScript解析器(TypeScript Parser)}} \\
+& \hspace{-0.9em} 抽象语法树 & \\
+& \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
+& \hspace{-2.4em} 有类型信息的代码 & \\
+& \quad \Downarrow & {\cdots \small \text{类型擦除(Type Erasing)}} \\
+& \hspace{-1.5em} \text{JavaScript代码} & \\
+\end{aligned}
+$$
+
+---
+
+### TAT代码的执行
+
+TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环境解释执行。
+
+> 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了，而不在课程内进行详细介绍。
+> 如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们。
+<!-- 参考扩展阅读内的实现方法 -->
+
+---
+
+## 实现TAT-STLC
 
 ---
 
 ## 扩展阅读
 
-[让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
+### 如果你想进一步了解$\lambda$-演算
+
+- [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
