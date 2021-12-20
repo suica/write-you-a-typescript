@@ -6,7 +6,7 @@
   "scripts": {
     "slides": "cd slides && yarn dev",
     "start": "ts-node src/index.ts",
-    "test": "node src/test/www.js"
+    "test": "jest"
   },
   "author": "suicca",
   "license": "ISC",
@@ -17,9 +17,11 @@
     "typescript-parser": "^2.6.1"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.3",
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
-    "eslint": "^8.1.0"
+    "eslint": "^8.1.0",
+    "jest": "^27.4.5"
   }
 }
