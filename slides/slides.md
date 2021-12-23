@@ -1323,7 +1323,7 @@ $$
 对于字符串连接意义上的`+`运算，我们有：
 
 $$
-{t_1: \mathbf{Str} \quad t_2: \mathbf{Str}\over t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
+{\Gamma \vdash t_1: \mathbf{Str} \quad \Gamma \vdash t_2: \mathbf{Str}\over\Gamma \vdash t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
 $$
 
 ---
@@ -1475,7 +1475,7 @@ $$
 $$
 \begin{aligned}
 & \hspace{-1em} \text{TAT源代码} & \\
-& \quad \Downarrow & {\cdots \small \text{TypeScript解析器(TypeScript Parser)}} \\
+& \quad \Downarrow & {\cdots \small \text{Babel TypeScript解析器(Babel TypeScript Parser)}} \\
 & \hspace{-0.9em} 抽象语法树 & \\
 & \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
 & \hspace{-2.4em} 有类型信息的代码 & \\
@@ -1493,6 +1493,8 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 > 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了，而不在课程内进行详细介绍。
 > 如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们。
 <!-- 参考扩展阅读内的实现方法 -->
+
+转译的过程，就是类型擦除的过程。我们把TAT代码上的类型标注全部递归地擦去，就得到了可执行的JavaScript代码。
 
 ---
 
