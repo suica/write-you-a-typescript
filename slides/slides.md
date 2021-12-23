@@ -458,7 +458,7 @@ flowchart LR
     BinaryRelation[二元关系] --> TypingRelation[定型关系]
     TypingRelation --> TypingContext[定型环境和定型规则]
     TypingContext --> STLC[简单类型Lambda演算]
-    MetaLanguage[元语言和对象语言] --> NaturalDeduction[自然推演] 
+    MetaLanguage[元语言和对象语言] --> NaturalDeduction[自然推演]
     NaturalDeduction --> TypingContext
   end
 
@@ -724,7 +724,7 @@ $$
 
 - 每个推演规则，都由横线上下分割。
 
-- 在横线之上的，是使用这条规则的前提；横线之下的，是在前提满足的情况下，使用这条规则能得到的结论。 
+- 在横线之上的，是使用这条规则的前提；横线之下的，是在前提满足的情况下，使用这条规则能得到的结论。
 
 - 横线右边的，是出于便于讨论的目的，给这条规则取的名字。这条规则叫做`N-Add`。
 
@@ -899,7 +899,7 @@ $$
 一般来说，它会是形如$x: X$的类型信息形成的列表，只不过这个列表和我们在JavaScript里见到的形式有点区别，它没有方括号包裹。例如，在检查`x + y`这个表达式的时候，定型环境可以是：
 
 $$
-\Gamma = 
+\Gamma =
   x: \text{Num},
   y: \text{Str}
 $$
@@ -991,7 +991,7 @@ $$
 下面是一些$\lambda$-演算的式子，在JavaScript 中的对应的箭头函数的例子。
 
 > 提示： JavaScript中的`=>`的记号，会对右边部分绑定更紧(它不是操作符，因此很难说它是右结合的)。
-> 
+>
 > 因此`x => y => x + y`等价于`x => (y => x + y)`。
 
 <div grid="~ cols-2 gap-2">
@@ -1012,7 +1012,7 @@ x => y => x + y;
 
 </div>
 
---- 
+---
 
 ## 无类型$\lambda$-演算的问题
 
@@ -1166,7 +1166,7 @@ $$
 - 类型(Type)宇宙。为了得到用以对函数进行约束的工具，我们发明了类型。
 
   我们可以类型来为常量分类。于是，我们定义了自然数集$\N$，整数集$\Z$和实数集$\R$，还有字符串集合。字符串集合和数集不相交。
-  
+
   我们可以用函数类型$\to$来描写函数的定义域(Domain)、陪域(Codomain)，对不符合类型的函数体或者函数调用，予以拒绝。
 
   比如，通过定义$F$和加号减号的类型为
@@ -1174,14 +1174,14 @@ $$
   $$
   F: \N \to \N, \\
   +: \N \to \N \to \N, \\
-  -: \N \to \N \to \N 
+  -: \N \to \N \to \N
   $$
 
   并让减号最后的返回值出现负数时截断为0，
   来拒绝不合法的调用和计算。
 
 ---
- 
+
 ## 宇宙的层级：二阶类型宇宙和高阶类型宇宙
 
 - 二阶类型(Kind)宇宙。如果把$\to$视作是一种在类型宇宙中的函数，接受两个类型参数，返回一个新的类型，那么我们也可以给$\to$定义其二阶类型(Kind，没有很好的中文翻译，试译作二阶类型)。
@@ -1252,8 +1252,8 @@ $$
 3. 函数应用，也需要入参类型和实际传入的参数类型匹配。
 
 $$
-{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11} 
-\over 
+{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11}
+\over
 \Gamma \vdash t_1(t_2) : T_{12}
 } \tag{T-App}
 $$
@@ -1323,7 +1323,7 @@ $$
 对于字符串连接意义上的`+`运算，我们有：
 
 $$
-{t_1: \mathbf{Str} \quad t_2: \mathbf{Str}\over t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
+{\Gamma \vdash t_1: \mathbf{Str} \quad \Gamma \vdash t_2: \mathbf{Str}\over\Gamma \vdash t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
 $$
 
 ---
@@ -1429,7 +1429,7 @@ $$
     ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): \mathbf{Num}
     }
     \over
-    x: \mathbf{Num} \vdash 
+    x: \mathbf{Num} \vdash
 (y: \mathbf{Str}) \Rightarrow ((!x\ \mathtt{\&\&}\ !y)\ ?\ 1 : 2): (y: \mathbf{Str}) \Rightarrow \mathbf{Num}
   }
   \over
@@ -1442,11 +1442,11 @@ $$
 layout: section
 ---
 
-## TAT-STLC的实现
+## TAT-STLC 的实现
 
 ---
 
-## TAT的类型检查和转译
+## TAT 的类型检查和转译
 
 ### 经典编译流程
 
@@ -1466,16 +1466,16 @@ $$
 
 ---
 
-## TAT的类型检查和转译（续）
+## TAT 的类型检查和转译（续）
 
 在本课程中的TAT实现里，TAT是依附于JavaScript的一门语言。它和TypeScript类似，同样需要在类型擦除后生成为JavaScript代码，才能借助JavaScript解释器进行执行。因此，它的编译流程和经典流程有些微不同。
 
-### TAT的编译流程
+### TAT 的编译流程
 
 $$
 \begin{aligned}
 & \hspace{-1em} \text{TAT源代码} & \\
-& \quad \Downarrow & {\cdots \small \text{TypeScript解析器(TypeScript Parser)}} \\
+& \quad \Downarrow & {\cdots \small \text{Babel TypeScript解析器(Babel TypeScript Parser)}} \\
 & \hspace{-0.9em} 抽象语法树 & \\
 & \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
 & \hspace{-2.4em} 有类型信息的代码 & \\
@@ -1494,6 +1494,8 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 > 如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们。
 <!-- 参考扩展阅读内的实现方法 -->
 
+转译的过程，就是类型擦除的过程。我们把TAT代码上的类型标注全部递归地擦去，就得到了可执行的JavaScript代码。
+
 ---
 
 ## 实现TAT-STLC
@@ -1505,3 +1507,215 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 ### 如果你想进一步了解$\lambda$-演算
 
 - [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
+
+
+
+
+---
+layout: section
+---
+
+# 第三节：子类型
+
+
+
+---
+
+
+## 本章路线图
+page2
+
+
+
+
+---
+layout: section
+---
+# 3.1 什么是子类型
+
+
+
+---
+
+## 如果没有子类型
+回忆一下第二章讲过的简单类型$\lambda$演算的定型规则
+
+$$
+{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11}
+\over
+\Gamma \vdash t_1(t_2) : T_{12}
+} \tag{T-App}
+$$
+
+以下调用是否通过类型校验？   ($\lambda$r:{x: Nat}. r.x) {x=0, y=1}
+
+这里定义的一个简单类型$\lambda$演算接受一个 Record 类型，内部结构为 Nat 类型的 x。调用时传入的参数多了一个字段 y。参数类型没有完全匹配，因此不能通过校验！
+
+但实际中，存在不完全匹配也是可以安全替换参数的。
+
+如何处理？需要补充定型规则
+
+
+---
+
+## 包含关系和定型规则
+安全代换原则：如果任何预期使用类型 B 的场景都可以安全的使用类型 A，我们认为类型 A “更好”。
+套用上页的例子，{x:0, y:1} 比 {x:0} “更好”。
+
+Liskov substitution principle (LSP): 如果在使用 T 类型的值的场合，都可以替换成 S 类型的值，那么 S 就是 T 的子类
+
+$$
+{ \Gamma \vdash t: S \quad S<: T
+\over
+\Gamma \vdash t : T
+} \tag{T-Subsumption}
+$$
+
+类型 S 和类型 T 的关系如下：
+- S 是 T 的子类型
+- S 比 T 信息更丰富
+
+在面向对象的程序设计中，里氏替换原则是对子类型的特别定义。它由芭芭拉·利斯科夫（Barbara Liskov）在 1987 年在一次会议上名为“数据的抽象与层次”的演说中首先提出。
+
+---
+
+## 子类型关系
+基于安全代换的考虑，定义子类型的基本约定如下：
+
+子类型的自反性：
+$${S<:S} \tag{T-Refl} $$
+
+子类型的传递性：
+$$
+{ S <: U \quad U <: T
+\over
+S <: T
+} \tag{T-Trans}
+$$
+
+---
+
+### STLC 与结构类型系统
+- 面向对象语言一般是名义类型系统，即类型之间的子类关系是用户定义的。（对于特定类型会采用结构类型系统，如多态/泛型）
+- 在 STLC 中，我们希望实现结构类型系统。即类型之间的子类关系是系统自动推出的
+
+在 TypeScript 中类型兼容是基于结构子类型的，如下代码
+
+```typescript
+interface Named {
+    name: string;
+}
+
+class Person {
+    name: string;
+}
+
+let p: Named;
+// OK, because of structural typing
+p = new Person();
+
+```
+在使用基于名义类型的语言，比如 C# 或 Java 中，这段代码会报错，因为 Person 类没有明确说明其实现了 Named 接口。
+TypeScript 的结构性子类型是根据 JavaScript 代码的典型写法来设计的。 因为 JavaScript 里广泛地使用匿名对象，例如函数表达式和对象字面量，所以使用结构类型系统来描述这些类型比使用名义类型系统更好。
+
+
+
+---
+
+
+
+
+## 子类型与函数
+Student->Student 是 Person->Person 的子类吗？
+
+看个具体替换例子：
+
+- 假设
+  - f: Person->Person
+  - g: Student->Student
+  - s: Person
+- 则有
+  - f s 类型正确
+  - g s 类型不正确
+- g 不是 f 的子类
+
+
+---
+
+## 函数的子类型化规则
+TypeScript 支持将函数作为参数传递给其他函数，因此先看一下函数的子类型化规则
+
+$$
+{ T1 <: S1 \quad S2 <: T2
+\over
+S1 -> S2 <: T1 ->T2
+} \tag{T-Arrow}
+$$
+
+对于函数的子关系，默认考虑的是类型作为输出的情况，即为提供值而存在，也就是返回值的子关系。
+
+对于 S1 -> S2 的函数 f
+- 函数的输入（为提供容器而存在）：f 可以接受 S1 的子类 T1
+- 函数的输出（为提供值而存在）：f 返回值 S2 可以看做属于任何 S2 的父类 T2
+
+
+---
+
+## 看一段具体的代码
+
+``` typescript
+let visitAnimal = (animal: Animal): Dog => {
+  animal.age;
+  return {
+    age: 12,
+    bark() {
+    }
+  }
+}
+let visitDog = (dog: Dog): Animal => {
+  dog.age;
+  dog.bark();
+  return {
+    age: 20
+  }
+}
+// 兼容
+visitDog = visitAnimal
+// 不兼容, 会抛出类型错误
+visitAnimal = visitDog
+
+```
+
+---
+
+## 函数逆变、协变
+
+可以看出函数整体的子关系和输入类型的子关系相反，对于输入和输出有以下的子关系特征：
+- 函数参数：Animal 可变换成 Dog，父类型 -> 子类型
+- 函数返回值：Dog 可变成 Animal，子类型 -> 父类型
+
+正式的定义：
+- 逆变式：子部分和整体子类关系相反的形式称作逆变式(contravariance，如上例的参数)
+- 协变式：子部分和整体子类关系相同的形式成为协变式(covariance，如上例的返回值)
+
+在 TypeScript 中， 参数类型是双向协变的 ，也就是说既是协变又是逆变的（但并不安全）
+
+
+---
+layout: section
+---
+
+# 3.2 子类型的实现
+
+---
+
+## 定型规则
+
+
+
+---
+
+## 类型检查与代码实现
+
+
+
