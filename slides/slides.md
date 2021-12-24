@@ -1312,11 +1312,11 @@ $$
 出于同样的考虑，我们也将字符串常量的定型规则写成公理。那么就有如下导出树：
 
 $$
-{\over \mathtt{""}: \mathbf{Str}}
+{ \over \Gamma \vdash \mathtt{""}: \mathbf{Str}}
 $$
 还有：
 $$
-{\over \mathtt{"abc"}: \mathbf{Str}}
+{\over\Gamma \vdash \mathtt{"abc"}: \mathbf{Str}}
 $$
 等等。
 
@@ -1325,6 +1325,7 @@ $$
 $$
 {\Gamma \vdash t_1: \mathbf{Str} \quad \Gamma \vdash t_2: \mathbf{Str}\over\Gamma \vdash t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
 $$
+
 
 ---
 
@@ -1352,6 +1353,7 @@ $$
 {\Gamma \vdash t_1: T_1 \over \Gamma \vdash \text{!}\ t_1 : \mathbf{Bool}} \tag{B-Not}
 $$
 
+
 ---
 
 ## 布尔类型上的条件运算符
@@ -1362,11 +1364,12 @@ $$
 {
   \Gamma \vdash t_1:\mathbf{Bool} \quad \Gamma \vdash t_2: T \quad \Gamma \vdash t_3: T
   \over
-  \Gamma \vdash (t_1\ ?\ t_2\ \text{:}\ t_3) : \mathbf{Bool} \tag{B-Cond}
+  \Gamma \vdash (t_1\ ?\ t_2\ \text{:}\ t_3) : T \tag{B-Cond}
 }
 $$
 
 可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们没有TypeScript那样的并类型(Union Type)来描写这种情况所需要的类型。
+
 
 ---
 
@@ -1478,11 +1481,12 @@ $$
 & \quad \Downarrow & {\cdots \small \text{Babel TypeScript解析器(Babel TypeScript Parser)}} \\
 & \hspace{-0.9em} 抽象语法树 & \\
 & \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
-& \hspace{-2.4em} 有类型信息的代码 & \\
+& \hspace{-2.4em} 有类型信息的语法树 & \\
 & \quad \Downarrow & {\cdots \small \text{类型擦除(Type Erasing)}} \\
 & \hspace{-1.5em} \text{JavaScript代码} & \\
 \end{aligned}
 $$
+
 
 ---
 
@@ -1507,6 +1511,7 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 ### 如果你想进一步了解$\lambda$-演算
 
 - [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
+<<<<<<< Updated upstream
 
 
 
@@ -1719,3 +1724,5 @@ layout: section
 
 
 
+=======
+>>>>>>> Stashed changes
