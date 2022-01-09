@@ -1511,7 +1511,6 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 ### 如果你想进一步了解$\lambda$-演算
 
 - [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
-<<<<<<< Updated upstream
 
 
 
@@ -1724,5 +1723,3 @@ layout: section
 
 
 
-=======
->>>>>>> Stashed changes
