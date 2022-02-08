@@ -2,48 +2,35 @@ import { parseTAT } from '../../utils/tat-parser';
 import { checkerSTLC } from '../checker';
 import { TATBoolType, TATNumType, TATStrType, TATTypeEnum } from '../TATTypes';
 
+function checkAsTATSTLC(code: string) {
+    const parsed = parseTAT(code);
+    const { parsedFile, checker } = checkerSTLC(parsed);
+    return parsedFile.program.body.map((statement) => {
+        return checker.check(statement);
+    });
+}
+
 describe('TAT-STLC on simple literals and expressions', () => {
     it('should work for numeric literals', () => {
-        const parsed = parseTAT('1.0;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATNumType);
+        expect(checkAsTATSTLC(`1.0;`)).toStrictEqual([TATNumType]);
     });
     it('should work for numeric expressions', () => {
-        const parsed = parseTAT('1.0 + 2;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATNumType);
+        expect(checkAsTATSTLC('1.0 + 2;')).toStrictEqual([TATNumType]);
     });
     it('should work for boolean literals', () => {
-        const parsed = parseTAT('true;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATBoolType);
+        expect(checkAsTATSTLC(`true;`)).toStrictEqual([TATBoolType]);
     });
     it('should work for boolean expressions', () => {
-        const parsed = parseTAT('!!2 ? "1" : "2";');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATStrType);
+        expect(checkAsTATSTLC('!!2 ? "1" : "2";')).toStrictEqual([TATStrType]);
     });
     it('should work for simple comparison operators', () => {
-        const parsed = parseTAT(`1 < 2`);
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATBoolType);
+        expect(checkAsTATSTLC(`1<2`)).toStrictEqual([TATBoolType]);
     });
     it('should work for boolean operators & comparison operators', () => {
-        const parsed = parseTAT(`(1 < 2) || !(3 - 2 > 1) && !233`);
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATBoolType);
+        expect(checkAsTATSTLC(`(1 < 2) || !(3 - 2 > 1) && !233`)).toStrictEqual([TATBoolType]);
     });
     it('should work for trinary operator', () => {
-        const parsed = parseTAT('false ? 1 + 2 : 0;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATNumType);
+        expect(checkAsTATSTLC('false ? 1 + 2 : 0;')).toStrictEqual([TATNumType]);
     });
     it('should work for string literals', () => {
         const parsed = parseTAT('"test";');
@@ -52,10 +39,7 @@ describe('TAT-STLC on simple literals and expressions', () => {
         expect(checkedType).toBe(TATStrType);
     });
     it('should work for string expressions', () => {
-        const parsed = parseTAT('"test" + "test";');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATStrType);
+        expect(checkAsTATSTLC('"test" + "test";')).toStrictEqual([TATStrType]);
     });
     it.skip('should fail for trinary operator', () => {
         const parsed = parseTAT('false ? 1 + 2 : "test";');
@@ -66,16 +50,12 @@ describe('TAT-STLC on simple literals and expressions', () => {
 
 describe('TAT-STLC on simple functions', () => {
     it('should work for abstraction', () => {
-        const parsed = parseTAT('(a: Num, b:Bool): Num => a + 1;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toEqual({ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType });
+        expect(checkAsTATSTLC('(a: Num, b:Bool): Num => a + 1;')).toStrictEqual([
+            { type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType },
+        ]);
     });
     it('should work for application', () => {
-        const parsed = parseTAT('((a: Num, b:Bool): Num => a + 1)(1, true);');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
-        expect(checkedType).toBe(TATNumType);
+        expect(checkAsTATSTLC('((a: Num, b:Bool): Num => a + 1)(1, true);')).toStrictEqual([TATNumType]);
     });
 });
 
