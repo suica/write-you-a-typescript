@@ -1,6 +1,6 @@
 import { parseTAT } from '../../utils/tat-parser';
 import { checkerSTLC } from '../checker';
-import { TATBoolType, TATNumType, TATStrType } from '../TATTypes';
+import { TATBoolType, TATNumType, TATStrType, TATTypeEnum } from '../TATTypes';
 
 describe('TAT-STLC on simple literals and expressions', () => {
     it('should work for numeric literals', () => {
@@ -57,5 +57,12 @@ describe('TAT-STLC on simple functions', () => {
         const parsed = parseTAT('(a: Num, b:Bool): Num => a + 1;');
         const { parsedFile, checker } = checkerSTLC(parsed);
         const checkedType = checker.check(parsedFile.program.body[0]);
+        expect(checkedType).toEqual({ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType });
+    });
+    it('should work for application', () => {
+        const parsed = parseTAT('((a: Num, b:Bool): Num => a + 1)(1, true);');
+        const { parsedFile, checker } = checkerSTLC(parsed);
+        const checkedType = checker.check(parsedFile.program.body[0]);
+        expect(checkedType).toBe(TATNumType);
     });
 });

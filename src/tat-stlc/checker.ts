@@ -1,6 +1,6 @@
-import { assertNode, TSTypeAnnotation } from '@babel/types';
+import { Node, TSTypeAnnotation } from '@babel/types';
 import { assert } from 'console';
-import { type } from 'os';
+import { isEqual } from 'lodash';
 import { AST } from '../types/ast';
 import { isTypeEqual, NodeTypeMap, TATBoolType, TATNumType, TATStrType, TATType, TATTypeEnum } from './TATTypes';
 
@@ -24,9 +24,8 @@ class Checker {
         }
         return undefined;
     }
-    check(node: unknown, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
+    check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
         const typeMap = this.typeMap;
-        assertNode(node);
         switch (node.type) {
             case 'ExpressionStatement': {
                 const exprType = this.check(node.expression, context);
@@ -80,15 +79,29 @@ class Checker {
                 typeMap.set(node, context[node.name]);
                 break;
             }
+            case 'CallExpression': {
+                const calleeType = this.check(node.callee, context);
+                const argumentTypeList = node.arguments.map((argument) => {
+                    return this.check(argument, context);
+                });
+                if (calleeType?.type === TATTypeEnum.Fun && isEqual(calleeType.from, argumentTypeList)) {
+                    typeMap.set(node, calleeType.to);
+                } else {
+                    // TODO add diagnostics
+                }
+                break;
+            }
             case 'ArrowFunctionExpression': {
                 const params = node.params;
                 const body = node.body;
                 const newContext = { ...context };
+                const paramTypeList: TATType[] = [];
                 params.forEach((param) => {
                     if (param.type === 'Identifier' && param.typeAnnotation?.type === 'TSTypeAnnotation') {
                         const tatType = this.getTypeAnnotationAsTATType(param.typeAnnotation);
                         if (tatType) {
                             newContext[param.name] = tatType;
+                            paramTypeList.push(tatType);
                         }
                     } else {
                         throw new Error('not implemented');
@@ -102,7 +115,7 @@ class Checker {
                         // annotated return type is identical to real return type
                         typeMap.set(node, {
                             type: TATTypeEnum.Fun,
-                            from: undefined as never,
+                            from: paramTypeList,
                             to: annotatedReturnType,
                         });
                     } else {
