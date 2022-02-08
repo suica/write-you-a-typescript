@@ -1,1 +1,18 @@
+// @debug
+-1.0;
+const a: Num = -1.0;
+// @debug
 1 + 2;
+const b: Num = 1 + 2;
+// @debug
+(1 - 3) + 3 > 2 ? 1 : 0;
+const c: Num = (1 - 3) + 3 > 2 ? 1 : 0;
+// @debug
+'test';
+const d: Str = 'test';
+// @debug
+true;
+const e: Bool = true;
+// @debug
+false;
+const f: Bool = false;
