@@ -1,5 +1,5 @@
 import { Node, TSTypeAnnotation } from '@babel/types';
-import { assert } from 'console';
+import { assert } from '../utils/common';
 import { isEqual } from 'lodash';
 import { AST } from '../types/ast';
 import { isTypeEqual, NodeTypeMap, TATBoolType, TATNumType, TATStrType, TATType, TATTypeEnum } from './TATTypes';
@@ -41,12 +41,49 @@ class Checker {
                 break;
             }
             case 'BinaryExpression': {
-                this.check(node.left, context);
-                this.check(node.right, context);
-                const leftType = typeMap.get(node.left)!;
-                const rightType = typeMap.get(node.right);
-                assert(leftType === rightType);
-                typeMap.set(node, leftType);
+                const leftType = this.check(node.left, context)!;
+                const rightType = this.check(node.right, context);
+                if (
+                    node.operator === '!=' ||
+                    node.operator === '!==' ||
+                    node.operator === '==' ||
+                    node.operator === '==='
+                ) {
+                    // assert left and right are of the same type
+                    if (leftType && rightType && isTypeEqual(leftType, rightType)) {
+                        typeMap.set(node, TATBoolType);
+                    } else {
+                        // TODO add diagnostics
+                    }
+                } else if (
+                    node.operator === '<' ||
+                    node.operator === '>' ||
+                    node.operator === '<=' ||
+                    node.operator === '>='
+                ) {
+                    if (
+                        leftType &&
+                        rightType &&
+                        isTypeEqual(leftType, TATNumType) &&
+                        isTypeEqual(rightType, TATNumType)
+                    ) {
+                        typeMap.set(node, TATBoolType);
+                    } else {
+                        // TODO add diagnostics
+                    }
+                } else {
+                    // FIXME fix for + - * /
+                    if (
+                        leftType &&
+                        rightType &&
+                        isTypeEqual(leftType, rightType) &&
+                        !isTypeEqual(leftType, TATBoolType)
+                    ) {
+                        typeMap.set(node, leftType);
+                    } else {
+                        // TODO add diagnostics
+                    }
+                }
                 break;
             }
             case 'NumericLiteral': {
@@ -59,6 +96,21 @@ class Checker {
             }
             case 'StringLiteral': {
                 typeMap.set(node, TATStrType);
+                break;
+            }
+            case 'LogicalExpression': {
+                const leftType = this.check(node.left, context);
+                const rightType = this.check(node.right, context);
+                if (
+                    leftType &&
+                    rightType &&
+                    isTypeEqual(leftType, TATBoolType) &&
+                    isTypeEqual(rightType, TATBoolType)
+                ) {
+                    typeMap.set(node, TATBoolType);
+                } else {
+                    throw new Error('TODO add diagnostics');
+                }
                 break;
             }
             case 'ConditionalExpression': {
@@ -126,6 +178,38 @@ class Checker {
                     // TODO add diagnostics
                     throw new Error('no return type annotation');
                 }
+                break;
+            }
+            case 'VariableDeclaration': {
+                const newContext = { ...context };
+                if (node.declarations.length !== 1) {
+                    throw new Error('no multiple declaration');
+                }
+                node.declarations.forEach((declaration) => {
+                    if (declaration.init) {
+                        let annotatedType: TATType | undefined;
+                        const initType = this.check(declaration.init, newContext);
+                        if (
+                            declaration.id.type === 'Identifier' &&
+                            declaration.id.typeAnnotation?.type === 'TSTypeAnnotation'
+                        ) {
+                            annotatedType = this.getTypeAnnotationAsTATType(declaration.id.typeAnnotation);
+                        } else {
+                            throw new Error(`${declaration} is not an identifier`);
+                        }
+                        if (annotatedType && initType && isTypeEqual(annotatedType, initType)) {
+                            typeMap.set(node, annotatedType);
+                            if (declaration.id.type === 'Identifier') {
+                                newContext[declaration.id.name] = annotatedType;
+                            } else {
+                                // TODO add diagnostics
+                                // not supported yet
+                            }
+                        } else {
+                            // TODO add diagnostics
+                        }
+                    }
+                });
                 break;
             }
             default: {
