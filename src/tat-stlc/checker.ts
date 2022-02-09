@@ -1,7 +1,7 @@
 import { Node, TSTypeAnnotation, TSTypeLiteral } from '@babel/types';
 import { assert } from '../utils/common';
 import { isEqual } from 'lodash';
-import { AST } from '../types/ast';
+import { ParsedFile } from '../types/ast';
 import {
     isTypeEqual,
     NodeTypeMap,
@@ -298,7 +298,7 @@ class Checker {
     }
 }
 
-export function checkerSTLC(parsedFile: AST) {
+export function checkerSTLC(parsedFile: ParsedFile) {
     const body = parsedFile.program.body;
     const checker = new Checker();
     body.forEach((statement) => {
