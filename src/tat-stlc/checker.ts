@@ -21,8 +21,8 @@ function assertGetIdentifierName(node: Node): string {
     }
 }
 
-function todoAddDiagnostics() {
-    throw new Error('TODO: add diagnostics');
+function todoAddDiagnostics(msg: string = '') {
+    throw new Error(msg || 'TODO: add diagnostics');
 }
 
 class Checker {
@@ -66,7 +66,7 @@ class Checker {
         } else if (typeAnnotation.type === 'TSTypeLiteral') {
             return this.getTypeLiteralAsTATType(typeAnnotation);
         }
-        throw new Error(`not recognized type annotation`);
+        todoAddDiagnostics('not recognized type annotation')
     }
     check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
         const typeMap = this.typeMap;
@@ -153,7 +153,7 @@ class Checker {
                 ) {
                     typeMap.set(node, TATBoolType);
                 } else {
-                    throw new Error('TODO add diagnostics');
+                    todoAddDiagnostics();
                 }
                 break;
             }
@@ -263,7 +263,7 @@ class Checker {
                             paramTypeList.push(tatType);
                         }
                     } else {
-                        throw new Error('not implemented');
+                        todoAddDiagnostics('arrow function only support identifiers as its params');
                     }
                 });
                 let annotatedReturnType = undefined;
@@ -278,17 +278,15 @@ class Checker {
                             to: annotatedReturnType,
                         });
                     } else {
-                        // TODO add diagnostics
-                        throw new Error('different return type annotation and body');
+                        todoAddDiagnostics('different return type annotation and body');
                     }
                 } else {
-                    // TODO add diagnostics
-                    throw new Error('no return type annotation');
+                    todoAddDiagnostics('no return type annotation');
                 }
                 break;
             }
             default: {
-                throw new Error(`uncovered case: ${node.type}`);
+                todoAddDiagnostics(`uncovered case: ${node.type}, implement it in the type checker if you want to use this syntax`);
             }
         }
         return typeMap.get(node);
