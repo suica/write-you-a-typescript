@@ -180,38 +180,6 @@ class Checker {
                 }
                 break;
             }
-            case 'VariableDeclaration': {
-                const newContext = { ...context };
-                if (node.declarations.length !== 1) {
-                    throw new Error('no multiple declaration');
-                }
-                node.declarations.forEach((declaration) => {
-                    if (declaration.init) {
-                        let annotatedType: TATType | undefined;
-                        const initType = this.check(declaration.init, newContext);
-                        if (
-                            declaration.id.type === 'Identifier' &&
-                            declaration.id.typeAnnotation?.type === 'TSTypeAnnotation'
-                        ) {
-                            annotatedType = this.getTypeAnnotationAsTATType(declaration.id.typeAnnotation);
-                        } else {
-                            throw new Error(`${declaration} is not an identifier`);
-                        }
-                        if (annotatedType && initType && isTypeEqual(annotatedType, initType)) {
-                            typeMap.set(node, annotatedType);
-                            if (declaration.id.type === 'Identifier') {
-                                newContext[declaration.id.name] = annotatedType;
-                            } else {
-                                // TODO add diagnostics
-                                // not supported yet
-                            }
-                        } else {
-                            // TODO add diagnostics
-                        }
-                    }
-                });
-                break;
-            }
             default: {
                 throw new Error(`uncovered case: ${node.type}`);
             }

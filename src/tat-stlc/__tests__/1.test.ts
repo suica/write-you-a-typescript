@@ -71,38 +71,4 @@ describe('TAT-STLC on context & binding', () => {
         const { parsedFile, checker } = checkerSTLC(parsed);
         const checkedType = checker.check(parsedFile.program.body[0]);
     });
-    it('should work for two independent const declarations', () => {
-        const parsed = parseTAT('const a: Num = 1 + 1; const b:Bool = false;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const [firstDeclaration, secondDeclaration] = parsedFile.program.body.map((statement) => {
-            return checker.check(statement);
-        });
-        expect(firstDeclaration).toBe(TATNumType);
-        expect(secondDeclaration).toBe(TATBoolType);
-    });
-    it.skip('should work for two related const declarations', () => {
-        const parsed = parseTAT('const a: Num = 1 + 1; const b:Num = a + 2;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const [firstDeclaration, secondDeclaration] = parsedFile.program.body.map((statement) => {
-            return checker.check(statement);
-        });
-        expect(firstDeclaration).toBe(TATNumType);
-        expect(secondDeclaration).toBe(TATNumType);
-    });
-    it.skip('should work for nested const declarations', () => {
-        const parsed = parseTAT(`
-        const a: Num = 1 + 1;
-        {
-            const a: Bool = false;
-            const b: Bool = a && 2;
-        }
-        const b:Num = a + 2;
-        `);
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const [firstDeclaration, secondDeclaration] = parsedFile.program.body.map((statement) => {
-            return checker.check(statement);
-        });
-        expect(firstDeclaration).toBe(TATNumType);
-        expect(secondDeclaration).toBe(TATNumType);
-    });
 });
