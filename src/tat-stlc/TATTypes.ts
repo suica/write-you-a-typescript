@@ -5,12 +5,14 @@ export enum TATTypeEnum {
     Str,
     Bool,
     Fun,
+    Unit
 }
 
 export type TATType =
     | { type: TATTypeEnum.Num }
     | { type: TATTypeEnum.Bool }
     | { type: TATTypeEnum.Str }
+    | { type: TATTypeEnum.Unit}
     | {
           type: TATTypeEnum.Fun;
           from: TATType[];
@@ -24,5 +26,6 @@ export function isTypeEqual(type1: TATType, type2: TATType): boolean {
 export const TATBoolType: TATType = { type: TATTypeEnum.Bool };
 export const TATNumType: TATType = { type: TATTypeEnum.Num };
 export const TATStrType: TATType = { type: TATTypeEnum.Str };
+export const TATUnitType: TATType = { type: TATTypeEnum.Str };
 
 export type NodeTypeMap = WeakMap<{}, TATType | undefined>;

@@ -1,6 +1,6 @@
 import { parseTAT } from '../../utils/tat-parser';
 import { checkerSTLC } from '../checker';
-import { TATBoolType, TATNumType, TATStrType, TATTypeEnum } from '../TATTypes';
+import { TATBoolType, TATNumType, TATStrType, TATTypeEnum, TATUnitType } from '../TATTypes';
 
 function checkAsTATSTLC(code: string) {
     const parsed = parseTAT(code);
@@ -57,6 +57,20 @@ describe('TAT-STLC on simple functions', () => {
     it('should work for application', () => {
         expect(checkAsTATSTLC('((a: Num, b:Bool): Num => a + 1)(1, true);')).toStrictEqual([TATNumType]);
     });
+    it('should work for unit return type', () => {
+        expect(
+            checkAsTATSTLC(`(a: Num, b:Bool): Unit => {
+            return; 
+        }`)
+        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATUnitType }]);
+    });
+    it('should work for abstraction with block statement & return', () => {
+        expect(
+            checkAsTATSTLC(`(a: Num, b:Bool): Num => {
+            return a + 1; 
+        }`)
+        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType }]);
+    });
 });
 
 describe('TAT-STLC on context & binding', () => {
@@ -70,5 +84,15 @@ describe('TAT-STLC on context & binding', () => {
         const parsed = parseTAT('a + 1;');
         const { parsedFile, checker } = checkerSTLC(parsed);
         const checkedType = checker.check(parsedFile.program.body[0]);
+    });
+});
+
+describe('TAT-STLC with object', () => {
+    it.skip('should work for object', () => {
+        expect(
+            checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): {test: Bool} => {
+            return { test: !!a || !!b.c && b.d };
+    }`)
+        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType }]);
     });
 });

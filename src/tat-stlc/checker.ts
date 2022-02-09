@@ -2,7 +2,17 @@ import { Node, TSTypeAnnotation } from '@babel/types';
 import { assert } from '../utils/common';
 import { isEqual } from 'lodash';
 import { AST } from '../types/ast';
-import { isTypeEqual, NodeTypeMap, TATBoolType, TATNumType, TATStrType, TATType, TATTypeEnum } from './TATTypes';
+import {
+    isTypeEqual,
+    NodeTypeMap,
+    TATBoolType,
+    TATNumType,
+    TATStrType,
+    TATType,
+    TATTypeEnum,
+    TATUnitType,
+} from './TATTypes';
+import { type } from 'os';
 
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
@@ -19,6 +29,8 @@ class Checker {
                     return TATBoolType;
                 } else if (targetName === 'Str') {
                     return TATStrType;
+                } else if (targetName === 'Unit') {
+                    return TATUnitType;
                 }
             }
         }
@@ -140,6 +152,42 @@ class Checker {
                     typeMap.set(node, calleeType.to);
                 } else {
                     // TODO add diagnostics
+                }
+                break;
+            }
+            case 'ReturnStatement': {
+                if (node.argument) {
+                    const argumentType = this.check(node.argument, context);
+                    typeMap.set(node, argumentType);
+                } else {
+                    // no argument
+                    typeMap.set(node, TATUnitType);
+                }
+                break;
+            }
+            case 'BlockStatement': {
+                const returnStatements = node.body.filter((statement) => {
+                    // only support unnested return statement
+                    return statement.type === 'ReturnStatement';
+                });
+                if (returnStatements.length) {
+                    const returnStatementsTypes = returnStatements.map((stat) => {
+                        return this.check(stat, context);
+                    });
+                    const isAllReturnTypesEqual = returnStatementsTypes.every((returnType) => {
+                        return (
+                            returnType && returnStatementsTypes[0] && isTypeEqual(returnType, returnStatementsTypes[0])
+                        );
+                    });
+                    if (isAllReturnTypesEqual) {
+                        // Ok. All returned type are identical
+                        typeMap.set(node, returnStatementsTypes[0]);
+                    } else {
+                        // Not ok. Some returned type are different, hence diagnostics are needed
+                        // TODO add diagnostics
+                    }
+                } else {
+                    typeMap.set(node, TATUnitType);
                 }
                 break;
             }
