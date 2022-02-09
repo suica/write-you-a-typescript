@@ -21,6 +21,10 @@ function assertGetIdentifierName(node: Node): string {
     }
 }
 
+function todoAddDiagnostics() {
+    throw new Error('TODO: add diagnostics');
+}
+
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
@@ -158,9 +162,11 @@ class Checker {
                 assert(testType?.type === TATTypeEnum.Bool);
                 const consequentType = this.check(node.consequent, context);
                 const alternateType = this.check(node.alternate, context);
-                // TODO add diagnostics
-                assert(consequentType === alternateType);
-                typeMap.set(node, consequentType);
+                if (consequentType && alternateType && isTypeEqual(consequentType, alternateType)) {
+                    typeMap.set(node, consequentType);
+                } else {
+                    todoAddDiagnostics();
+                }
                 break;
             }
             case 'Directive': {
@@ -179,7 +185,7 @@ class Checker {
                 if (calleeType?.type === TATTypeEnum.Fun && isEqual(calleeType.from, argumentTypeList)) {
                     typeMap.set(node, calleeType.to);
                 } else {
-                    // TODO add diagnostics
+                    todoAddDiagnostics();
                 }
                 break;
             }
@@ -212,10 +218,35 @@ class Checker {
                         typeMap.set(node, returnStatementsTypes[0]);
                     } else {
                         // Not ok. Some returned type are different, hence diagnostics are needed
-                        // TODO add diagnostics
+                        todoAddDiagnostics();
                     }
                 } else {
                     typeMap.set(node, TATUnitType);
+                }
+                break;
+            }
+            case 'ObjectExpression': {
+                const mapping: Record<string, TATType> = Object.create(null);
+                node.properties.forEach((property) => {
+                    if (property.type === 'ObjectProperty') {
+                        const keyName = assertGetIdentifierName(property.key);
+                        const valueType = this.check(property.value, context);
+                        if (valueType) {
+                            mapping[keyName] = valueType;
+                        }
+                    }
+                });
+                typeMap.set(node, { type: TATTypeEnum.Obj, mapping });
+                break;
+            }
+            case 'MemberExpression': {
+                const objectType = this.check(node.object, context);
+                if (objectType?.type === TATTypeEnum.Obj) {
+                    const key = assertGetIdentifierName(node.property);
+                    const tatType = objectType.mapping[key];
+                    typeMap.set(node, tatType);
+                } else {
+                    todoAddDiagnostics();
                 }
                 break;
             }

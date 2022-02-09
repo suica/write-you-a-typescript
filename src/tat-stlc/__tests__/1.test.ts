@@ -101,11 +101,31 @@ describe('TAT-STLC with object', () => {
             },
         ]);
     });
-    it.skip('should work for object', () => {
+    it('should work for object', () => {
         expect(
             checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): {test: Bool} => {
             return { test: !!a || !!b.c && b.d };
     }`)
-        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType }]);
+        ).toEqual([
+            {
+                type: TATTypeEnum.Fun,
+                from: [
+                    TATNumType,
+                    {
+                        type: TATTypeEnum.Obj,
+                        mapping: {
+                            c: TATNumType,
+                            d: TATBoolType,
+                        },
+                    },
+                ],
+                to: {
+                    type: TATTypeEnum.Obj,
+                    mapping: {
+                        test: TATBoolType,
+                    },
+                },
+            },
+        ]);
     });
 });
