@@ -1,4 +1,4 @@
-import { Node, TSTypeAnnotation } from '@babel/types';
+import { Node, TSTypeAnnotation, TSTypeLiteral } from '@babel/types';
 import { assert } from '../utils/common';
 import { isEqual } from 'lodash';
 import { AST } from '../types/ast';
@@ -12,15 +12,41 @@ import {
     TATTypeEnum,
     TATUnitType,
 } from './TATTypes';
-import { type } from 'os';
+
+function assertGetIdentifierName(node: Node): string {
+    if (node.type === 'Identifier') {
+        return node.name;
+    } else {
+        throw new Error('assertion failed');
+    }
+}
 
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
+    getTypeLiteralAsTATType(typeLiteral: TSTypeLiteral): TATType | undefined {
+        // try to construct it as a TAT Obj Type
+        const mapping: Record<string, TATType> = Object.create(null);
+        typeLiteral.members.forEach((typeElement) => {
+            if (typeElement.type === 'TSPropertySignature') {
+                const annotation = typeElement.typeAnnotation;
+                if (annotation) {
+                    const tatType = this.getTypeAnnotationAsTATType(annotation);
+                    if (tatType) {
+                        const identifierName = assertGetIdentifierName(typeElement.key);
+                        mapping[identifierName] = tatType;
+                    }
+                }
+            } else {
+                throw new Error(`not implemented for ${typeElement.type}`);
+            }
+        });
+        return { type: TATTypeEnum.Obj, mapping };
+    }
     getTypeAnnotationAsTATType(tsTypeAnnotation: TSTypeAnnotation): TATType | undefined {
-        const typeReference = tsTypeAnnotation.typeAnnotation;
-        if (typeReference.type === 'TSTypeReference') {
-            const entityName = typeReference.typeName;
+        const typeAnnotation = tsTypeAnnotation.typeAnnotation;
+        if (typeAnnotation.type === 'TSTypeReference') {
+            const entityName = typeAnnotation.typeName;
             if (entityName.type === 'Identifier') {
                 const targetName = entityName.name;
                 if (targetName === 'Num') {
@@ -33,8 +59,10 @@ class Checker {
                     return TATUnitType;
                 }
             }
+        } else if (typeAnnotation.type === 'TSTypeLiteral') {
+            return this.getTypeLiteralAsTATType(typeAnnotation);
         }
-        return undefined;
+        throw new Error(`not recognized type annotation`);
     }
     check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
         const typeMap = this.typeMap;

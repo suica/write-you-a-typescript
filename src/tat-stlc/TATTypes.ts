@@ -1,18 +1,20 @@
 import { isEqual } from 'lodash';
 
 export enum TATTypeEnum {
-    Num,
-    Str,
-    Bool,
-    Fun,
-    Unit
+    Num = 'Num',
+    Str = 'Str',
+    Bool = 'Bool',
+    Fun = 'Fun',
+    Unit = 'Unit',
+    Obj = 'Obj',
 }
 
 export type TATType =
     | { type: TATTypeEnum.Num }
     | { type: TATTypeEnum.Bool }
     | { type: TATTypeEnum.Str }
-    | { type: TATTypeEnum.Unit}
+    | { type: TATTypeEnum.Unit }
+    | { type: TATTypeEnum.Obj; mapping: Record<string, TATType> }
     | {
           type: TATTypeEnum.Fun;
           from: TATType[];

@@ -88,6 +88,19 @@ describe('TAT-STLC on context & binding', () => {
 });
 
 describe('TAT-STLC with object', () => {
+    it('should work for simple object', () => {
+        expect(
+            checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): Num => {
+            return a + a;
+    };`)
+        ).toEqual([
+            {
+                from: [TATNumType, { type: TATTypeEnum.Obj, mapping: { c: TATNumType, d: TATBoolType } }],
+                type: TATTypeEnum.Fun,
+                to: TATNumType,
+            },
+        ]);
+    });
     it.skip('should work for object', () => {
         expect(
             checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): {test: Bool} => {
