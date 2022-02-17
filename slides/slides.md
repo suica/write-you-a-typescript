@@ -380,7 +380,7 @@ layout: statement
 ### 第五节：TAT类型检查器与TypeScript的类型编程
 
 -   类型检查器成品回顾；TypeScript 的「类型体操」以及例子；柯里霍华德同构。
--   在这一节，你将使用你自己写的类型检查器和TypeScript解决一系列有挑战性的问题，并了解这个玩具类型检查器还有什么特性可以添加。
+-   在这一节，你将使用你自己写的类型检查器和TypeScript解决一系列有挑战性的问题，并了解这个玩具类型检查器还有什么特性可以添加，和TypeScript的类型检查器的差距在哪里。
 
 ## 课程时间安排
 第一节、第二节的时间：2022年2月17日 14:00~16:00。
@@ -432,13 +432,11 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 
 - [Benjamin C. Pierce. 2002. Types and Programming Languages (1st. ed.). The MIT Press.](https://dl.acm.org/doi/book/10.5555/509043)
 
-如果你想了解更多关于类型系统的数学细节，可以参考这本书：
+如果你想了解更多关于类型系统的数学细节，可以参考这本书。
 
----
+-[Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
 
-## 延伸阅读
-
-[Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
+如果你想了解更多的PTS，可以参考这篇文章。
 
 ---
 layout: section
