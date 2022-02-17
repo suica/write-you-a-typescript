@@ -1374,7 +1374,9 @@ TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环
 
 ## 作业
 
-1. 定义对象字面量类型的定型规则。
+课程仓库：[https://github.com/suica/write-you-a-typescript](https://github.com/suica/write-you-a-typescript)
+
+1. 根据课程仓库中提供的TAT-STLC的测试用例，定义对象字面量类型的定型规则。
 2. 实现TAT-STLC的类型检查，通过所有测试用例。
 
 ---
