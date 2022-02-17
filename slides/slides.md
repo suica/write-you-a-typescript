@@ -789,13 +789,13 @@ $$
 
 ### 解法
 
-而在JavaScript当中，通过语法分析得到的AST节点恰好有NumberLiteral (数字字面量)这种语法类别(Syntax Kind)，完全符合JavaScript对`number`类型实例的定义。
-因此，我们可以将具有NumberLiteral这种类型的节点对应的项，`Num`类型的实例。
+而在JavaScript当中，通过语法分析得到的AST节点恰好有NumericLiteral (数字字面量)这种语法类别(Syntax Kind)，完全符合JavaScript对`number`类型实例的定义。
+因此，我们可以将具有NumericLiteral这种类型的节点对应的项，`Num`类型的实例。
 
-若`x`为TAT中的项，$\bar{x}$是这个项对应的语法树上的节点，$\text{IsNumberLiteral}$是parser提供的判断一个语法树节点是否为NumberLiteral的谓词，那么`x: Num`的规则如下。由此规则，我们可以得到`1: Num`，`0.2: Num`，`-1e15: Num`等等结果。
+若`x`为TAT中的项，$\bar{x}$是这个项对应的语法树上的节点，$\text{IsNumericLiteral}$是parser提供的判断一个语法树节点是否为NumericLiteral的谓词，那么`x: Num`的规则如下。由此规则，我们可以得到`1: Num`，`0.2: Num`，`-1e15: Num`等等结果。
 
 $$
-{\text{IsNumberLiteral}(\bar{x}) \over x: \mathbf{Num}}
+{\text{IsNumericLiteral}(\bar{x}) \over x: \mathbf{Num}}
 $$
 
 
@@ -1140,7 +1140,7 @@ $$
 
 来进行计算。
 
-我们发现函数不够安全。$F(-1)$或者$F(``0")$都会导致这个函数**发散**。我们需要一个工具来对函数、以及表达式进行约束。
+我们发现函数不够安全。$F(-1)$或者$F(``0")$都会导致这个函数**发散**（即，计算不出结果，不会停机）。我们需要一个工具来对函数、以及表达式进行约束。
 
 </div>
 
@@ -1247,17 +1247,17 @@ $$
 
 ## 数字类型
 
-还记得我们一开始如何定义数字类型的吗？我们使用了JavaScript语法树节点的NumberLiteral来判断一个项是否是数字常量，并把所有数字常量作为`Num`类型的基本元素。
+还记得我们一开始如何定义数字类型的吗？我们使用了JavaScript语法树节点的类型是否是NumericLiteral来判断一个项是否是数字常量，并把所有数字常量作为`Num`类型的基本元素。
 
 那个时候，我们将规则写成
 
 $$
-{\text{IsNumberLiteral}(\bar{x}) \over x: \mathbf{Num}}
+{\text{IsNumericLiteral}(\bar{x}) \over x: \mathbf{Num}}
 $$
 
 <div v-click>
 
-但是，我们发现，前提部分其实用到了类型系统之外的谓词：`IsNumberLiteral`。换句话说，我们从类型系统之外引入了关于JavaScript语法的先验知识。而这种先验知识，在类型系统内是很难表示出来的！
+但是，我们发现，前提部分其实用到了元语言（JavaScript的语法）中的谓词：`IsNumericLiteral`。换句话说，我们从类型系统之外引入了关于JavaScript语法的知识。而这种知识，在类型系统（对象语言）内是很难表示出来的。
 
 对这种情况，处于简单起见，我们将关于JavaScript语法的先验知识作为“公理”——即不言自明，无需任何前提就能得出的结论。
 
