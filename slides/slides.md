@@ -10,12 +10,18 @@ info: |
     Learn more at [Sli.dev](https://sli.dev)
 drawings:
     persist: false
-title: 类型系统入门
+title: 类型系统入门以及TypeScript中的类型系统
 ---
 
 # 类型系统入门
 
 吴登轲 高洁璇
+
+---
+
+# 课程签到问卷
+
+<img border="rounded" src="/1/类型系统-签到问卷.jpg" class="w-1/4 my-20 mx-auto">
 
 ---
 layout: section
@@ -428,14 +434,6 @@ PTS主要研究有类型$\lambda$-演算。在简单类型$\lambda$-演算(Simpl
 ## 延伸阅读
 
 [Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf)
-
----
-layout: section
----
-
-# 类型系统入门
-
-吴登轲 高洁璇
 
 ---
 layout: section
@@ -1494,34 +1492,33 @@ $$
 
 TAT源代码，经过转译为JavaScript之后，在node环境或者浏览器环境解释执行。
 
-> 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了，而不在课程内进行详细介绍。
-> 如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们。
-<!-- 参考扩展阅读内的实现方法 -->
+> 注意：在原则上，我们可以实现自己的TAT解析器和解释器。但是本课程中主要关注的是类型系统的部分，因此解析和求值的工作就全部交给现成的工具来做了，而不在课程内进行详细介绍。如果你对实现一个自己的解析器和解释器有兴趣，可以联系我们探讨更多细节。
 
 转译的过程，就是类型擦除的过程。我们把TAT代码上的类型标注全部递归地擦去，就得到了可执行的JavaScript代码。
 
 ---
 
-## 实现TAT-STLC
+## 实现TAT-STLC的类型检查
 
 ---
 
 ## 扩展阅读
 
-### 如果你想进一步了解$\lambda$-演算
+如果你想进一步了解$\lambda$-演算...
 
 - [让我们来谈谈$\lambda$演算](https://github.com/txyyss/Lambda-Calculus/releases/download/v1.0/lambda.pdf)
 
+---
 
+# 课程反馈问卷
 
+<img border="rounded" src="/1/类型系统-反馈问卷.png" class="w-1/4 my-20 mx-auto">
 
 ---
 layout: section
 ---
 
 # 第三节：子类型
-
-
 
 ---
 
