@@ -1527,7 +1527,7 @@ layout: section
 
 
 ## 本章路线图
-page2
+
 
 
 
@@ -1557,7 +1557,7 @@ $$
 
 但实际中，存在不完全匹配也是可以安全替换参数的。
 
-如何处理？需要补充定型规则
+如何处理？
 
 
 ---
@@ -1587,14 +1587,14 @@ $$
 基于安全代换的考虑，定义子类型的基本约定如下：
 
 子类型的自反性：
-$${S<:S} \tag{T-Refl} $$
+$${S<:S} \tag{S-Refl} $$
 
 子类型的传递性：
 $$
 { S <: U \quad U <: T
 \over
 S <: T
-} \tag{T-Trans}
+} \tag{S-Trans}
 $$
 
 ---
@@ -1652,8 +1652,8 @@ TypeScript 支持将函数作为参数传递给其他函数，因此先看一下
 $$
 { T1 <: S1 \quad S2 <: T2
 \over
-S1 -> S2 <: T1 ->T2
-} \tag{T-Arrow}
+S1 \Rightarrow S2 <: T1 \Rightarrow T2
+} \tag{S-Arrow}
 $$
 
 对于函数的子关系，默认考虑的是类型作为输出的情况，即为提供值而存在，也就是返回值的子关系。
@@ -1714,7 +1714,37 @@ layout: section
 ---
 
 ## 定型规则
+Record 类型的子类型关系定型规则
 
+$${S<:S} \tag{S-Refl} $$
+
+$$
+{ S <: U \quad U <: T
+\over
+S <: T
+} \tag{S-Trans}
+$$
+
+$${S<:Top} \tag{S-Top} $$
+
+$$
+{ T1 <: S1 \quad S2 <: T2
+\over
+S1 \Rightarrow S2 <: T1 \Rightarrow T2
+} \tag{S-Arrow}
+$$
+
+
+$$
+\{l_i\quad^{i∈1..n}\}⊆\{k_j\quad^{j∈1..m}\}
+\\
+\\
+{ k_j = l_i \quad implies \quad S_j <: T_i
+\over
+\{k_j:S_j\quad ^{j∈1..m}\} <: \{l_i:T_i\quad ^{i∈1..n}\}
+} \tag{S-Rcd}
+
+$$
 
 
 ---
