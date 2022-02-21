@@ -7,13 +7,3 @@ export function compileAsJS(inputCode: string) {
     const { code: generatedCode } = generate(ast);
     return generatedCode;
 }
-
-type CompilationConfig = {
-    filePath: string;
-    outputPath: string;
-    noEmit?:boolean;
-}
-
-export function compileFile(config:CompilationConfig) {
-    
-}

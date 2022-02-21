@@ -1,6 +1,6 @@
 import { traverse } from '@babel/core';
 import { parse } from '@babel/parser';
-import { AST } from '../types/ast';
+import { ParsedFile } from '../types/parsed-types';
 
 export function parseTAT(code: string) {
     return parse(code, {
@@ -8,7 +8,7 @@ export function parseTAT(code: string) {
     });
 }
 
-export function eraseTypeOnAST(ast: AST) {
+export function eraseTypeOnAST(ast: ParsedFile) {
     traverse(ast, {
         TSTypeAnnotation(path) {
             path.remove();

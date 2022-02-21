@@ -1,8 +1,8 @@
 import generate from '@babel/generator';
-import { AST } from '../types/ast';
+import { ParsedFile } from '../types/parsed-types';
 import { eraseTypeOnAST } from './tat-parser';
 
-export function generateJavaScript(ast: AST, eraseType?: boolean) {
+export function generateJavaScript(ast: ParsedFile, eraseType?: boolean) {
     if (eraseType) {
         eraseTypeOnAST(ast);
     }

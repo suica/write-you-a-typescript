@@ -1,7 +1,7 @@
 import { Node, TSTypeAnnotation, TSTypeLiteral } from '@babel/types';
 import { assert } from '../utils/common';
 import { isEqual } from 'lodash';
-import { ParsedFile } from '../types/ast';
+import { ParsedFile } from '../types/parsed-types';
 import {
     isTypeEqual,
     NodeTypeMap,
