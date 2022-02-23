@@ -1505,6 +1505,20 @@ $$
 layout: section
 ---
 
+# 类型系统入门 (下)
+
+吴登轲 高洁璇
+
+---
+
+# 课程签到问卷
+
+<img border="rounded" src="/1/类型系统-签到问卷.jpg" class="w-1/4 my-20 mx-auto">
+
+---
+layout: section
+---
+
 # 第三节：子类型
 
 ---
@@ -1512,21 +1526,15 @@ layout: section
 
 ## 本章路线图
 
-
-
-
-
 ---
 layout: section
 ---
-# 3.1 什么是子类型
-
-
+## 为何要引入子类型
 
 ---
 
 ## 如果没有子类型
-回忆一下第二章讲过的简单类型$\lambda$演算的定型规则
+第二节中，我们讲过了TAT-STLC的定型规则 T-App
 
 $$
 { \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11}
@@ -1535,45 +1543,97 @@ $$
 } \tag{T-App}
 $$
 
-以下调用是否通过类型校验？   ($\lambda$r:{x: Nat}. r.x) {x=0, y=1}
+问题来了：
+以下调用是否能够通过类型检查？
 
-这里定义的一个简单类型$\lambda$演算接受一个 Record 类型，内部结构为 Nat 类型的 x。调用时传入的参数多了一个字段 y。参数类型没有完全匹配，因此不能通过校验！
+```ts
+((x:{a: Num}): {a: Num} => x.a)({a:1, b:2});
+```
 
-但实际中，存在不完全匹配也是可以安全替换参数的。
+答案是：不行。
+明明执行这段代码不会产生运行时错误，但是TAT-STLC仍然拒绝了这种调用。
 
-如何处理？
+原因在于，我们的定型规则，要求传入参数的类型和函数的类型 **完全一致**。也就是要求$\{a: \text{Num}\}$和
 
+$$
+\{a: \text{Num}, b: \text{Num}\}，
+$$
+
+也就是 $\{a:1, b:2\}$ 的类型完全一致。
+
+但是事实上，这种严苛的要求是不必要的，因为即便是不一致，也有可能不会产生运行时错误。
+这种限制给我们写程序带来了不便，因此我们需要研究一下对象的行为，接着修改一下我们的类型系统！
+
+<!-- ## 类型和行为
+
+1. 我们为什么需要使用类型来区分不同的值？因为，这些值有 **不同** 的预期行为。
+
+> 例如，我们可以把两个数字类型的值加起来得到它们的数字和；但是我们不能把两个字符串类型的值加起来，然后预期得到它们的数字和。字符串的行为告诉我们，这只会得到一个新的字符串。字符串值和数字值的行为不同，因此我们需要类型来避免在写出非预期的行为。
+
+2. 我们为什么能够使用类型来将一些值归为一类？因为，这些值具有 **共同** 的预期行为。
+
+> 例如，在TypeScript中我们可以对一切数字值调用`.toFixed()`方法。因此，若是我们知道了一个变量是数字类型的，我们就可以调用它的`.toFixed()`方法。
+
+那么对象的行为预期，应该是什么呢？ -->
+
+---
+layout: section
+---
+
+## 初识子类型关系
 
 ---
 
-## 包含关系和定型规则
-安全代换原则：如果任何预期使用类型 B 的场景都可以安全的使用类型 A，我们认为类型 A “更好”。
-套用上页的例子，{x:0, y:1} 比 {x:0} “更好”。
+## 安全替换原则
 
-Liskov substitution principle (LSP): 如果在使用 T 类型的值的场合，都可以替换成 S 类型的值，那么 S 就是 T 的子类
+在TAT中，一个变量`x`的类型若为`{a: Num}`，你能够对它做的唯一特殊的操作，就是`x.a`。
+`x.a`这个操作预期得到一个`Num`类型的变量而不会发生运行时错误。
+因此，若在一个期望类型为`{a: Num}`的地方，传入一个要求更高的值`{a: 1, b: 2}`，也完全符合"得到一个`Num`类型而不会发生运行时错误"的预期。
+
+那么，`{a:1, b:2}`也就成为了一个合法的`{a: Num}`。
+
+我们把这种对替换的直觉，归纳成为子类型的安全替换原则。如下：
+
+> 若我们可以将任何$S$类型的值替换为$T$类型的值而安全使用，那么我们称$S$ 是 $T$的子类型，记做$S <: T$。
+
+这里说的安全使用，可以理解成不产生运行时错误。
+
+这里用的子类型关系记号`<:`，其实也是在暗示这种关系是一种特殊的"大小关系"（用数学一点的说法来说，是一种序关系）。
+你可以将它类比为集合的$\subseteq$关系，或是数字的$\leq$关系。
+
+---
+
+## 形式化子类型关系
+
+我们在TAT的类型系统中，引入子类型定型规则：
 
 $$
 { \Gamma \vdash t: S \quad S<: T
 \over
 \Gamma \vdash t : T
-} \tag{T-Subsumption}
+} \tag{T-Sub}
 $$
 
-类型 S 和类型 T 的关系如下：
-- S 是 T 的子类型
-- S 比 T 信息更丰富
+这个规则的意思是说，若$S$是$T$的子类型，那么$S$类型的项也是$T$类型的项。
 
-在面向对象的程序设计中，里氏替换原则是对子类型的特别定义。它由芭芭拉·利斯科夫（Barbara Liskov）在 1987 年在一次会议上名为“数据的抽象与层次”的演说中首先提出。
+类型 $S$ 和类型 $T$ 的关系如下：
+- $S$ 是 $T$ 的子类型。
+- $S$ 比 $T$ 信息更丰富、要求更高。
+
+例如，直觉上来看，类型$\{a:\text{Num}, b: \text{Num}\}$ 比类型 $\{a:\text{Num}\}$ 更严格、实例数量更少、要求更高。
+
+若将类型看成一个集合，类型$\{a:\text{Num}, b: \text{Num}\}$ 是类型 $\{a:\text{Num}\}$ 的真子集。前者的所有元素都是后者的元素。
 
 ---
 
 ## 子类型关系
-基于安全代换的考虑，定义子类型的基本约定如下：
+基于安全替换原则，我们可以形式化定义子类型关系的一些代数性质：
 
-子类型的自反性：
+子类型的自反性。即，类型$S$是$S$自己的子类型。
 $${S<:S} \tag{S-Refl} $$
 
-子类型的传递性：
+子类型的传递性。即，若$S<:U$，且$U<:T$，就有$S<:T$。
+
 $$
 { S <: U \quad U <: T
 \over
@@ -1583,75 +1643,147 @@ $$
 
 ---
 
-### STLC 与结构类型系统
-- 面向对象语言一般是名义类型系统，即类型之间的子类关系是用户定义的。（对于特定类型会采用结构类型系统，如多态/泛型）
-- 在 STLC 中，我们希望实现结构类型系统。即类型之间的子类关系是系统自动推出的
+## TypeScript的结构类型系统
 
-在 TypeScript 中类型兼容是基于结构子类型的，如下代码
+常见的面向对象语言，如Java、C#，使用的是名义类型系统，即类型之间的子类关系是用户使用继承显式定义的。
+但是在TypeScript中，子类型关系却是根据对象的结构来定义的。
+
+<!-- 在 TAT 中，我们也希望实现结构类型系统。即类型之间的子类关系是系统自动推出的 -->
+
+在 TypeScript 中的类型系统，是基于结构子类型的，如下。
 
 ```typescript
 interface Named {
     name: string;
 }
-
 class Person {
     name: string;
 }
-
 let p: Named;
-// OK, because of structural typing
+// 不会有类型错误，因为使用了结构类型系统
 p = new Person();
-
 ```
 在使用基于名义类型的语言，比如 C# 或 Java 中，这段代码会报错，因为 Person 类没有明确说明其实现了 Named 接口。
-TypeScript 的结构性子类型是根据 JavaScript 代码的典型写法来设计的。 因为 JavaScript 里广泛地使用匿名对象，例如函数表达式和对象字面量，所以使用结构类型系统来描述这些类型比使用名义类型系统更好。
-
-
+TypeScript 的结构性子类型是根据 JavaScript 代码的典型写法来设计的。因为 JavaScript 里广泛地使用函数表达式和对象字面量，所以使用结构类型系统来描述这些类型比使用名义类型系统更符合JavaScript开发者的直觉。这个设计决策使得TypeScript更容易为JavaScript开发者所接受。
 
 ---
 
+## 顶类型和底类型
 
+在TypeScript中，有`unknown`和`never`两个很特殊的类型：
 
+- 对一切类型$S$，都有$S<:$`unknown`。`unknown`叫做顶类型。
+- 对一切类型$S$，都有`never`$<:S$。`never`叫做底类型。
 
-## 子类型与函数
-Student->Student 是 Person->Person 的子类吗？
+若我们使用一个有向图来表示TypeScript中的这种子类型关系，就有：
 
-看个具体替换例子：
+<div class="ml-15vw">
 
-- 假设
-  - f: Person->Person
-  - g: Student->Student
-  - s: Person
+```mermaid {scale: 0.8}
+flowchart TB
+  unknown --> string --> never
+  unknown --> number --> never
+  unknown --> object --> never
+  unknown --> boolean --> never
+  unknown --> others --> never
+
+```
+
+</div>
+
+之所以将`unknown`叫做顶类型，把`never`叫做底类型，是因为：
+它们在子类型关系中分别居于所有类型的顶端和底端。
+
+---
+
+## TypeScript函数的子类型
+
+考虑两个TypeScript函数`f: Student => Student`和`g: Person => Person`。
+
+```ts {monaco}
+interface Person { name: string; }
+interface Student extends Person { studentId:number; }
+function invokePerson(k: (x:Person) => Person){ 
+    k({name:"test"}).name; 
+}
+function invokeStudent(k: (x:Student) => Student){
+    k({name:"test", studentId:1}).studentId.toString(); 
+}
+const f = (x: Student): Student =>{
+    console.log(x.studentId.toString());
+    return x;
+};
+const g = (x: Person): Person =>{
+    console.log(x.name);
+    return x;
+};
+invokePerson(f);  // 类型错误
+invokePerson(g);
+invokeStudent(f);
+invokeStudent(g); // 类型错误
+```
+
+结论：根据安全替换原则，`f`和`g`不能相互替换，没有任何子类型关系。我们称之为不变 (Invariant)。
+
+<!-- - 问：若`Student <: Person`且没有`Person <: Student`，那么`f`和`g`的子类型关系是什么？
+
+思路：我们检视现有的工具，只有安全替换原则能够为我们决定两个类型之间的子类型关系。
+
+解答：方便起见，令`s: Student`。
+首先，我们检查是不是有`f<:g`。若有`f<:g`，那么就会有`f(s): Student`且`g(s): Person`。
+`g(x): Person`，但`f(x)` 类型错误，因为没有`Person <: Student`。
+
 - 则有
   - f s 类型正确
   - g s 类型不正确
-- g 不是 f 的子类
-
+- g 不是 f 的子类 -->
 
 ---
 
-## 函数的子类型化规则
-TypeScript 支持将函数作为参数传递给其他函数，因此先看一下函数的子类型化规则
+## 函数之间产生子类型关系的条件
+
+令`f: (x: T1) => T2`， `g: (x: S1) => S2`，不妨令`g`是`f`的子类型，且`x: T1`。
+
+我们接下来分析此时`T1, T2, S1, S2`需要满足什么必要条件。我们从函数参数和返回值两个角度来分析。
+
+- 函数参数。
+
+`g`是`f`的子类型，所以，`g`应当能够安全替换所有`f`的使用处。对于`x: T1`时的任何取值，计算`f(x)`不会出错，那计算`g(x)`也不应该出错。
+
+而`g`的参数类型又是`S1`，那么就知道，`T1`类型需要可以出现在任何`S1`出现的位置。
+
+这等价于需有`T1<:S1`这个条件。
+
+- 返回值。
+
+`g`是`f`的子类型，所以`g`应当能够安全替换所有`f`的使用处。
+
+也就是如`f(x): T2`的使用处，都能被`g(x): S2`安全替换。这就是`T2`类型都需要能被`S2`类型安全替换。
+
+这等价于需有`S2<:T2`这个条件。
+
+---
+
+## 函数的子类型规则
+
+根据我们刚才的推导，我们得到了函数之间产生子类型关系的必要条件。
+我们可以验证发现，这个必要条件同时也是充分条件。
+
+那么就可以得出完整的函数的子类型规则：
 
 $$
-{ T1 <: S1 \quad S2 <: T2
+{ T_1 <: S_1 \quad S_2 <: T_2
 \over
-S1 \Rightarrow S2 <: T1 \Rightarrow T2
+S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
 } \tag{S-Arrow}
 $$
 
-对于函数的子关系，默认考虑的是类型作为输出的情况，即为提供值而存在，也就是返回值的子关系。
+若是理解了上面这个式子，就理解了函数的子类型关系。 
 
-对于 S1 -> S2 的函数 f
-- 函数的输入（为提供容器而存在）：f 可以接受 S1 的子类 T1
-- 函数的输出（为提供值而存在）：f 返回值 S2 可以看做属于任何 S2 的父类 T2
-
-
----
-
+<!-- 
 ## 看一段具体的代码
 
-``` typescript
+```ts {monaco}
 let visitAnimal = (animal: Animal): Dog => {
   animal.age;
   return {
@@ -1672,22 +1804,97 @@ visitDog = visitAnimal
 // 不兼容, 会抛出类型错误
 visitAnimal = visitDog
 
-```
+``` -->
 
 ---
 
-## 函数逆变、协变
+## 类型构造器
 
-可以看出函数整体的子关系和输入类型的子关系相反，对于输入和输出有以下的子关系特征：
-- 函数参数：Animal 可变换成 Dog，父类型 -> 子类型
-- 函数返回值：Dog 可变成 Animal，子类型 -> 父类型
+函数类型，其实是一种 **类型构造器**。
 
-正式的定义：
-- 逆变式：子部分和整体子类关系相反的形式称作逆变式(contravariance，如上例的参数)
-- 协变式：子部分和整体子类关系相同的形式成为协变式(covariance，如上例的返回值)
+这个说法可能有点陌生，但是大家应该都知道TypeScript`Array`这个类型吧。
 
-在 TypeScript 中， 参数类型是双向协变的 ，也就是说既是协变又是逆变的（但并不安全）
+你不能通过`const a: Array = []`来使用`Array`，因为你还必须给`Array`传上一个 **类型参数**，比如
 
+```ts
+const a: Array<number> = [];
+```
+
+这种接受若干类型，吐出另外一个类型的 **类型**，就叫做类型构造器(Type Constructor)，也叫做类型算子(Type Operator)。
+
+函数类型，其实也是一个类型构造器。它接受两个类型参数：入参的类型，函数返回值的类型，吐出一个函数类型。之所以我们察觉不到，是因为函数类型的标注用了箭头来当语法糖，例如，`(x:number)=>string`。
+
+其实完全可以把函数类型的形式做得和`Array`一样，比如用`Func<number,string>`来表示`(x:number)=>string`。
+
+你可以把类型构造器，看成类型版本的函数。它接受类型返回类型，本身也是类型；正如函数接受数值返回数值，本身也是数值。只是，它们所在的层次不同，前者在类型的世界里，后者在项的世界里。
+
+---
+
+## 函数类型构造器的逆变、协变
+
+对于每一个类型构造器，我们都需要定义其子类型规则。 一般来说，我们会根据这个类型构造器在语言中的语义来确定。
+
+比如，我们刚刚就确定了函数类型的子类型规则：
+
+$$
+{ T_1 <: S_1 \quad S_2 <: T_2
+\over
+S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
+} \tag{S-Arrow}
+$$
+
+我们说函数类型对参数是逆变(Contravariant)的——它反转了子类型关系的方向，对返回值是协变(Covariant)的——它维持了子类型关系的方向。
+
+例如在TypeScript中，有：
+
+```ts
+number=>unknown <: 1 => unknown // 参数逆变
+number=>string <: 1 => unknown // 参数逆变+返回值协变
+number=>string <: number => unknown // 返回值协变
+```
+
+注：若无特别指出，关于TypeScript的结论都是开启`--strictFunctionTypes`开关的结果。若不开启此开关，函数是双变的。
+
+---
+
+## 函数类型构造器的双变
+
+所谓双变(Bivariant)，就是既逆变，也协变。试看如下代码：
+
+```ts {monaco}
+declare let f1: (x: {}) => void;
+declare let f2: (x: {dog:true}) => void;
+declare let f3: (x: {cat:true}) => void;
+f1 = f2; // Error with --strictFunctionTypes
+f2 = f1; // Ok
+f2 = f3; // Error
+```
+
+若不开启`--strictFunctionTypes`，TypeScript函数的参数位置是双变的。
+
+---
+
+## 数组类型构造器的协变和不变
+
+我们考察了TypeScript中的函数类型构造器，再来考察一下TypeScript对`Array`这个类型构造器的设计。
+
+`Array`是协变的，因为有：
+```ts
+Array<number> <: Array<unknown>
+```
+
+但是，TypeScript采用的这个设计是不安全的，如下代码所示， `c`这个变量，推导出的类型是`number`。但是运行时的值是个`string`。
+
+```ts {monaco}
+const a: Array<number> = [];
+const b: Array<unknown> = a;
+b.push("haha string!");
+const c = a[0]; // 这里实际获得了一个string类型的值
+```
+
+因此，对于可变数组来说，协变是不安全的，应当使用不变(Invariant)。
+
+不变是指，`Array<S>`和`Array<T>`之间若`S`和`T`不同，则没有子类型关系，不能互相替代。但是这会使得数组使用起来不够方便，因此TypeScript也作出了妥协。 不可变数组`ReadonlyArray`的协变则是安全的。
 
 ---
 layout: section
