@@ -1642,6 +1642,12 @@ S <: T
 $$
 
 ---
+layout: section
+---
+
+## TypeScript中的子类型
+
+---
 
 ## TypeScript的结构类型系统
 
@@ -1696,50 +1702,6 @@ flowchart TB
 
 ---
 
-## TypeScript函数的子类型
-
-考虑两个TypeScript函数`f: Student => Student`和`g: Person => Person`。
-
-```ts {monaco}
-interface Person { name: string; }
-interface Student extends Person { studentId:number; }
-function invokePerson(k: (x:Person) => Person){ 
-    k({name:"test"}).name; 
-}
-function invokeStudent(k: (x:Student) => Student){
-    k({name:"test", studentId:1}).studentId.toString(); 
-}
-const f = (x: Student): Student =>{
-    console.log(x.studentId.toString());
-    return x;
-};
-const g = (x: Person): Person =>{
-    console.log(x.name);
-    return x;
-};
-invokePerson(f);  // 类型错误
-invokePerson(g);
-invokeStudent(f);
-invokeStudent(g); // 类型错误
-```
-
-结论：根据安全替换原则，`f`和`g`不能相互替换，没有任何子类型关系。我们称之为不变 (Invariant)。
-
-<!-- - 问：若`Student <: Person`且没有`Person <: Student`，那么`f`和`g`的子类型关系是什么？
-
-思路：我们检视现有的工具，只有安全替换原则能够为我们决定两个类型之间的子类型关系。
-
-解答：方便起见，令`s: Student`。
-首先，我们检查是不是有`f<:g`。若有`f<:g`，那么就会有`f(s): Student`且`g(s): Person`。
-`g(x): Person`，但`f(x)` 类型错误，因为没有`Person <: Student`。
-
-- 则有
-  - f s 类型正确
-  - g s 类型不正确
-- g 不是 f 的子类 -->
-
----
-
 ## 函数之间产生子类型关系的条件
 
 令`f: (x: T1) => T2`， `g: (x: S1) => S2`，不妨令`g`是`f`的子类型，且`x: T1`。
@@ -1779,34 +1741,6 @@ S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
 $$
 
 若是理解了上面这个式子，就理解了函数的子类型关系。 
-
-<!-- 
-## 看一段具体的代码
-
-```ts {monaco}
-let visitAnimal = (animal: Animal): Dog => {
-  animal.age;
-  return {
-    age: 12,
-    bark() {
-    }
-  }
-}
-let visitDog = (dog: Dog): Animal => {
-  dog.age;
-  dog.bark();
-  return {
-    age: 20
-  }
-}
-// 兼容
-visitDog = visitAnimal
-// 不兼容, 会抛出类型错误
-visitAnimal = visitDog
-
-``` -->
-
----
 
 ## 类型构造器
 
