@@ -8,10 +8,12 @@ import {
     TATBoolType,
     TATNumType,
     TATStrType,
+    TATTopType,
     TATType,
     TATTypeEnum,
     TATUnitType,
 } from './TATTypes';
+import _ from 'lodash';
 
 function assertGetIdentifierName(node: Node): string {
     if (node.type === 'Identifier') {
@@ -22,7 +24,7 @@ function assertGetIdentifierName(node: Node): string {
 }
 
 function todoAddDiagnostics(msg: string = '') {
-    throw new Error(msg || 'TODO: add diagnostics');
+    // throw new Error(msg || 'TODO: add diagnostics');
 }
 
 class Checker {
@@ -61,18 +63,22 @@ class Checker {
                     return TATStrType;
                 } else if (targetName === 'Unit') {
                     return TATUnitType;
+                } else if (targetName === 'Top') {
+                    return TATTopType;
                 }
             }
         } else if (typeAnnotation.type === 'TSTypeLiteral') {
             return this.getTypeLiteralAsTATType(typeAnnotation);
         }
-        todoAddDiagnostics('not recognized type annotation')
+        todoAddDiagnostics('not recognized type annotation');
     }
     check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
         const typeMap = this.typeMap;
         switch (node.type) {
             default: {
-                todoAddDiagnostics(`uncovered case: ${node.type}, implement it in the type checker if you want to use this syntax`);
+                todoAddDiagnostics(
+                    `uncovered case: ${node.type}, implement it in the type checker if you want to use this syntax`
+                );
             }
         }
         return typeMap.get(node);
