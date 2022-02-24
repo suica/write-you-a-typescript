@@ -1513,7 +1513,7 @@ layout: section
 
 # 课程签到问卷
 
-<img border="rounded" src="/5/类型系统（下）签到二维码.png" class="w-1/4 my-20 mx-auto">
+<img border="rounded" src="/5/类型系统（下）签到二维码.jpg" class="w-1/4 my-20 mx-auto">
 
 ---
 layout: section
