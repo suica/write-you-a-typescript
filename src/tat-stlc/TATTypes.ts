@@ -7,9 +7,11 @@ export enum TATTypeEnum {
     Fun = 'Fun',
     Unit = 'Unit',
     Obj = 'Obj',
+    Top = 'Top',
 }
 
 export type TATType =
+    | { type: TATTypeEnum.Top }
     | { type: TATTypeEnum.Num }
     | { type: TATTypeEnum.Bool }
     | { type: TATTypeEnum.Str }
@@ -29,5 +31,6 @@ export const TATBoolType: TATType = { type: TATTypeEnum.Bool };
 export const TATNumType: TATType = { type: TATTypeEnum.Num };
 export const TATStrType: TATType = { type: TATTypeEnum.Str };
 export const TATUnitType: TATType = { type: TATTypeEnum.Str };
+export const TATTopType: TATType = { type: TATTypeEnum.Top };
 
 export type NodeTypeMap = WeakMap<{}, TATType | undefined>;

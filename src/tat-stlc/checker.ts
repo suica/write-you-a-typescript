@@ -8,10 +8,12 @@ import {
     TATBoolType,
     TATNumType,
     TATStrType,
+    TATTopType,
     TATType,
     TATTypeEnum,
     TATUnitType,
 } from './TATTypes';
+import _ from 'lodash';
 
 function assertGetIdentifierName(node: Node): string {
     if (node.type === 'Identifier') {
@@ -22,7 +24,7 @@ function assertGetIdentifierName(node: Node): string {
 }
 
 function todoAddDiagnostics(msg: string = '') {
-    throw new Error(msg || 'TODO: add diagnostics');
+    // throw new Error(msg || 'TODO: add diagnostics');
 }
 
 class Checker {
@@ -61,12 +63,14 @@ class Checker {
                     return TATStrType;
                 } else if (targetName === 'Unit') {
                     return TATUnitType;
+                } else if (targetName === 'Top') {
+                    return TATTopType;
                 }
             }
         } else if (typeAnnotation.type === 'TSTypeLiteral') {
             return this.getTypeLiteralAsTATType(typeAnnotation);
         }
-        todoAddDiagnostics('not recognized type annotation')
+        todoAddDiagnostics('not recognized type annotation');
     }
     check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
         const typeMap = this.typeMap;
@@ -182,7 +186,52 @@ class Checker {
                 const argumentTypeList = node.arguments.map((argument) => {
                     return this.check(argument, context);
                 });
-                if (calleeType?.type === TATTypeEnum.Fun && isEqual(calleeType.from, argumentTypeList)) {
+
+                const isNotNil = <T>(x: T): x is NonNullable<T> => {
+                    return !(x == null);
+                };
+
+                const isListSubtypeOf = (s: (TATType | undefined)[], t: (TATType | undefined)[]) => {
+                    const nonNilS = s.filter(isNotNil);
+                    const nonNilT = t.filter(isNotNil);
+                    if (nonNilT.length !== t.length || nonNilS.length !== s.length) {
+                        return false;
+                    }
+                    if (nonNilS.length === t.length) {
+                        return nonNilS.every((typ, index) => {
+                            return isSubtypeOf(typ, nonNilT[index]);
+                        });
+                    }
+                    return false;
+                };
+                const isSubtypeOf = (s: TATType, t: TATType): boolean => {
+                    // 判断一下s是否是t的子类型
+                    if (t.type === TATTypeEnum.Top) {
+                        return true;
+                    } else if (s.type === TATTypeEnum.Fun && t.type === TATTypeEnum.Fun) {
+                        // 是函数！
+                        const s1 = s.from;
+                        const s2 = s.to;
+                        const t1 = t.from;
+                        const t2 = t.to;
+                        return isListSubtypeOf(t1, s1) && isSubtypeOf(s2, t2);
+                    } else if (t.type === TATTypeEnum.Obj && s.type === TATTypeEnum.Obj) {
+                        return Object.keys(t.mapping).every((key) => {
+                            if (s.mapping[key]) {
+                                return isSubtypeOf(s.mapping[key], t.mapping[key]);
+                            }
+                            return false;
+                        });
+                    }
+                    return isTypeEqual(s, t);
+                };
+
+                // console.log(argumentTypeList,calleeType.from);
+
+                // console.log(calleeType.from);
+
+                if (calleeType?.type === TATTypeEnum.Fun && isListSubtypeOf(argumentTypeList, calleeType.from)) {
+                    // console.log(argumentTypeList,calleeType.from);
                     typeMap.set(node, calleeType.to);
                 } else {
                     todoAddDiagnostics();
@@ -286,7 +335,9 @@ class Checker {
                 break;
             }
             default: {
-                todoAddDiagnostics(`uncovered case: ${node.type}, implement it in the type checker if you want to use this syntax`);
+                todoAddDiagnostics(
+                    `uncovered case: ${node.type}, implement it in the type checker if you want to use this syntax`
+                );
             }
         }
         return typeMap.get(node);
