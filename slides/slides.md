@@ -1926,8 +1926,6 @@ $$
 ## 作业
 
 1. 实现TAT-Sub，通过所有的测试用例。
-2. (可选)根据TypeScript的设计，确定Array类型的定型规则，写出测试用例，并实现。
-
 
 ---
 layout: section
@@ -1940,9 +1938,13 @@ layout: section
 
 - 第一部分：多态的基础知识
   - 有哪些多态
-  - 多态和全称类型
+    - 子类型多态
+    - 参数多态
+    - 特设多态
+  - 将参数多态引入类型系统
+    - 多态性$\lambda$-演算(System F)
+    - 全称类型
 - 第二部分：TAT-Sub-F的实现
-  - TAT-Sub-F的定型规则
   - TAT-Sub-F的编码实现
 
 ---
@@ -2041,8 +2043,209 @@ add(1,1);
 layout: section
 ---
 
-## 多态和全称类型
+## 将多态引入类型系统
 
 ---
 
-## 多态背后的理论
+## 目标类型系统: TAT-Sub-F
+
+我们刚刚提到了三种多态：子类型多态、参数多态和特设多态。
+
+我们其实已经在TAT-Sub中实现了子类型多态，而特设多态没有特别大的理论意义，因此我们会将参数多态引入TAT-Sub的类型系统，得到一个新的类型检查器: TAT-Sub-F。
+
+接下来，我们看看为了引入参数多态，我们需要做哪些改动。先从观察TypeScript的行为出发。
+
+---
+
+## 类型变量
+
+首先，观察TypeScript的泛型函数的形式，我们发现它需要填写泛型参数，如下：
+
+```ts {monaco}
+function printEach<T>(list:T[]){
+  for(const item of list){
+    console.log(item);
+  }
+}
+```
+
+其中的`T`就是泛型参数。也叫做类型变量，因为这个 **变量的取值是类型系统中的各种类型**；这如同普通的变量的取值是编程语言层面的各种值。
+
+`< >`记号将泛型参数包裹起来，用以在语法上标志其中的内容是类型变量。
+
+---
+
+## 类型变量（续）
+
+泛型参数，会在函数被调用的时候，被一个实际的类型替换，之后再进行类型检查。
+
+这是说，如果进行
+```ts
+printEach<number>([1,2,3]);
+```
+这样的调用，相当于就是对
+```ts {monaco}
+function printEach(list:number[]){
+  for(const item of list){
+    console.log(item);
+  }
+}
+printEach([1,2,3]);
+```
+
+这样的TypeScript代码做类型检查。注意，其中的类型变量`T`被一个实际的类型`number`替换了。
+
+因此，我们现在的主要工作，就是在TAT-Sub的类型系统中引入类型变量。
+
+---
+
+## 多态性$\lambda$-演算(System F)
+
+通过在TAT-Sub中引入类型变量，我们就能得到和多态性$\lambda$-演算(Polymorphic lambda-calculus)相同的参数多态能力。
+多态性$\lambda$-演算，也有另外一个来自证明论的名字：System F。这也是TAT-Sub-F中F的来源。
+
+具体来说，我们在原本的T-Abs(创建函数)和T-App(调用函数)规则之外，加入两条新规则T-TAbs(创建泛型函数)和T-TApp(调用泛型函数)：
+
+$$
+{\Gamma, X \vdash t_2: T_2 \over \Gamma \vdash\quad \langle X\rangle(x: T_1):T_2 \Rightarrow t_2 : \forall X.\ T_1 \Rightarrow T_2} \tag{T-TAbs}
+$$
+
+其中，带有泛型参数的函数的类型，我们记成$\forall X.\ T_1 \Rightarrow T_2$，其中$X$可以是任意类型变量。
+
+$$
+{ \Gamma \vdash t_1:\forall K. T_{11} \Rightarrow T_{12}
+\over
+\Gamma \vdash\quad t_1\langle X\rangle : [K\mapsto X] T_{11}\Rightarrow [K\mapsto X] T_{12}
+} \tag{T-TApp}
+$$
+
+<!-- $$
+{ \Gamma \vdash t_1:\forall K. T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: [K\mapsto X] T_{11}
+\over
+\Gamma \vdash\quad t_1\langle X\rangle(t_2) : [K\mapsto X] T_{12}
+} \tag{T-TApp}
+$$ -->
+
+其中，$[K\mapsto X] T_{11}$表示将$T_{11}$中的类型变量$K$(如果有)替换为$X$。若$X$是$\text{Num}$，$T_{11}$是$\{a: K\}$，那么这个替换的结果就是一个新的类型$\{a: \text{Num}\}$。
+
+这两条规则，和TAT-Sub的规则并不冲突。
+
+---
+
+## 全称类型和柯里霍华德同构
+
+大家可能有这样的疑惑，为什么需要将多态的函数类型记成$\forall X. T_1\Rightarrow T_2$的样子呢？
+
+它的原因是，类型系统的推理规则，其实本质上和一个逻辑上的公理系统的推理规则是一样的。
+
+我们可以把一个命题，例如$A\to B$看成是一个类型$A\Rightarrow B$。
+
+他们具有类似的推理规则，即分离规则(有$A$和$A\to B$,则有$B$)和函数应用规则(有$A$类型的实例和$A\Rightarrow B$ 类型的函数, 则可以通过调用函数得到$B$类型的实例)。
+
+类型和命题可以一一对应，因此他们是同构的，这种同构叫做柯里霍华德同构(Curry-Howard Isomorphism)。
+
+逻辑学上的二阶直觉主义逻辑中的$\forall$量词，正和多态的类型同构。
+
+因此，带有类型参数的函数类型，也叫做全称类型。
+
+---
+layout: section
+---
+
+## TAT-Sub-F的实现
+
+Live coding!
+
+---
+
+## 作业
+
+1. 实现TAT-Sub-F，通过所有测试用例。
+
+---
+layout: section
+---
+
+## 第五节：TAT类型检查器与TypeScript的类型编程
+
+---
+
+## 本节路线图
+
+- 回顾TAT类型检查器:TAT-Sub-F
+  - 能力模型: Lambda Cube
+  - 和TypeScript的差距
+- TypeScript的类型编程
+  - 在类型上编码计算过程
+  - 在类型上实现自然数
+  - TypeScript的类型系统是图灵完备的
+  - 类型体操问题集：Type Challenges
+  - 类型体操问题集：Type Gymnastics
+
+---
+
+## 能力模型：Lambda Cube
+
+关于类型系统的能力，我们有一个来自纯类型系统(PTS)的能力模型，叫做Lambda Cube。
+
+它有三个维度：是否支持多态(Polymorphism)，是否支持类型算子(Type Operator)，是否支持依值类型(Dependent Type)。
+
+根据类型检查器在STLC的基础之上又增加了哪些能力，我们以STLC为原点，一共可以得到8个顶点，每个顶点代表一类类型检查器的能力。需要注意的是，子类型其实不在Lambda Cube的能力考察范围中。
+
+
+<img border="rounded" src="/1/lambda-cube.jpeg" class="w-1/3 mx-auto">
+
+从Lambda Cube的角度出发，TAT-Sub-F现在处于$\lambda2$这个位置，TypeScript处于$\lambda \omega$。
+
+---
+
+## TAT类型检查器回顾
+
+我们收获了什么：
+
+1. 实现了基本的函数类型检查。
+2. 实现了子类型。
+3. 实现了参数多态。
+4. 得到了关于类型系统的入门知识。
+
+TAT和TypeScript的差距:
+1. 缺乏有意义的诊断信息（类型报错信息），导致没有办法精确定位类型错误发生的位置。
+2. 缺少LSP（语言服务），导致没有办法在编辑器中进行实时的类型检查和语言提示。
+3. 缺少类型操作符(例如，`Array`这个一元类型算子)的能力。
+4. 缺少隐式的类型推断。
+
+---
+
+## TypeScript的类型编程
+
+Live coding!
+
+1. 如何在类型上编码计算过程
+2. 在类型上实现自然数
+3. TypeScript的类型系统是图灵完备的!
+
+---
+
+## 类型体操问题集：Type Challenges
+
+仓库地址：https://github.com/type-challenges/type-challenges
+
+这里的题做得越多，你对TypeScript的掌控力就越强。推荐先通读TypeScript的官方手册再进行解题。
+
+## 类型体操问题集 Type Gymnastics
+
+仓库地址：https://github.com/g-plane/type-gymnastics
+
+这里有一些高难度的TypeScript类型编程问题，供进阶者挑战。
+
+## 类型体操的本质
+
+注意：TypeScript类型编程从本质上来说，就是使用类型系统这种非常受限的编程语言来解答问题。它和我们在运行时编程，没有本质的区别；此外，在日常的编程工作中，需要适当使用类型体操的技巧，在追求效率的工程实践和追求优雅的审美过程之间达成平衡。
+
+---
+
+## 作业
+
+1. 完成3道Type Challenges上的Medium难度的题目；
+2. 实现一个TypeScript有，但是TAT-Sub-F还没有的功能。
+  - 步骤：选定功能，确定定型规则，实现单测，实现功能。
