@@ -1513,7 +1513,7 @@ layout: section
 
 # 课程签到问卷
 
-<img border="rounded" src="/1/类型系统-签到问卷.jpg" class="w-1/4 my-20 mx-auto">
+<img border="rounded" src="/5/类型系统（下）签到二维码.png" class="w-1/4 my-20 mx-auto">
 
 ---
 layout: section
@@ -2249,3 +2249,11 @@ Live coding!
 1. 完成3道Type Challenges上的Medium难度的题目；
 2. 实现一个TypeScript有，但是TAT-Sub-F还没有的功能。
   - 步骤：选定功能，确定定型规则，实现单测，实现功能。
+
+---
+
+# 课程反馈问卷
+
+您的反馈能帮助我们更好地优化课程，非常期待您的反馈。
+
+<img border="rounded" src="/5/类型系统（下）反馈二维码.png" class="w-1/4 my-20 mx-auto">
