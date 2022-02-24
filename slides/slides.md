@@ -1500,3 +1500,760 @@ $$
 # 课程反馈问卷
 
 <img border="rounded" src="/1/类型系统-反馈问卷.png" class="w-1/4 my-20 mx-auto">
+
+---
+layout: section
+---
+
+# 类型系统入门 (下)
+
+吴登轲 高洁璇
+
+---
+
+# 课程签到问卷
+
+<img border="rounded" src="/5/类型系统（下）签到二维码.png" class="w-1/4 my-20 mx-auto">
+
+---
+layout: section
+---
+
+# 第三节：子类型
+
+---
+
+
+## 本节路线图
+
+- 第一部分：子类型基础知识
+  - 为何要引入子类型
+  - 初识子类型关系
+  - TypeScript中的子类型(类型构造器的逆变/协变/双变/不变)
+- 第二部分：TAT-Sub的设计和实现
+  - TAT-Sub的定型规则
+  - TAT-Sub的实现
+
+---
+layout: section
+---
+## 第一部分：子类型基础知识
+
+---
+layout: section
+---
+## 为何要引入子类型
+
+---
+
+## 如果没有子类型
+第二节中，我们讲过了TAT-STLC的定型规则 T-App
+
+$$
+{ \Gamma \vdash t_1: T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: T_{11}
+\over
+\Gamma \vdash t_1(t_2) : T_{12}
+} \tag{T-App}
+$$
+
+问题来了：
+以下调用是否能够通过类型检查？
+
+```ts
+((x:{a: Num}): {a: Num} => x.a)({a:1, b:2});
+```
+
+答案是：不行。
+明明执行这段代码不会产生运行时错误，但是TAT-STLC仍然拒绝了这种调用。
+
+原因在于，我们的定型规则，要求传入参数的类型和函数的类型 **完全一致**。也就是要求$\{a: \text{Num}\}$和
+
+$$
+\{a: \text{Num}, b: \text{Num}\}，
+$$
+
+也就是 $\{a:1, b:2\}$ 的类型完全一致。
+
+但是事实上，这种严苛的要求是不必要的，因为即便是不一致，也有可能不会产生运行时错误。
+这种限制给我们写程序带来了不便，因此我们需要研究一下对象的行为，接着修改一下我们的类型系统！
+
+<!-- ## 类型和行为
+
+1. 我们为什么需要使用类型来区分不同的值？因为，这些值有 **不同** 的预期行为。
+
+> 例如，我们可以把两个数字类型的值加起来得到它们的数字和；但是我们不能把两个字符串类型的值加起来，然后预期得到它们的数字和。字符串的行为告诉我们，这只会得到一个新的字符串。字符串值和数字值的行为不同，因此我们需要类型来避免在写出非预期的行为。
+
+2. 我们为什么能够使用类型来将一些值归为一类？因为，这些值具有 **共同** 的预期行为。
+
+> 例如，在TypeScript中我们可以对一切数字值调用`.toFixed()`方法。因此，若是我们知道了一个变量是数字类型的，我们就可以调用它的`.toFixed()`方法。
+
+那么对象的行为预期，应该是什么呢？ -->
+
+---
+layout: section
+---
+
+## 初识子类型关系
+
+---
+
+## 安全替换原则
+
+在TAT中，一个变量`x`的类型若为`{a: Num}`，你能够对它做的唯一特殊的操作，就是`x.a`。
+`x.a`这个操作预期得到一个`Num`类型的变量而不会发生运行时错误。
+因此，若在一个期望类型为`{a: Num}`的地方，传入一个要求更高的值`{a: 1, b: 2}`，也完全符合"得到一个`Num`类型而不会发生运行时错误"的预期。
+
+那么，`{a:1, b:2}`也就成为了一个合法的`{a: Num}`。
+
+我们把这种对替换的直觉，归纳成为子类型的安全替换原则。如下：
+
+> 若我们可以将任何$S$类型的值替换为$T$类型的值而安全使用，那么我们称$S$ 是 $T$的子类型，记做$S <: T$。
+
+这里说的安全使用，可以理解成不产生运行时错误。
+
+这里用的子类型关系记号`<:`，其实也是在暗示这种关系是一种特殊的"大小关系"（用数学一点的说法来说，是一种序关系）。
+你可以将它类比为集合的$\subseteq$关系，或是数字的$\leq$关系。
+
+---
+
+## 形式化子类型关系
+
+我们在TAT的类型系统中，扩展一下定型规则，使其引入子类型。
+
+$$
+{ \Gamma \vdash t: S \quad S<: T
+\over
+\Gamma \vdash t : T
+} \tag{T-Sub}
+$$
+
+这个规则的意思是说，若$S$是$T$的子类型，那么$S$类型的项也是$T$类型的项。
+
+类型 $S$ 和类型 $T$ 的关系如下：
+- $S$ 是 $T$ 的子类型。
+- $S$ 比 $T$ 信息更丰富、要求更高。
+
+例如，直觉上来看，类型$\{a:\text{Num}, b: \text{Num}\}$ 比类型 $\{a:\text{Num}\}$ 更严格、实例数量更少、要求更高。
+
+若将类型看成一个集合，类型$\{a:\text{Num}, b: \text{Num}\}$ 是类型 $\{a:\text{Num}\}$ 的真子集。前者的所有元素都是后者的元素。
+
+---
+
+## 子类型关系
+基于安全替换原则，我们可以形式化定义子类型关系的一些代数性质：
+
+子类型的自反性。即，类型$S$是$S$自己的子类型。
+$${S<:S} \tag{S-Refl} $$
+
+子类型的传递性。即，若$S<:U$，且$U<:T$，就有$S<:T$。
+
+$$
+{ S <: U \quad U <: T
+\over
+S <: T
+} \tag{S-Trans}
+$$
+
+---
+layout: section
+---
+
+## TypeScript中的子类型
+
+---
+
+## TypeScript的结构类型系统
+
+常见的面向对象语言，如Java、C#，使用的是名义类型系统，即类型之间的子类关系是用户使用继承显式定义的。
+但是在TypeScript中，子类型关系却是根据对象的结构来定义的。
+
+<!-- 在 TAT 中，我们也希望实现结构类型系统。即类型之间的子类关系是系统自动推出的 -->
+
+在 TypeScript 中的类型系统，是基于结构子类型的，如下。
+
+```typescript
+interface Named {
+    name: string;
+}
+class Person {
+    name: string;
+}
+let p: Named;
+// 不会有类型错误，因为使用了结构类型系统
+p = new Person();
+```
+在使用基于名义类型的语言，比如 C# 或 Java 中，这段代码会报错，因为 Person 类没有明确说明其实现了 Named 接口。
+TypeScript 的结构性子类型是根据 JavaScript 代码的典型写法来设计的。因为 JavaScript 里广泛地使用函数表达式和对象字面量，所以使用结构类型系统来描述这些类型比使用名义类型系统更符合JavaScript开发者的直觉。这个设计决策使得TypeScript更容易为JavaScript开发者所接受。
+
+---
+
+## 顶类型和底类型
+
+在TypeScript中，有`unknown`和`never`两个很特殊的类型：
+
+- 对一切类型$S$，都有$S<:$`unknown`。`unknown`叫做顶类型。
+- 对一切类型$S$，都有`never`$<:S$。`never`叫做底类型。
+
+若我们使用一个有向图来表示TypeScript中的这种子类型关系，就有：
+
+<div class="ml-15vw">
+
+```mermaid {scale: 0.8}
+flowchart TB
+  unknown --> string --> never
+  unknown --> number --> never
+  unknown --> object --> never
+  unknown --> boolean --> never
+  unknown --> others --> never
+
+```
+
+</div>
+
+之所以将`unknown`叫做顶类型，把`never`叫做底类型，是因为：
+它们在子类型关系中分别居于所有类型的顶端和底端。
+
+---
+
+## 函数之间产生子类型关系的条件
+
+令`f: (x: T1) => T2`， `g: (x: S1) => S2`，不妨令`g`是`f`的子类型，且`x: T1`。
+
+我们接下来分析此时`T1, T2, S1, S2`需要满足什么必要条件。我们从函数参数和返回值两个角度来分析。
+
+- 函数参数。
+
+`g`是`f`的子类型，所以，`g`应当能够安全替换所有`f`的使用处。对于`x: T1`时的任何取值，计算`f(x)`不会出错，那计算`g(x)`也不应该出错。
+
+而`g`的参数类型又是`S1`，那么就知道，`T1`类型需要可以出现在任何`S1`出现的位置。
+
+这等价于需有`T1<:S1`这个条件。
+
+- 返回值。
+
+`g`是`f`的子类型，所以`g`应当能够安全替换所有`f`的使用处。
+
+也就是如`f(x): T2`的使用处，都能被`g(x): S2`安全替换。这就是`T2`类型都需要能被`S2`类型安全替换。
+
+这等价于需有`S2<:T2`这个条件。
+
+---
+
+## 函数的子类型规则
+
+根据我们刚才的推导，我们得到了函数之间产生子类型关系的必要条件。
+我们可以验证发现，这个必要条件同时也是充分条件。
+
+那么就可以得出完整的函数的子类型规则：
+
+$$
+{ T_1 <: S_1 \quad S_2 <: T_2
+\over
+S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
+} \tag{S-Arrow}
+$$
+
+若是理解了上面这个式子，就理解了函数的子类型关系。 
+
+## 类型构造器
+
+函数类型，其实是一种 **类型构造器**。
+
+这个说法可能有点陌生，但是大家应该都知道TypeScript`Array`这个类型吧。
+
+你不能通过`const a: Array = []`来使用`Array`，因为你还必须给`Array`传上一个 **类型参数**，比如
+
+```ts
+const a: Array<number> = [];
+```
+
+这种接受若干类型，吐出另外一个类型的 **类型**，就叫做类型构造器(Type Constructor)，也叫做类型算子(Type Operator)。
+
+函数类型，其实也是一个类型构造器。它接受两个类型参数：入参的类型，函数返回值的类型，吐出一个函数类型。之所以我们察觉不到，是因为函数类型的标注用了箭头来当语法糖，例如，`(x:number)=>string`。
+
+其实完全可以把函数类型的形式做得和`Array`一样，比如用`Func<number,string>`来表示`(x:number)=>string`。
+
+你可以把类型构造器，看成类型版本的函数。它接受类型返回类型，本身也是类型；正如函数接受数值返回数值，本身也是数值。只是，它们所在的层次不同，前者在类型的世界里，后者在项的世界里。
+
+---
+
+## 函数类型构造器的逆变、协变
+
+对于每一个类型构造器，我们都需要定义其子类型规则。 一般来说，我们会根据这个类型构造器在语言中的语义来确定。
+
+比如，我们刚刚就确定了函数类型的子类型规则：
+
+$$
+{ T_1 <: S_1 \quad S_2 <: T_2
+\over
+S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
+} \tag{S-Arrow}
+$$
+
+我们说函数类型对参数是逆变(Contravariant)的——它反转了子类型关系的方向，对返回值是协变(Covariant)的——它维持了子类型关系的方向。
+
+例如在TypeScript中，有：
+
+```ts
+number=>unknown <: 1 => unknown // 参数逆变
+number=>string <: 1 => unknown // 参数逆变+返回值协变
+number=>string <: number => unknown // 返回值协变
+```
+
+注：若无特别指出，关于TypeScript的结论都是开启`--strictFunctionTypes`开关的结果。若不开启此开关，函数是双变的。
+
+---
+
+## 函数类型构造器的双变
+
+所谓双变(Bivariant)，就是既逆变，也协变。试看如下代码：
+
+```ts {monaco}
+declare let f1: (x: {}) => void;
+declare let f2: (x: {dog:true}) => void;
+declare let f3: (x: {cat:true}) => void;
+f1 = f2; // Error with --strictFunctionTypes
+f2 = f1; // Ok
+f2 = f3; // Error
+```
+
+若不开启`--strictFunctionTypes`，TypeScript函数的参数位置是双变的。
+
+---
+
+## 数组类型构造器的协变和不变
+
+我们考察了TypeScript中的函数类型构造器，再来考察一下TypeScript对`Array`这个类型构造器的设计。
+
+`Array`是协变的，因为有：
+```ts
+Array<number> <: Array<unknown>
+```
+
+但是，TypeScript采用的这个设计是不安全的，如下代码所示， `c`这个变量，推导出的类型是`number`。但是运行时的值是个`string`。
+
+```ts {monaco}
+const a: Array<number> = [];
+const b: Array<unknown> = a;
+b.push("haha string!");
+const c = a[0]; // 这里实际获得了一个string类型的值
+```
+
+因此，对于可变数组来说，协变是不安全的，应当使用不变(Invariant)。
+
+不变是指，`Array<S>`和`Array<T>`之间若`S`和`T`不同，则没有子类型关系，不能互相替代。但是这会使得数组使用起来不够方便，因此TypeScript也作出了妥协。 不可变数组`ReadonlyArray`的协变则是安全的。
+
+---
+layout: section
+---
+
+## 第二部分：TAT-Sub的实现
+
+---
+
+## TAT-Sub
+
+TAT-Sub是基于TAT-STLC的类型检查器，具有前者的全部功能，因此保留所有TAT-STLC的类型规则。
+
+此外，还增加了子类型的定型规则。
+
+---
+
+## 子类型定型规则
+
+自反性。
+$${S<:S} \tag{S-Refl} $$
+
+传递性。
+$$
+{ S <: U \quad U <: T
+\over
+S <: T
+} \tag{S-Trans}
+$$
+
+我们还引入了顶类型。
+
+$${S<:\text{Top}} \tag{S-Top} $$
+
+关于函数类型，我们使用之前推导出来的定型规则。
+
+$$
+{ T1 <: S1 \quad S2 <: T2
+\over
+S1 \Rightarrow S2 <: T1 \Rightarrow T2
+} \tag{S-Arrow}
+$$
+
+---
+
+## 子类型定型规则（续）
+
+这是我们使用的对象类型的子类型定型规则，它引入了结构子类型。
+
+$$
+\{l_i\quad^{i\in 1..n}\}⊆\{k_j\quad^{j\in 1..m}\}
+\\
+\\
+{ k_j = l_i \quad implies \quad S_j <: T_i
+\over
+\{k_j:S_j\quad ^{j\in 1..m}\} <: \{l_i:T_i\quad ^{i\in 1..n}\}
+} \tag{S-Obj}
+$$
+
+这个规则下，我们有：
+
+```ts
+{a:Num, b:{c:Str}} <: {a:Num}
+{a:Num, b:{c:Str}} <: {a:Num, b:{c:Top}}
+```
+
+我们还需要往我们的类型系统中加入安全替换原则。
+
+$$
+{ \Gamma \vdash t: S \quad S<: T
+\over
+\Gamma \vdash t : T
+} \tag{T-Sub}
+$$
+
+---
+
+## 代码实现
+
+---
+
+## 作业
+
+1. 实现TAT-Sub，通过所有的测试用例。
+
+---
+layout: section
+---
+# 第四节：多态
+
+---
+
+## 本节路线图
+
+- 第一部分：多态的基础知识
+  - 有哪些多态
+    - 子类型多态
+    - 参数多态
+    - 特设多态
+  - 将参数多态引入类型系统
+    - 多态性$\lambda$-演算(System F)
+    - 全称类型
+- 第二部分：TAT-Sub-F的实现
+  - TAT-Sub-F的编码实现
+
+---
+layout: section
+---
+
+## 有哪些多态
+
+---
+
+## 什么是多态
+
+多态(Polymorphism)这个词，可以拆解为poly(多种)-morph(形态)-ism(后缀，指示这是一个名词)。
+
+所谓多态，大意就是指同一份代码能够有多种行为、多种类型。
+
+接下来，我们会看到如下几种多态的例子：
+
+- 子类型多态
+- 参数多态
+- 特设多态
+
+---
+
+## 子类型多态
+
+在谈论面向对象编程的时候，我们通常用多态来指代用子类型实例替换父类型实例，并且能够通过将子类型的实例转型成父类型，然后动态调用父类型方法的现象。 
+
+但是，这其实只是类型系统中各种多态当中的一种。在类型系统的理论中，它叫做 **子类型多态**(Subtype Polymorphism)。
+在Java中，我们有如下子类型多态的例子：
+
+
+```java {monaco}
+class Shape {
+    void draw() {}
+}
+class Square extends Shape {
+    void draw() {
+        System.out.println("Square.draw()");
+    }
+}
+///main函数
+Shape shape1 = new Square();
+shape1.draw(); // Square.draw();
+```
+
+关于这种多态，我们其实已经在第三节：子类型中讲过并且实现了。
+
+---
+
+## 参数多态
+
+参数多态(Parametric Polymorphism)有另外一个我们所熟知的名字：泛型(Generics)。在函数式编程的语境中，我们一般用多态这个词来指代参数多态。
+
+试看如下TypeScript代码：
+
+```ts {monaco}
+function printEach<T>(list:T[]){
+  for(const item of list){
+    console.log(item);
+  }
+}
+const numberArr: number[] = [1,2,3];
+const stringArr: string[] = ["test1","test2"];
+printEach(numberArr);
+printEach(stringArr);
+printEach<unknown>([]);
+```
+
+参数多态，使得同一份代码能够适用于不同类型的参数，我们只需要隐式或显式地传入"类型"，让这些类型填上函数签名中所要求的类型参数即可。
+
+---
+
+## 特设多态
+
+特设多态(Ad-hoc Polymorphism)，指的是一些编程语言中的重载(Overloading)机制。
+
+还记得我们在第一节:类型系统简介中遇到的那个`add`函数的例子吗？
+
+```ts {monaco}
+function add<A extends string, B extends string>(first: A, second: B): `${A}${B}`;
+function add(first: number, second: number): number;
+function add(first: unknown, second: unknown): unknown {
+    return ((first as any) + second) as any;
+}
+add("1",1);
+add("1","1");
+add(1,1);
+```
+
+我们手动写了两个`add`函数的类型签名，告诉TypeScript这个函数所能支持的两种不同形式的调用。
+
+我们要支持多少种特殊的调用，就需要写多少个类型签名。这种写签名的方式，是 **特设**(Ad-hoc)的。特设的意思是，针对每一种特殊的情形，都需要单独处理。
+
+---
+layout: section
+---
+
+## 将多态引入类型系统
+
+---
+
+## 目标类型系统: TAT-Sub-F
+
+我们刚刚提到了三种多态：子类型多态、参数多态和特设多态。
+
+我们其实已经在TAT-Sub中实现了子类型多态，而特设多态没有特别大的理论意义，因此我们会将参数多态引入TAT-Sub的类型系统，得到一个新的类型检查器: TAT-Sub-F。
+
+接下来，我们看看为了引入参数多态，我们需要做哪些改动。先从观察TypeScript的行为出发。
+
+---
+
+## 类型变量
+
+首先，观察TypeScript的泛型函数的形式，我们发现它需要填写泛型参数，如下：
+
+```ts {monaco}
+function printEach<T>(list:T[]){
+  for(const item of list){
+    console.log(item);
+  }
+}
+```
+
+其中的`T`就是泛型参数。也叫做类型变量，因为这个 **变量的取值是类型系统中的各种类型**；这如同普通的变量的取值是编程语言层面的各种值。
+
+`< >`记号将泛型参数包裹起来，用以在语法上标志其中的内容是类型变量。
+
+---
+
+## 类型变量（续）
+
+泛型参数，会在函数被调用的时候，被一个实际的类型替换，之后再进行类型检查。
+
+这是说，如果进行
+```ts
+printEach<number>([1,2,3]);
+```
+这样的调用，相当于就是对
+```ts {monaco}
+function printEach(list:number[]){
+  for(const item of list){
+    console.log(item);
+  }
+}
+printEach([1,2,3]);
+```
+
+这样的TypeScript代码做类型检查。注意，其中的类型变量`T`被一个实际的类型`number`替换了。
+
+因此，我们现在的主要工作，就是在TAT-Sub的类型系统中引入类型变量。
+
+---
+
+## 多态性$\lambda$-演算(System F)
+
+通过在TAT-Sub中引入类型变量，我们就能得到和多态性$\lambda$-演算(Polymorphic lambda-calculus)相同的参数多态能力。
+多态性$\lambda$-演算，也有另外一个来自证明论的名字：System F。这也是TAT-Sub-F中F的来源。
+
+具体来说，我们在原本的T-Abs(创建函数)和T-App(调用函数)规则之外，加入两条新规则T-TAbs(创建泛型函数)和T-TApp(调用泛型函数)：
+
+$$
+{\Gamma, X \vdash t_2: T_2 \over \Gamma \vdash\quad \langle X\rangle(x: T_1):T_2 \Rightarrow t_2 : \forall X.\ T_1 \Rightarrow T_2} \tag{T-TAbs}
+$$
+
+其中，带有泛型参数的函数的类型，我们记成$\forall X.\ T_1 \Rightarrow T_2$，其中$X$可以是任意类型变量。
+
+$$
+{ \Gamma \vdash t_1:\forall K. T_{11} \Rightarrow T_{12}
+\over
+\Gamma \vdash\quad t_1\langle X\rangle : [K\mapsto X] T_{11}\Rightarrow [K\mapsto X] T_{12}
+} \tag{T-TApp}
+$$
+
+<!-- $$
+{ \Gamma \vdash t_1:\forall K. T_{11} \Rightarrow T_{12} \quad \Gamma \vdash t_2: [K\mapsto X] T_{11}
+\over
+\Gamma \vdash\quad t_1\langle X\rangle(t_2) : [K\mapsto X] T_{12}
+} \tag{T-TApp}
+$$ -->
+
+其中，$[K\mapsto X] T_{11}$表示将$T_{11}$中的类型变量$K$(如果有)替换为$X$。若$X$是$\text{Num}$，$T_{11}$是$\{a: K\}$，那么这个替换的结果就是一个新的类型$\{a: \text{Num}\}$。
+
+这两条规则，和TAT-Sub的规则并不冲突。
+
+---
+
+## 全称类型和柯里霍华德同构
+
+大家可能有这样的疑惑，为什么需要将多态的函数类型记成$\forall X. T_1\Rightarrow T_2$的样子呢？
+
+它的原因是，类型系统的推理规则，其实本质上和一个逻辑上的公理系统的推理规则是一样的。
+
+我们可以把一个命题，例如$A\to B$看成是一个类型$A\Rightarrow B$。
+
+他们具有类似的推理规则，即分离规则(有$A$和$A\to B$,则有$B$)和函数应用规则(有$A$类型的实例和$A\Rightarrow B$ 类型的函数, 则可以通过调用函数得到$B$类型的实例)。
+
+类型和命题可以一一对应，因此他们是同构的，这种同构叫做柯里霍华德同构(Curry-Howard Isomorphism)。
+
+逻辑学上的二阶直觉主义逻辑中的$\forall$量词，正和多态的类型同构。
+
+因此，带有类型参数的函数类型，也叫做全称类型。
+
+---
+layout: section
+---
+
+## TAT-Sub-F的实现
+
+Live coding!
+
+---
+
+## 作业
+
+1. 实现TAT-Sub-F，通过所有测试用例。
+
+---
+layout: section
+---
+
+## 第五节：TAT类型检查器与TypeScript的类型编程
+
+---
+
+## 本节路线图
+
+- 回顾TAT类型检查器:TAT-Sub-F
+  - 能力模型: Lambda Cube
+  - 和TypeScript的差距
+- TypeScript的类型编程
+  - 在类型上编码计算过程
+  - 在类型上实现自然数
+  - TypeScript的类型系统是图灵完备的
+  - 类型体操问题集：Type Challenges
+  - 类型体操问题集：Type Gymnastics
+
+---
+
+## 能力模型：Lambda Cube
+
+关于类型系统的能力，我们有一个来自纯类型系统(PTS)的能力模型，叫做Lambda Cube。
+
+它有三个维度：是否支持多态(Polymorphism)，是否支持类型算子(Type Operator)，是否支持依值类型(Dependent Type)。
+
+根据类型检查器在STLC的基础之上又增加了哪些能力，我们以STLC为原点，一共可以得到8个顶点，每个顶点代表一类类型检查器的能力。需要注意的是，子类型其实不在Lambda Cube的能力考察范围中。
+
+
+<img border="rounded" src="/1/lambda-cube.jpeg" class="w-1/3 mx-auto">
+
+从Lambda Cube的角度出发，TAT-Sub-F现在处于$\lambda2$这个位置，TypeScript处于$\lambda \omega$。
+
+---
+
+## TAT类型检查器回顾
+
+我们收获了什么：
+
+1. 实现了基本的函数类型检查。
+2. 实现了子类型。
+3. 实现了参数多态。
+4. 得到了关于类型系统的入门知识。
+
+TAT和TypeScript的差距:
+1. 缺乏有意义的诊断信息（类型报错信息），导致没有办法精确定位类型错误发生的位置。
+2. 缺少LSP（语言服务），导致没有办法在编辑器中进行实时的类型检查和语言提示。
+3. 缺少类型操作符(例如，`Array`这个一元类型算子)的能力。
+4. 缺少隐式的类型推断。
+
+---
+
+## TypeScript的类型编程
+
+Live coding!
+
+1. 如何在类型上编码计算过程
+2. 在类型上实现自然数
+3. TypeScript的类型系统是图灵完备的!
+
+---
+
+## 类型体操问题集：Type Challenges
+
+仓库地址：https://github.com/type-challenges/type-challenges
+
+这里的题做得越多，你对TypeScript的掌控力就越强。推荐先通读TypeScript的官方手册再进行解题。
+
+## 类型体操问题集 Type Gymnastics
+
+仓库地址：https://github.com/g-plane/type-gymnastics
+
+这里有一些高难度的TypeScript类型编程问题，供进阶者挑战。
+
+## 类型体操的本质
+
+注意：TypeScript类型编程从本质上来说，就是使用类型系统这种非常受限的编程语言来解答问题。它和我们在运行时编程，没有本质的区别；此外，在日常的编程工作中，需要适当使用类型体操的技巧，在追求效率的工程实践和追求优雅的审美过程之间达成平衡。
+
+---
+
+## 作业
+
+1. 完成3道Type Challenges上的Medium难度的题目；
+2. 实现一个TypeScript有，但是TAT-Sub-F还没有的功能。
+  - 步骤：选定功能，确定定型规则，实现单测，实现功能。
+
+---
+
+# 课程反馈问卷
+
+您的反馈能帮助我们更好地优化课程，非常期待您的反馈。
+
+<img border="rounded" src="/5/类型系统（下）反馈二维码.png" class="w-1/4 my-20 mx-auto">
