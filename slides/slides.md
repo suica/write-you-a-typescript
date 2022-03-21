@@ -88,7 +88,7 @@ layout: statement
 ```cpp
 // CPP 是一门静态类型语言
 bool a = true;
-a = 'b'; // 会在编译时报错
+a = "test"; // 会在编译时报错
 ```
 
 ```js
