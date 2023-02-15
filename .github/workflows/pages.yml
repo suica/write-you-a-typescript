@@ -19,7 +19,7 @@ jobs:
             - name: Build
               uses: borales/actions-yarn@v4
               with:
-                  cmd: build # will run `yarn build` command
+                  cmd: build:pages # will run `yarn build` command
                   dir: 'docs'
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3

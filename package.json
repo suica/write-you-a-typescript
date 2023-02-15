@@ -6,8 +6,7 @@
     "scripts": {
         "slides": "cd slides && yarn dev",
         "start": "ts-node src/index.ts",
-        "test": "jest",
-        "build:docs": "cd docs && yarn build"
+        "test": "jest"
     },
     "author": "suicca",
     "license": "ISC",
