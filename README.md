@@ -24,3 +24,15 @@ yarn slides
 ```bash
 cd slides && yarn remote
 ```
+
+## TODOs
+
+- [ ] Create a document site from the slides
+- [ ] Deploy the site to Github Pages
+- [ ] Revise the document, fix errors/typos
+- [ ] Revise the README.md for better introduction
+- [ ] Implement the test cases for TAT-F
+- [ ] Implement TAT-F
+- [ ] Implement the test cases and code for TAT-Sub-F
+- [ ] Implement TAT-Sub-F
+- [ ] Translate the site to English
