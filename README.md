@@ -1,4 +1,4 @@
-# write-you-a-typescript
+# write-you-a-typescript （实现一个自己的类TypeScript类型检查器）
 
 ## Introduction
 
