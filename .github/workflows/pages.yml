@@ -12,13 +12,15 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Install Deps
-              uses: borales/actions-yarn@v4.0.0
+              uses: borales/actions-yarn@v4
               with:
-                  cmd: --cwd docs install --frozen-lockfile # will run `yarn install` command
+                  cmd: install # will run `yarn install` command
+                  dir: 'docs'
             - name: Build
-              uses: borales/actions-yarn@v4.0.0
+              uses: borales/actions-yarn@v4
               with:
-                  cmd: build:docs # will run `yarn build` command
+                  cmd: build # will run `yarn build` command
+                  dir: 'docs'
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
               with:
