@@ -1,31 +1,32 @@
 {
-  "name": "write-you-a-typescript",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "slides": "cd slides && yarn dev",
-    "start": "ts-node src/index.ts",
-    "test": "jest"
-  },
-  "author": "suicca",
-  "license": "ISC",
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.16.5",
-    "@babel/generator": "^7.16.5",
-    "@babel/parser": "^7.16.6",
-    "@babel/plugin-transform-typescript": "^7.16.1",
-    "@babel/preset-env": "^7.16.5",
-    "@babel/preset-typescript": "^7.16.5",
-    "@types/jest": "^27.0.3",
-    "@types/lodash-es": "^4.17.6",
-    "@types/node": "^16.11.6",
-    "babel-jest": "^27.4.5",
-    "jest": "^27.4.5"
-  }
+    "name": "write-you-a-typescript",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "slides": "cd slides && yarn dev",
+        "start": "ts-node src/index.ts",
+        "test": "jest",
+        "build:docs": "cd docs && yarn build"
+    },
+    "author": "suicca",
+    "license": "ISC",
+    "dependencies": {
+        "lodash": "^4.17.21",
+        "ts-node": "^10.2.1",
+        "typescript": "^4.4.4"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.16.5",
+        "@babel/generator": "^7.16.5",
+        "@babel/parser": "^7.16.6",
+        "@babel/plugin-transform-typescript": "^7.16.1",
+        "@babel/preset-env": "^7.16.5",
+        "@babel/preset-typescript": "^7.16.5",
+        "@types/jest": "^27.0.3",
+        "@types/lodash-es": "^4.17.6",
+        "@types/node": "^16.11.6",
+        "babel-jest": "^27.4.5",
+        "jest": "^27.4.5"
+    }
 }
