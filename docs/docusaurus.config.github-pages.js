@@ -1,6 +1,6 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-import oldConfig from './docusaurus.config';
+const oldConfig = require('./docusaurus.config');
 
 const config = {
     ...oldConfig,
