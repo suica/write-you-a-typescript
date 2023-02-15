@@ -27,8 +27,8 @@ cd slides && yarn remote
 
 ## TODOs
 
-- [ ] Create a document site from the slides
-- [ ] Deploy the site to Github Pages
+- [x] Create a document site from the slides
+- [x] Deploy the site to Github Pages
 - [ ] Revise the document, fix errors/typos
 - [ ] Revise the README.md for better introduction
 - [ ] Implement the test cases for TAT-F
