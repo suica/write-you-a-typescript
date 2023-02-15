@@ -1,0 +1,27 @@
+name: Pages
+
+on:
+    push:
+        branches:
+            - docs
+
+jobs:
+    build:
+        name: Docs site
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Install Deps
+              uses: borales/actions-yarn@v4.0.0
+              with:
+                  cmd: --cwd docs install --frozen-lockfile # will run `yarn install` command
+            - name: Build
+              uses: borales/actions-yarn@v4.0.0
+              with:
+                  cmd: --cwd docs build # will run `yarn build` command
+            - name: Deploy
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./docs/build
+                  publish_branch: gh-pages
