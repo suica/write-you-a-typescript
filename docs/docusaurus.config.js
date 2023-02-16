@@ -49,6 +49,7 @@ const config = {
                         'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
                     remarkPlugins: [math],
                     rehypePlugins: [katex],
+                    sidebarCollapsed: false,
                 },
                 blog: {
                     showReadingTime: true,
