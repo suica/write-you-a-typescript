@@ -50,6 +50,12 @@ cd slides && yarn remote
 - [x] Create a document site from the slides
 - [x] Deploy the site to Github Pages & Vercel
 - [ ] Revise the document, fix errors/typos
+    - [x] Chapter 0: introduction to the course
+    - [x] Chapter 1: basics about the type systems
+    - [ ] Chapter 2: basics about implementing a type checker
+    - [ ] Chapter 3: the theory of subtyping, and its implementation
+    - [ ] Chapter 4: the theory of polymorphism, and its implementation
+    - [ ] Chapter 5: the TAT type checker and the type-level programming in TypeScript
 - [ ] Revise the README.md for better introduction
 - [ ] Implement the test cases for TAT-F
 - [ ] Implement TAT-F
