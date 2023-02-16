@@ -57,6 +57,7 @@ cd slides && yarn remote
     - [ ] Chapter 4: the theory of polymorphism, and its implementation
     - [ ] Chapter 5: the TAT type checker and the type-level programming in TypeScript
 - [ ] Revise the README.md for better introduction
+- [ ] Add issue-based comments to website
 - [ ] Implement the test cases for TAT-F
 - [ ] Implement TAT-F
 - [ ] Implement the test cases and code for TAT-Sub-F
