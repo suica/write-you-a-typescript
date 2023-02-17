@@ -14,7 +14,7 @@ jobs:
             - name: Install Deps
               uses: borales/actions-yarn@v4
               with:
-                  cmd: install # will run `yarn install` command
+                  cmd: install --frozen-lockfile # will run `yarn install` command
                   dir: 'docs'
             - name: Build
               uses: borales/actions-yarn@v4
