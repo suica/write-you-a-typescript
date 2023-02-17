@@ -1,6 +1,7 @@
 import { parseTAT } from '../../utils/tat-parser';
 import { checkerSTLC } from '../checker';
 import { TATBoolType, TATNumType, TATStrType, TATTypeEnum, TATUnitType } from '../TATTypes';
+import { TypingContext } from '../TypingContext';
 import { checkAsTATSTLC } from '../utils';
 
 describe('TAT-STLC on simple literals and expressions', () => {
@@ -70,7 +71,8 @@ describe('TAT-STLC on context & binding', () => {
     it('should work for predefined variable binding', () => {
         const parsed = parseTAT('a + 1;');
         const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0], { a: TATNumType });
+        const context = new TypingContext().addVariable({ identifier: 'a', type: TATNumType });
+        const checkedType = checker.check(parsedFile.program.body[0], context);
         expect(checkedType).toBe(TATNumType);
     });
     it.skip('should fail for free variable', () => {

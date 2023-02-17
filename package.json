@@ -6,7 +6,8 @@
     "scripts": {
         "start": "ts-node src/index.ts",
         "test": "jest",
-        "test:tat": "jest tat"
+        "test:tat": "jest tat",
+        "tc": "tsc --noEmit --watch"
     },
     "author": "suicca",
     "license": "ISC",

@@ -12,6 +12,7 @@ import {
     TATUnitType,
     isTypeEqual,
 } from './TATTypes';
+import { TypingContext } from './TypingContext';
 
 function assertGetIdentifierName(node: Node): string {
     if (node.type === 'Identifier') {
@@ -22,7 +23,7 @@ function assertGetIdentifierName(node: Node): string {
 }
 
 function todoAddDiagnostics(msg: string = '') {
-    // throw new Error(msg || 'TODO: add diagnostics');
+    throw new Error(msg || 'TODO: add diagnostics');
 }
 
 class Checker {
@@ -70,7 +71,8 @@ class Checker {
         }
         todoAddDiagnostics('not recognized type annotation');
     }
-    check(node: Node, context: Record<string, TATType> = Object.create(null)): TATType | undefined {
+    check(node: Node, context?: TypingContext): TATType | undefined {
+        context ??= new TypingContext();
         const typeMap = this.typeMap;
         switch (node.type) {
             case 'ExpressionStatement': {
@@ -176,7 +178,12 @@ class Checker {
                 break;
             }
             case 'Identifier': {
-                typeMap.set(node, context[node.name]);
+                const valueType = context.findInValueSpace(node.name);
+                if (valueType) {
+                    typeMap.set(node, valueType);
+                } else {
+                    todoAddDiagnostics('identifier not found');
+                }
                 break;
             }
             case 'CallExpression': {
@@ -295,14 +302,17 @@ class Checker {
             case 'ArrowFunctionExpression': {
                 const params = node.params;
                 const body = node.body;
-                const newContext = { ...context };
+                const newContext = context.copy();
                 const paramTypeList: TATType[] = [];
                 params.forEach((param) => {
                     if (param.type === 'Identifier' && param.typeAnnotation?.type === 'TSTypeAnnotation') {
-                        const tatType = this.getTypeAnnotationAsTATType(param.typeAnnotation);
-                        if (tatType) {
-                            newContext[param.name] = tatType;
-                            paramTypeList.push(tatType);
+                        const type = this.getTypeAnnotationAsTATType(param.typeAnnotation);
+                        const identifier = param.name;
+                        if (type) {
+                            newContext.addVariable({ identifier, type });
+                            paramTypeList.push(type);
+                        } else {
+                            todoAddDiagnostics('cannot infer type of this identifier');
                         }
                     } else {
                         todoAddDiagnostics('arrow function only support identifiers as its params');
