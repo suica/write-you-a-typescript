@@ -223,11 +223,6 @@ class Checker {
                     }
                     return isTypeEqual(s, t);
                 };
-
-                // console.log(argumentTypeList,calleeType.from);
-
-                // console.log(calleeType.from);
-
                 if (calleeType?.type === TATTypeEnum.Fun && isListSubtypeOf(argumentTypeList, calleeType.from)) {
                     // console.log(argumentTypeList,calleeType.from);
                     typeMap.set(node, calleeType.to);
