@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TATType } from './TATTypes';
+import { TATBoolType, TATNumType, TATStrType, TATTopType, TATType, TATUnitType } from './TATTypes';
 import { notImplemented } from './utils';
 
 export type Identifier = string;
@@ -13,11 +13,20 @@ export class TypingContext {
     // stack of scopes
     scopes: Scope[] = [
         {
-            typeSpace: {},
+            typeSpace: {
+                Top: { subTypeOf: TATTopType },
+                Num: { subTypeOf: TATNumType },
+                Str: { subTypeOf: TATStrType },
+                Bool: { subTypeOf: TATBoolType },
+                Unit: { subTypeOf: TATUnitType },
+            },
             valueSpace: {},
         },
     ];
-    constructor() {}
+    constructor() {
+        // push an empty scope
+        this.appendScope();
+    }
 
     get lastScope() {
         // will not be undefined
