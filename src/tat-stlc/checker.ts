@@ -294,6 +294,21 @@ class Checker {
                 const params = node.params;
                 const body = node.body;
                 const newContext = context.copy();
+                const typeParameters = node.typeParameters;
+                if (typeParameters) {
+                    if (typeParameters.type === 'TSTypeParameterDeclaration') {
+                        typeParameters.params.forEach((typeParameter) => {
+                            const subTypeOf = newContext.findInTypeSpace(typeParameter.name);
+                            if (subTypeOf) {
+                                todoAddDiagnostics('type parameter already declared');
+                            } else {
+                                newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf: TATTopType });
+                            }
+                        });
+                    } else {
+                        todoAddDiagnostics('cannot support this type parameter declaration');
+                    }
+                }
                 const paramTypeList: TATType[] = [];
                 params.forEach((param) => {
                     if (param.type === 'Identifier' && param.typeAnnotation?.type === 'TSTypeAnnotation') {
