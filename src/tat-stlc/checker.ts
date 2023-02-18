@@ -29,14 +29,14 @@ function todoAddDiagnostics(msg: string = '') {
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
-    getTypeLiteralAsTATType(typeLiteral: TSTypeLiteral): TATType | undefined {
+    getTypeLiteralAsTATType(typeLiteral: TSTypeLiteral, context: TypingContext): TATType | undefined {
         // try to construct it as a TAT Obj Type
         const mapping: Record<string, TATType> = Object.create(null);
         typeLiteral.members.forEach((typeElement) => {
             if (typeElement.type === 'TSPropertySignature') {
                 const annotation = typeElement.typeAnnotation;
                 if (annotation) {
-                    const tatType = this.getTypeAnnotationAsTATType(annotation);
+                    const tatType = this.getTypeAnnotationAsTATType(annotation, context);
                     if (tatType) {
                         const identifierName = assertGetIdentifierName(typeElement.key);
                         mapping[identifierName] = tatType;
@@ -48,26 +48,17 @@ class Checker {
         });
         return { type: TATTypeEnum.Obj, mapping };
     }
-    getTypeAnnotationAsTATType(tsTypeAnnotation: TSTypeAnnotation): TATType | undefined {
+    getTypeAnnotationAsTATType(tsTypeAnnotation: TSTypeAnnotation, context: TypingContext): TATType | undefined {
         const typeAnnotation = tsTypeAnnotation.typeAnnotation;
         if (typeAnnotation.type === 'TSTypeReference') {
             const entityName = typeAnnotation.typeName;
             if (entityName.type === 'Identifier') {
-                const targetName = entityName.name;
-                if (targetName === 'Num') {
-                    return TATNumType;
-                } else if (targetName === 'Bool') {
-                    return TATBoolType;
-                } else if (targetName === 'Str') {
-                    return TATStrType;
-                } else if (targetName === 'Unit') {
-                    return TATUnitType;
-                } else if (targetName === 'Top') {
-                    return TATTopType;
-                }
+                // find id-type pair in type space of typing context
+                const id = entityName.name;
+                return context.findInTypeSpace(id)?.subTypeOf ?? TATTopType;
             }
         } else if (typeAnnotation.type === 'TSTypeLiteral') {
-            return this.getTypeLiteralAsTATType(typeAnnotation);
+            return this.getTypeLiteralAsTATType(typeAnnotation, context);
         }
         todoAddDiagnostics('not recognized type annotation');
     }
@@ -306,7 +297,7 @@ class Checker {
                 const paramTypeList: TATType[] = [];
                 params.forEach((param) => {
                     if (param.type === 'Identifier' && param.typeAnnotation?.type === 'TSTypeAnnotation') {
-                        const type = this.getTypeAnnotationAsTATType(param.typeAnnotation);
+                        const type = this.getTypeAnnotationAsTATType(param.typeAnnotation, newContext);
                         const identifier = param.name;
                         if (type) {
                             newContext.addVariable({ identifier, type });
@@ -320,7 +311,7 @@ class Checker {
                 });
                 let annotatedReturnType = undefined;
                 if (node.returnType?.type === 'TSTypeAnnotation') {
-                    annotatedReturnType = this.getTypeAnnotationAsTATType(node.returnType);
+                    annotatedReturnType = this.getTypeAnnotationAsTATType(node.returnType, newContext);
                     const bodyType = this.check(body, newContext);
                     if (annotatedReturnType && bodyType && isTypeEqual(annotatedReturnType, bodyType)) {
                         // annotated return type is identical to real return type
@@ -351,14 +342,9 @@ class Checker {
 }
 
 export function checkerSTLC(parsedFile: ParsedFile) {
-    const body = parsedFile.program.body;
     const checker = new Checker();
-    body.forEach((statement) => {
-        checker.check(statement);
-    });
-    const directives = parsedFile.program.directives;
-    directives.forEach((directive) => {
-        checker.check(directive);
-    });
+    // TODO need to remove?
+    // const body = parsedFile.program.body;
+    // const directives = parsedFile.program.directives;
     return { parsedFile, checker };
 }
