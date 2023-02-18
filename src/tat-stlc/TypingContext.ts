@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash';
 import { TATBoolType, TATNumType, TATStrType, TATTopType, TATType, TATUnitType } from './TATTypes';
-import { notImplemented } from './utils';
 
 export type Identifier = string;
 
@@ -29,11 +28,13 @@ export class TypingContext {
     }
 
     get lastScope() {
-        // will not be undefined
+        // will never be undefined
         return this.scopes.at(-1)!;
     }
 
-    appendScope() {}
+    appendScope() {
+        this.scopes.push({ typeSpace: {}, valueSpace: {} });
+    }
     popScope() {
         if (this.scopes.length) {
             this.scopes.pop();
@@ -41,8 +42,8 @@ export class TypingContext {
             throw new Error('trying to pop all scopes');
         }
     }
-    addTypeVariable({}: { identifier: string; subTypeOf: TATType }) {
-        notImplemented();
+    addTypeVariable({ identifier, subTypeOf }: { identifier: string; subTypeOf: TATType }) {
+        this.lastScope.typeSpace[identifier] = { subTypeOf };
         return this;
     }
     addVariable({ identifier, type }: { identifier: string; type: TATType }) {
