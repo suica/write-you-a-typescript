@@ -91,7 +91,7 @@ $$
 ### 解法
 
 而在JavaScript当中，通过语法分析得到的AST节点恰好有NumericLiteral (数字字面量)这种语法类别(Syntax Kind)，完全符合JavaScript对`number`类型实例的定义。
-因此，我们可以将具有NumericLiteral这种类型的节点对应的项，`Num`类型的实例。
+因此，我们可以将具有NumericLiteral这种类型的节点对应的项认为是`Num`类型的实例。
 
 若`x`为TAT中的项，$\bar{x}$是这个项对应的语法树上的节点，$\text{IsNumericLiteral}$是parser提供的判断一个语法树节点是否为NumericLiteral的谓词，那么`x: Num`的规则如下。由此规则，我们可以得到`1: Num`，`0.2: Num`，`-1e15: Num`等等结果。
 
