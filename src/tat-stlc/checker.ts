@@ -334,6 +334,8 @@ class Checker {
                             type: TATTypeEnum.Fun,
                             from: paramTypeList,
                             to: annotatedReturnType,
+                            // TODO
+                            typeParameters: [],
                         });
                     } else {
                         todoAddDiagnostics('different return type annotation and body');

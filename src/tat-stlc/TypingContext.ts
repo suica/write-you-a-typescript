@@ -3,9 +3,12 @@ import { TATBoolType, TATNumType, TATStrType, TATTopType, TATType, TATUnitType }
 
 export type Identifier = string;
 
+type VariableBindingRecord = Record<Identifier, TATType>;
+type TypeVariableBindingRecord = Record<Identifier, { subTypeOf: TATType }>;
+
 export type Scope = {
-    valueSpace: Record<Identifier, TATType>;
-    typeSpace: Record<Identifier, { subTypeOf: TATType }>;
+    valueSpace: VariableBindingRecord;
+    typeSpace: TypeVariableBindingRecord;
 };
 
 export class TypingContext {
