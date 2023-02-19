@@ -10,7 +10,7 @@ export enum TATTypeEnum {
     Top = 'Top',
 }
 
-type TATTypeParameter = {
+export type TATTypeParameter = {
     subtypeOf: TATType;
     name: string;
 };
@@ -26,7 +26,7 @@ export type TATType =
           type: TATTypeEnum.Fun;
           from: TATType[];
           to: TATType;
-          typeParameters: TATTypeParameter[];
+          typeParameters?: TATTypeParameter[];
       };
 
 export function isTypeEqual(type1: TATType, type2: TATType): boolean {

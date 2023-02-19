@@ -9,6 +9,7 @@ import {
     TATTopType,
     TATType,
     TATTypeEnum,
+    TATTypeParameter,
     TATUnitType,
     isTypeEqual,
 } from './TATTypes';
@@ -294,15 +295,20 @@ class Checker {
                 const params = node.params;
                 const body = node.body;
                 const newContext = context.copy();
-                const typeParameters = node.typeParameters;
-                if (typeParameters) {
-                    if (typeParameters.type === 'TSTypeParameterDeclaration') {
-                        typeParameters.params.forEach((typeParameter) => {
+                const typeParametersNode = node.typeParameters;
+                const typeParameters: TATTypeParameter[] = [];
+                if (typeParametersNode) {
+                    if (typeParametersNode.type === 'TSTypeParameterDeclaration') {
+                        typeParametersNode.params.forEach((typeParameter) => {
                             const subTypeOf = newContext.findInTypeSpace(typeParameter.name);
                             if (subTypeOf) {
                                 todoAddDiagnostics('type parameter already declared');
                             } else {
                                 newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf: TATTopType });
+                                typeParameters?.push({
+                                    name: typeParameter.name,
+                                    subtypeOf: TATTopType,
+                                });
                             }
                         });
                     } else {
@@ -334,14 +340,13 @@ class Checker {
                             type: TATTypeEnum.Fun,
                             from: paramTypeList,
                             to: annotatedReturnType,
-                            // TODO
-                            typeParameters: [],
+                            typeParameters,
                         });
                     } else {
                         todoAddDiagnostics('different return type annotation and body');
                     }
                 } else {
-                    todoAddDiagnostics('no return type annotation');
+                    todoAddDiagnostics('no return type annotation. auto inference not implemented.');
                 }
                 break;
             }
