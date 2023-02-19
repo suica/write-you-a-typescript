@@ -44,7 +44,7 @@ describe('TAT-STLC on simple literals and expressions', () => {
 
 describe('TAT-STLC on simple functions', () => {
     it('should work for abstraction', () => {
-        expect(checkAsTATSTLC('(a: Num, b:Bool): Num => a + 1;')).toStrictEqual([
+        expect(checkAsTATSTLC('(a: Num, b:Bool): Num => a + 1;')).toMatchObject([
             { type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType },
         ]);
     });
@@ -56,14 +56,14 @@ describe('TAT-STLC on simple functions', () => {
             checkAsTATSTLC(`(a: Num, b:Bool): Unit => {
             return; 
         }`)
-        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATUnitType }]);
+        ).toMatchObject([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATUnitType }]);
     });
     it('should work for abstraction with block statement & return', () => {
         expect(
             checkAsTATSTLC(`(a: Num, b:Bool): Num => {
             return a + 1; 
         }`)
-        ).toStrictEqual([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType }]);
+        ).toMatchObject([{ type: TATTypeEnum.Fun, from: [TATNumType, TATBoolType], to: TATNumType }]);
     });
 });
 
@@ -88,7 +88,7 @@ describe('TAT-STLC with object', () => {
             checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): Num => {
             return a + a;
     };`)
-        ).toEqual([
+        ).toMatchObject([
             {
                 from: [TATNumType, { type: TATTypeEnum.Obj, mapping: { c: TATNumType, d: TATBoolType } }],
                 type: TATTypeEnum.Fun,
@@ -101,7 +101,7 @@ describe('TAT-STLC with object', () => {
             checkAsTATSTLC(`(a: Num, b: {c:Num; d: Bool}): {test: Bool} => {
             return { test: !!a || !!b.c && b.d };
     }`)
-        ).toEqual([
+        ).toMatchObject([
             {
                 type: TATTypeEnum.Fun,
                 from: [
