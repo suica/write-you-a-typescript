@@ -4,7 +4,7 @@ import { TATBoolType, TATNumType, TATStrType, TATTopType, TATType, TATUnitType }
 export type Identifier = string;
 
 type VariableBindingRecord = Record<Identifier, TATType>;
-type TypeVariableBindingRecord = Record<Identifier, { subTypeOf: TATType }>;
+type TypeVariableBindingRecord = Record<Identifier, { subTypeOf: TATType; isReference?: boolean }>;
 
 export type Scope = {
     valueSpace: VariableBindingRecord;
@@ -46,7 +46,7 @@ export class TypingContext {
         }
     }
     addTypeVariable({ identifier, subTypeOf }: { identifier: string; subTypeOf: TATType }) {
-        this.lastScope.typeSpace[identifier] = { subTypeOf };
+        this.lastScope.typeSpace[identifier] = { subTypeOf, isReference: true };
         return this;
     }
     addVariable({ identifier, type }: { identifier: string; type: TATType }) {

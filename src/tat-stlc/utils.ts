@@ -12,3 +12,7 @@ export function checkAsTATSTLC(code: string) {
         return checker.check(statement);
     });
 }
+
+export const isNotNil = <T>(x: T): x is NonNullable<T> => {
+    return !(x == null);
+};
