@@ -173,7 +173,7 @@ class Checker {
                 if (consequentType && alternateType && isTypeEqual(consequentType, alternateType)) {
                     typeMap.set(node, consequentType);
                 } else {
-                    todoAddDiagnostics();
+                    todoAddDiagnostics('mismatched types in branches of trinary operator');
                 }
                 break;
             }

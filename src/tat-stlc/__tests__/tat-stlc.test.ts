@@ -35,10 +35,10 @@ describe('TAT-STLC on simple literals and expressions', () => {
     it('should work for string expressions', () => {
         expect(checkAsTATSTLC('"test" + "test";')).toStrictEqual([TATStrType]);
     });
-    it.skip('should fail for trinary operator', () => {
-        const parsed = parseTAT('false ? 1 + 2 : "test";');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
+    it('should fail for trinary operator', () => {
+        expect(() => checkAsTATSTLC('false ? 1 + 2 : "test";')).toThrowErrorMatchingInlineSnapshot(
+            `"mismatched types in branches of trinary operator"`
+        );
     });
 });
 
@@ -75,10 +75,10 @@ describe('TAT-STLC on context & binding', () => {
         const checkedType = checker.check(parsedFile.program.body[0], context);
         expect(checkedType).toBe(TATNumType);
     });
-    it.skip('should fail for free variable', () => {
-        const parsed = parseTAT('a + 1;');
-        const { parsedFile, checker } = checkerSTLC(parsed);
-        const checkedType = checker.check(parsedFile.program.body[0]);
+    it('should fail for free variable', () => {
+        expect(() => {
+            checkAsTATSTLC(`a+1;`);
+        }).toThrowErrorMatchingInlineSnapshot(`"identifier not found"`);
     });
 });
 
