@@ -1,10 +1,6 @@
 import { parseTAT } from '../utils/tat-parser';
 import { checkerSTLC } from './checker';
 
-export function notImplemented() {
-    throw new Error('not implemented');
-}
-
 export function checkAsTATSTLC(code: string) {
     const parsed = parseTAT(code);
     const { parsedFile, checker } = checkerSTLC(parsed);
@@ -12,7 +8,3 @@ export function checkAsTATSTLC(code: string) {
         return checker.check(statement);
     });
 }
-
-export const isNotNil = <T>(x: T): x is NonNullable<T> => {
-    return !(x == null);
-};

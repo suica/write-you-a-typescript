@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { isNotNil } from './utils';
+import { isNotNil } from '../utils/common';
 
 export enum TATTypeEnum {
     Num = 'Num',

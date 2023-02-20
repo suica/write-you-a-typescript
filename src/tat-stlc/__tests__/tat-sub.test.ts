@@ -1,5 +1,5 @@
 import { TATNumType, TATTopType } from '../TATTypes';
-import { checkAsTATSTLC } from '../utils';
+import { checkAsTATSTLC } from '../helper';
 
 describe('TAT-sub', () => {
     it('should work for top type', () => {

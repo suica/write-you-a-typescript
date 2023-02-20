@@ -1,5 +1,5 @@
 import { TATNumType, TATStrType, TATTypeEnum } from '../TATTypes';
-import { checkAsTATSTLC } from '../utils';
+import { checkAsTATSTLC } from '../helper';
 
 describe('TAT-Sub-F', () => {
     it('should infer the type variable', () => {

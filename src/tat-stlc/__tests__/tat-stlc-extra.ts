@@ -1,5 +1,5 @@
 import { TATNumType, TATStrType, TATTopType } from '../TATTypes';
-import { checkAsTATSTLC } from '../utils';
+import { checkAsTATSTLC } from '../helper';
 
 describe('TAT-STLC with variable declaration', () => {
     it('should work for const/let', () => {

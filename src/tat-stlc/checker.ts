@@ -1,7 +1,7 @@
 import { Node } from '@babel/types';
 import _ from 'lodash';
 import { ParsedFile } from '../types/parsed-types';
-import { assert } from '../utils/common';
+import { assert, isNotNil } from '../utils/common';
 import {
     NodeTypeMap,
     TATBoolType,
@@ -18,7 +18,6 @@ import {
     isTypeEqual,
 } from './TATTypes';
 import { TypingContext } from './TypingContext';
-import { isNotNil } from './utils';
 
 function assertGetIdentifierName(node: Node): string {
     if (node.type === 'Identifier') {

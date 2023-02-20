@@ -2,7 +2,7 @@ import { parseTAT } from '../../utils/tat-parser';
 import { checkerSTLC } from '../checker';
 import { TATBoolType, TATNumType, TATStrType, TATTypeEnum, TATUnitType } from '../TATTypes';
 import { TypingContext } from '../TypingContext';
-import { checkAsTATSTLC } from '../utils';
+import { checkAsTATSTLC } from '../helper';
 
 describe('TAT-STLC on simple literals and expressions', () => {
     it('should work for numeric literals', () => {
