@@ -186,7 +186,6 @@ class Checker {
                     const identifier = declaration.id;
                     if (identifier.type === 'Identifier') {
                         if (declaration.init) {
-                            const id = identifier.name;
                             let inferredType = this.check(declaration.init, ctx);
                             if (identifier.typeAnnotation) {
                                 // if annotated with type
@@ -196,12 +195,10 @@ class Checker {
                                         `${inferredType.type} is not a subtype of ${annotatedType.type}`
                                     );
                                 }
-                                ctx.addVariable({ identifier: id, type: annotatedType });
                                 inferredType = annotatedType;
-                            } else {
-                                ctx.addVariable({ identifier: id, type: inferredType });
                             }
                             // consider the type of variable declaration stmt as the last declared variable
+                            ctx.addVariable({ identifier: identifier.name, type: inferredType });
                             typeMap.set(node, inferredType);
                         } else {
                             todoAddDiagnostics('const variable not initialized');
