@@ -88,8 +88,8 @@ class Checker {
                 break;
             }
             case 'BinaryExpression': {
-                const leftType = this.check(node.left, context) ?? TATTopType;
-                const rightType = this.check(node.right, context) ?? TATTopType;
+                const leftType = this.check(node.left, context);
+                const rightType = this.check(node.right, context);
                 if (
                     node.operator === '!=' ||
                     node.operator === '!==' ||
@@ -97,7 +97,7 @@ class Checker {
                     node.operator === '==='
                 ) {
                     // assert left and right are of the same type
-                    if (leftType && rightType && isTypeEqual(leftType, rightType)) {
+                    if (isTypeEqual(leftType, rightType)) {
                         typeMap.set(node, TATBoolType);
                     } else {
                         // TODO add diagnostics
@@ -108,12 +108,7 @@ class Checker {
                     node.operator === '<=' ||
                     node.operator === '>='
                 ) {
-                    if (
-                        leftType &&
-                        rightType &&
-                        isTypeEqual(leftType, TATNumType) &&
-                        isTypeEqual(rightType, TATNumType)
-                    ) {
+                    if (isTypeEqual(leftType, TATNumType) && isTypeEqual(rightType, TATNumType)) {
                         typeMap.set(node, TATBoolType);
                     } else {
                         todoAddDiagnostics('only num type can be compared');
@@ -153,12 +148,7 @@ class Checker {
             case 'LogicalExpression': {
                 const leftType = this.check(node.left, context);
                 const rightType = this.check(node.right, context);
-                if (
-                    leftType &&
-                    rightType &&
-                    isTypeEqual(leftType, TATBoolType) &&
-                    isTypeEqual(rightType, TATBoolType)
-                ) {
+                if (isSubtypeOf(leftType, TATBoolType) && isSubtypeOf(rightType, TATBoolType)) {
                     typeMap.set(node, TATBoolType);
                 } else {
                     todoAddDiagnostics();
@@ -170,7 +160,7 @@ class Checker {
                 assert(testType?.type === TATTypeEnum.Bool);
                 const consequentType = this.check(node.consequent, context);
                 const alternateType = this.check(node.alternate, context);
-                if (consequentType && alternateType && isTypeEqual(consequentType, alternateType)) {
+                if (isTypeEqual(consequentType, alternateType)) {
                     typeMap.set(node, consequentType);
                 } else {
                     todoAddDiagnostics('mismatched types in branches of trinary operator');
@@ -349,11 +339,15 @@ class Checker {
                 const typeName = node.typeName;
                 if (typeName.type === 'Identifier') {
                     const type = context.findInTypeSpace(typeName.name);
-                    typeMap.set(node, {
-                        type: TATTypeEnum.Reference,
-                        subtypeOf: type?.subTypeOf ?? TATTopType,
-                        name: typeName.name,
-                    });
+                    if (type) {
+                        typeMap.set(node, {
+                            type: TATTypeEnum.Reference,
+                            subtypeOf: type.subTypeOf,
+                            name: typeName.name,
+                        });
+                    } else {
+                        todoAddDiagnostics('type reference cannot be resolved');
+                    }
                 } else {
                     const type = this.check(typeName, context);
                     if (type) {
