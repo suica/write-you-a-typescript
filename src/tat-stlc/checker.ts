@@ -338,13 +338,40 @@ class Checker {
                 break;
             }
             case 'MemberExpression': {
-                const objectType = this.check(node.object, context);
+                let objectType = this.check(node.object, context);
+                if (objectType?.type === TATTypeEnum.Reference) {
+                    objectType = objectType.subtypeOf;
+                }
                 if (objectType?.type === TATTypeEnum.Obj) {
                     const key = assertGetIdentifierName(node.property);
                     const tatType = objectType.mapping[key];
                     typeMap.set(node, tatType);
                 } else {
                     todoAddDiagnostics();
+                }
+                break;
+            }
+            case 'TSTypeReference': {
+                const typeName = node.typeName;
+                if (typeName.type === 'Identifier') {
+                    const type = context.findInTypeSpace(typeName.name);
+                    typeMap.set(node, {
+                        type: TATTypeEnum.Reference,
+                        subtypeOf: type?.subTypeOf ?? TATTopType,
+                        name: typeName.name,
+                    });
+                } else {
+                    const type = this.check(typeName, context);
+                    if (type) {
+                        typeMap.set(node, type);
+                    }
+                }
+                break;
+            }
+            case 'TSTypeLiteral': {
+                const type = this.getTypeLiteralAsTATType(node, context);
+                if (type) {
+                    typeMap.set(node, type);
                 }
                 break;
             }
@@ -362,15 +389,21 @@ class Checker {
                             } else {
                                 let subTypeOf = TATTopType;
                                 if (typeParameter.constraint) {
-                                    if (typeParameter.constraint?.type === 'TSTypeReference') {
-                                        const typeName = typeParameter.constraint.typeName;
-                                        if (typeName.type === 'Identifier') {
-                                            const type = newContext.findInTypeSpace(typeName.name);
-                                            subTypeOf = type?.subTypeOf ?? TATTopType;
-                                        }
+                                    const constraintType = this.check(typeParameter.constraint);
+                                    if (constraintType) {
+                                        subTypeOf = constraintType;
                                     } else {
-                                        todoAddDiagnostics('only extends a type reference is allowed');
+                                        todoAddDiagnostics('cannot check constraint type');
                                     }
+                                    // if (typeParameter.constraint?.type === 'TSTypeReference') {
+                                    //     const typeName = typeParameter.constraint.typeName;
+                                    //     if (typeName.type === 'Identifier') {
+                                    //         const type = newContext.findInTypeSpace(typeName.name);
+                                    //         subTypeOf = type?.subTypeOf ?? TATTopType;
+                                    //     }
+                                    // } else {
+                                    //     todoAddDiagnostics('only extends a type reference is allowed');
+                                    // }
                                 }
                                 newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf });
                                 typeParameters?.push({
