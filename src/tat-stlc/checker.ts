@@ -424,15 +424,6 @@ class Checker {
                                     } else {
                                         todoAddDiagnostics('cannot check constraint type');
                                     }
-                                    // if (typeParameter.constraint?.type === 'TSTypeReference') {
-                                    //     const typeName = typeParameter.constraint.typeName;
-                                    //     if (typeName.type === 'Identifier') {
-                                    //         const type = newContext.findInTypeSpace(typeName.name);
-                                    //         subTypeOf = type?.subTypeOf ?? TATTopType;
-                                    //     }
-                                    // } else {
-                                    //     todoAddDiagnostics('only extends a type reference is allowed');
-                                    // }
                                 }
                                 newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf });
                                 typeParameters?.push({
