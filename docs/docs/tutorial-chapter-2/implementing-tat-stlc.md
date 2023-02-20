@@ -10,11 +10,11 @@ sidebar_position: 7
 
 $$
 \begin{aligned}
-& 源代码 & \\
+& \text{源代码} & \\
 & \quad \Downarrow & {\cdots \small \text{分词器(Tokenizer)}} \\
-& 符号流 & \\
+& \text{符号流} & \\
 & \quad \Downarrow & {\cdots \small \text{解析器(Parser)}}  \\
-& \hspace{-0.9em} 抽象语法树 & \\
+& \hspace{-0.9em} \text{抽象语法树} & \\
 & \quad \Downarrow & {\cdots \small \text{\color{magenta}语义分析(Semantic Analysis)}} \\
 & \hspace{1.5em} \vdots &
 \end{aligned}
@@ -34,9 +34,9 @@ $$
 \begin{aligned}
 & \hspace{-1em} \text{TAT源代码} & \\
 & \quad \Downarrow & {\cdots \small \text{Babel TypeScript解析器(Babel TypeScript Parser)}} \\
-& \hspace{-0.9em} 抽象语法树 & \\
+& \hspace{-0.9em} \text{抽象语法树} & \\
 & \quad \Downarrow & {\cdots \small \text{类型检查(Type Checking)}} \\
-& \hspace{-2.4em} 有类型信息的语法树 & \\
+& \hspace{-2.4em} \text{有类型信息的语法树} & \\
 & \quad \Downarrow & {\cdots \small \text{类型擦除(Type Erasing)}} \\
 & \hspace{-1.5em} \text{JavaScript代码} & \\
 \end{aligned}
