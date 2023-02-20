@@ -357,14 +357,25 @@ class Checker {
                 if (typeParametersNode) {
                     if (typeParametersNode.type === 'TSTypeParameterDeclaration') {
                         typeParametersNode.params.forEach((typeParameter) => {
-                            const subTypeOf = newContext.findInTypeSpace(typeParameter.name);
-                            if (subTypeOf) {
+                            if (newContext.findInTypeSpace(typeParameter.name)) {
                                 todoAddDiagnostics('type parameter already declared');
                             } else {
-                                newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf: TATTopType });
+                                let subTypeOf = TATTopType;
+                                if (typeParameter.constraint) {
+                                    if (typeParameter.constraint?.type === 'TSTypeReference') {
+                                        const typeName = typeParameter.constraint.typeName;
+                                        if (typeName.type === 'Identifier') {
+                                            const type = newContext.findInTypeSpace(typeName.name);
+                                            subTypeOf = type?.subTypeOf ?? TATTopType;
+                                        }
+                                    } else {
+                                        todoAddDiagnostics('only extends a type reference is allowed');
+                                    }
+                                }
+                                newContext.addTypeVariable({ identifier: typeParameter.name, subTypeOf });
                                 typeParameters?.push({
                                     name: typeParameter.name,
-                                    subtypeOf: TATTopType,
+                                    subtypeOf: subTypeOf,
                                     type: TATTypeEnum.Reference,
                                 });
                             }

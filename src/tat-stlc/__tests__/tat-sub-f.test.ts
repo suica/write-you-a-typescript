@@ -19,9 +19,9 @@ describe('TAT-Sub-F', () => {
             checkAsTATSTLC(`(<T>(x: T): T => x + x + 1)(1)`);
         }).toThrowErrorMatchingInlineSnapshot(`"num type expected"`);
     });
-    it.skip('should support extends syntax', () => {
-        expect(checkAsTATSTLC(`(<T extends Num>(x: T): T => x + x + 1)(1)`)).toEqual([TATNumType]);
-        expect(checkAsTATSTLC(`(<T extends {key: Str}>(x: T): T => x.key)({key: "test"})`)).toEqual([TATNumType]);
+    it('should support extends syntax', () => {
+        expect(checkAsTATSTLC(`(<T extends Num>(x: T): Num => x + x + 1)(1)`)).toEqual([TATNumType]);
+        expect(checkAsTATSTLC(`(<T extends {key: Str}>(x: T): Str => x.key)({key: "test"})`)).toEqual([TATNumType]);
     });
 });
 
