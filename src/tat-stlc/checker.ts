@@ -4,6 +4,7 @@ import { assert } from '../utils/common';
 import {
     NodeTypeMap,
     TATBoolType,
+    TATFuncType,
     TATNumType,
     TATStrType,
     TATTopType,
@@ -14,6 +15,7 @@ import {
     isTypeEqual,
 } from './TATTypes';
 import { TypingContext } from './TypingContext';
+import { isNotNil } from './utils';
 
 function assertGetIdentifierName(node: Node): string {
     if (node.type === 'Identifier') {
@@ -56,7 +58,12 @@ class Checker {
             if (entityName.type === 'Identifier') {
                 // find id-type pair in type space of typing context
                 const id = entityName.name;
-                return context.findInTypeSpace(id)?.subTypeOf ?? TATTopType;
+                const typeSpaceItem = context.findInTypeSpace(id);
+                if (typeSpaceItem?.isReference) {
+                    return { type: TATTypeEnum.Reference, name: id, subtypeOf: typeSpaceItem.subTypeOf };
+                } else {
+                    return typeSpaceItem?.subTypeOf;
+                }
             }
         } else if (typeAnnotation.type === 'TSTypeLiteral') {
             return this.getTypeLiteralAsTATType(typeAnnotation, context);
@@ -180,13 +187,12 @@ class Checker {
             }
             case 'CallExpression': {
                 const calleeType = this.check(node.callee, context);
-                const argumentTypeList = node.arguments.map((argument) => {
-                    return this.check(argument, context);
-                });
 
-                const isNotNil = <T>(x: T): x is NonNullable<T> => {
-                    return !(x == null);
-                };
+                const argumentTypeList = node.arguments
+                    .map((argument) => {
+                        return this.check(argument, context);
+                    })
+                    .filter(isNotNil);
 
                 const isListSubtypeOf = (s: (TATType | undefined)[], t: (TATType | undefined)[]) => {
                     const nonNilS = s.filter(isNotNil);
@@ -222,11 +228,48 @@ class Checker {
                     }
                     return isTypeEqual(s, t);
                 };
-                if (calleeType?.type === TATTypeEnum.Fun && isListSubtypeOf(argumentTypeList, calleeType.from)) {
-                    // console.log(argumentTypeList,calleeType.from);
-                    typeMap.set(node, calleeType.to);
+
+                const instantiate = (func: TATFuncType, replaceMap: Record<string, TATType>): TATFuncType => {
+                    const replaceReference = (type: TATType) => {
+                        if (type.type === TATTypeEnum.Reference && replaceMap[type.name]) {
+                            return replaceMap[type.name];
+                        }
+                        return type;
+                    };
+                    // replace from / to, according to the replaceMap
+                    return {
+                        ...func,
+                        from: func.from.map(replaceReference),
+                        to: replaceReference(func.to),
+                    };
+                };
+
+                // when the called function has type parameter, try to infer the real type with regard to the passed arguments type
+                const inferMappingFromArguments = (
+                    func: TATFuncType,
+                    argumentTypes: TATType[]
+                ): Record<string, TATType> => {
+                    const mapping: Record<string, TATType> = Object.create(null);
+                    func.from.forEach((tatType, index) => {
+                        if (tatType.type === TATTypeEnum.Reference) {
+                            const argumentType = argumentTypes[index];
+                            // TODO check inconsistent inference
+                            mapping[tatType.name] = argumentType;
+                        }
+                    });
+                    return mapping;
+                };
+
+                if (calleeType?.type === TATTypeEnum.Fun) {
+                    const map = inferMappingFromArguments(calleeType, argumentTypeList);
+                    const instantiatedFuncType = instantiate(calleeType, map);
+                    if (isListSubtypeOf(argumentTypeList, instantiatedFuncType.from)) {
+                        typeMap.set(node, instantiatedFuncType.to);
+                    } else {
+                        todoAddDiagnostics('arguments mismatched');
+                    }
                 } else {
-                    todoAddDiagnostics();
+                    todoAddDiagnostics('trying to call a non-function type');
                 }
                 break;
             }
@@ -308,6 +351,7 @@ class Checker {
                                 typeParameters?.push({
                                     name: typeParameter.name,
                                     subtypeOf: TATTopType,
+                                    type: TATTypeEnum.Reference,
                                 });
                             }
                         });
