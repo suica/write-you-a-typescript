@@ -30,6 +30,43 @@ function todoAddDiagnostics(msg: string = '') {
     throw new Error(msg || 'TODO: add diagnostics');
 }
 
+const isListSubtypeOf = (s: (TATType | undefined)[], t: (TATType | undefined)[]) => {
+    const nonNilS = s.filter(isNotNil);
+    const nonNilT = t.filter(isNotNil);
+    if (nonNilT.length !== t.length || nonNilS.length !== s.length) {
+        return false;
+    }
+    if (nonNilS.length === t.length) {
+        return nonNilS.every((typ, index) => {
+            return isSubtypeOf(typ, nonNilT[index]);
+        });
+    }
+    return false;
+};
+const isSubtypeOf = (s: TATType, t: TATType): boolean => {
+    // 判断一下s是否是t的子类型
+    if (t.type === TATTypeEnum.Top) {
+        return true;
+    } else if (s.type === TATTypeEnum.Fun && t.type === TATTypeEnum.Fun) {
+        // 是函数！
+        const s1 = s.from;
+        const s2 = s.to;
+        const t1 = t.from;
+        const t2 = t.to;
+        return isListSubtypeOf(t1, s1) && isSubtypeOf(s2, t2);
+    } else if (t.type === TATTypeEnum.Obj && s.type === TATTypeEnum.Obj) {
+        return Object.keys(t.mapping).every((key) => {
+            if (s.mapping[key]) {
+                return isSubtypeOf(s.mapping[key], t.mapping[key]);
+            }
+            return false;
+        });
+    } else if (s.type === TATTypeEnum.Reference && isSubtypeOf(s.subtypeOf, t)) {
+        return true;
+    }
+    return isTypeEqual(s, t);
+};
+
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
@@ -89,8 +126,8 @@ class Checker {
                 break;
             }
             case 'BinaryExpression': {
-                const leftType = this.check(node.left, context)!;
-                const rightType = this.check(node.right, context);
+                const leftType = this.check(node.left, context) ?? TATTopType;
+                const rightType = this.check(node.right, context) ?? TATTopType;
                 if (
                     node.operator === '!=' ||
                     node.operator === '!==' ||
@@ -117,20 +154,25 @@ class Checker {
                     ) {
                         typeMap.set(node, TATBoolType);
                     } else {
-                        // TODO add diagnostics
+                        todoAddDiagnostics('only num type can be compared');
+                    }
+                } else if ('+-*/'.includes(node.operator)) {
+                    // handle str concat
+                    if (
+                        node.operator === '+' &&
+                        isSubtypeOf(leftType, TATStrType) &&
+                        isSubtypeOf(rightType, TATStrType)
+                    ) {
+                        typeMap.set(node, TATStrType);
+                        break;
+                    }
+                    if (isSubtypeOf(leftType, TATNumType) && isSubtypeOf(rightType, TATNumType)) {
+                        typeMap.set(node, TATNumType);
+                    } else {
+                        todoAddDiagnostics(`num type expected`);
                     }
                 } else {
-                    // FIXME fix for + - * /
-                    if (
-                        leftType &&
-                        rightType &&
-                        isTypeEqual(leftType, rightType) &&
-                        !isTypeEqual(leftType, TATBoolType)
-                    ) {
-                        typeMap.set(node, leftType);
-                    } else {
-                        // TODO add diagnostics
-                    }
+                    todoAddDiagnostics(`not support operator: "${node.operator}"`);
                 }
                 break;
             }
@@ -194,41 +236,6 @@ class Checker {
                         return this.check(argument, context);
                     })
                     .filter(isNotNil);
-
-                const isListSubtypeOf = (s: (TATType | undefined)[], t: (TATType | undefined)[]) => {
-                    const nonNilS = s.filter(isNotNil);
-                    const nonNilT = t.filter(isNotNil);
-                    if (nonNilT.length !== t.length || nonNilS.length !== s.length) {
-                        return false;
-                    }
-                    if (nonNilS.length === t.length) {
-                        return nonNilS.every((typ, index) => {
-                            return isSubtypeOf(typ, nonNilT[index]);
-                        });
-                    }
-                    return false;
-                };
-                const isSubtypeOf = (s: TATType, t: TATType): boolean => {
-                    // 判断一下s是否是t的子类型
-                    if (t.type === TATTypeEnum.Top) {
-                        return true;
-                    } else if (s.type === TATTypeEnum.Fun && t.type === TATTypeEnum.Fun) {
-                        // 是函数！
-                        const s1 = s.from;
-                        const s2 = s.to;
-                        const t1 = t.from;
-                        const t2 = t.to;
-                        return isListSubtypeOf(t1, s1) && isSubtypeOf(s2, t2);
-                    } else if (t.type === TATTypeEnum.Obj && s.type === TATTypeEnum.Obj) {
-                        return Object.keys(t.mapping).every((key) => {
-                            if (s.mapping[key]) {
-                                return isSubtypeOf(s.mapping[key], t.mapping[key]);
-                            }
-                            return false;
-                        });
-                    }
-                    return isTypeEqual(s, t);
-                };
 
                 const instantiate = (func: TATFuncType, replaceMap: Record<string, TATType>): TATFuncType => {
                     const replaceReference = (type: TATType): TATType => {
@@ -385,6 +392,7 @@ class Checker {
                 if (node.returnType?.type === 'TSTypeAnnotation') {
                     annotatedReturnType = this.getTypeAnnotationAsTATType(node.returnType, newContext);
                     const bodyType = this.check(body, newContext);
+                    console.log({ bodyType });
                     if (annotatedReturnType && bodyType && isTypeEqual(annotatedReturnType, bodyType)) {
                         // annotated return type is identical to real return type
                         typeMap.set(node, {
