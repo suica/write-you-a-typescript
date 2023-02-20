@@ -36,8 +36,8 @@ You can visit the [Github Pages](https://suica.github.io/write-you-a-typescript/
 - [ ] Revise the README.md for better introduction
 - [ ] Add search to website
 - [ ] Add issue-based comments to website
-- [ ] Implement the test cases for TAT-F
-- [ ] Implement TAT-F
-- [ ] Implement the test cases and code for TAT-Sub-F
-- [ ] Implement TAT-Sub-F
+- [x] Implement the test cases for TAT-F
+- [x] Implement TAT-F
+- [x] Implement the test cases and code for TAT-Sub-F
+- [x] Implement TAT-Sub-F
 - [ ] Translate the site to English
