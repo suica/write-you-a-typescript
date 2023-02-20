@@ -1,10 +1,25 @@
-import { TATNumType, TATStrType } from '../TATTypes';
+import { TATNumType, TATStrType, TATTypeEnum } from '../TATTypes';
 import { checkAsTATSTLC } from '../utils';
 
 describe('TAT-Sub-F', () => {
     it('should infer the type variable', () => {
         expect(checkAsTATSTLC(`(<T>(x: T): T => x)(1)`)).toEqual([TATNumType]);
-        expect(checkAsTATSTLC(`(<T>(key: T): { key: T } => ({ key: key }))("test")`)).toEqual([TATStrType]);
+        // recursively replace variables
+        expect(checkAsTATSTLC(`(<T>(key: T): { key: T } => ({ key: key }))("test")`)).toEqual([
+            {
+                type: TATTypeEnum.Obj,
+                mapping: {
+                    key: TATStrType,
+                },
+            },
+        ]);
+    });
+    it.skip('should reject invalid usage', () => {
+        expect(checkAsTATSTLC(`(<T>(x: T): T => x + x + 1)(1)`)).toEqual([TATNumType]);
+    });
+    it.skip('should support extends syntax', () => {
+        expect(checkAsTATSTLC(`(<T extends Num>(x: T): T => x + x + 1)(1)`)).toEqual([TATNumType]);
+        expect(checkAsTATSTLC(`(<T extends {key: Str}>(x: T): T => x.key)({key: "test"})`)).toEqual([TATNumType]);
     });
 });
 

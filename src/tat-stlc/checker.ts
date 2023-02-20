@@ -1,4 +1,5 @@
 import { Node, TSTypeAnnotation, TSTypeLiteral } from '@babel/types';
+import _ from 'lodash';
 import { ParsedFile } from '../types/parsed-types';
 import { assert } from '../utils/common';
 import {
@@ -230,9 +231,15 @@ class Checker {
                 };
 
                 const instantiate = (func: TATFuncType, replaceMap: Record<string, TATType>): TATFuncType => {
-                    const replaceReference = (type: TATType) => {
+                    const replaceReference = (type: TATType): TATType => {
                         if (type.type === TATTypeEnum.Reference && replaceMap[type.name]) {
                             return replaceMap[type.name];
+                        } else if (type.type === TATTypeEnum.Obj) {
+                            // replace, recursively
+                            return {
+                                ...type,
+                                mapping: _.mapValues(type.mapping, replaceReference),
+                            };
                         }
                         return type;
                     };
