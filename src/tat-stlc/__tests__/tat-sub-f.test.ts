@@ -21,7 +21,7 @@ describe('TAT-Sub-F', () => {
     });
     it('should support extends syntax', () => {
         expect(checkAsTATSTLC(`(<T extends Num>(x: T): Num => x + x + 1)(1)`)).toEqual([TATNumType]);
-        expect(checkAsTATSTLC(`(<T extends {key: Str}>(x: T): Str => x.key)({key: "test"})`)).toEqual([TATNumType]);
+        expect(checkAsTATSTLC(`(<T extends {key: Str}>(x: T): Str => x.key)({key: "test"})`)).toEqual([TATStrType]);
     });
 });
 
