@@ -26,7 +26,7 @@ function assertGetIdentifierName(node: Node): string {
     }
 }
 
-function todoAddDiagnostics(msg: string = '') {
+function todoAddDiagnostics(msg: string = ''): never {
     throw new Error(msg || 'TODO: add diagnostics');
 }
 
@@ -70,7 +70,7 @@ const isSubtypeOf = (s: TATType, t: TATType): boolean => {
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
-    check(node: Node, context?: TypingContext): TATType | undefined {
+    check(node: Node, context?: TypingContext): TATType {
         context ??= new TypingContext();
         const typeMap = this.typeMap;
         switch (node.type) {
@@ -175,6 +175,41 @@ class Checker {
                 } else {
                     todoAddDiagnostics('mismatched types in branches of trinary operator');
                 }
+                break;
+            }
+            case 'VariableDeclaration': {
+                if (node.kind !== 'const') {
+                    todoAddDiagnostics(`declare variable with ${node.kind} is not allowed`);
+                }
+                const ctx = context;
+                node.declarations.forEach((declaration) => {
+                    const identifier = declaration.id;
+                    if (identifier.type === 'Identifier') {
+                        if (declaration.init) {
+                            const id = identifier.name;
+                            let inferredType = this.check(declaration.init, ctx);
+                            if (identifier.typeAnnotation) {
+                                // if annotated with type
+                                const annotatedType = this.check(identifier.typeAnnotation, ctx);
+                                if (!isSubtypeOf(inferredType, annotatedType)) {
+                                    todoAddDiagnostics(
+                                        `${inferredType.type} is not a subtype of ${annotatedType.type}`
+                                    );
+                                }
+                                ctx.addVariable({ identifier: id, type: annotatedType });
+                                inferredType = annotatedType;
+                            } else {
+                                ctx.addVariable({ identifier: id, type: inferredType });
+                            }
+                            // consider the type of variable declaration stmt as the last declared variable
+                            typeMap.set(node, inferredType);
+                        } else {
+                            todoAddDiagnostics('const variable not initialized');
+                        }
+                    } else {
+                        todoAddDiagnostics('other left values are not supported');
+                    }
+                });
                 break;
             }
             case 'Directive': {
@@ -455,7 +490,7 @@ class Checker {
                 );
             }
         }
-        return typeMap.get(node);
+        return typeMap.get(node) ?? TATTopType;
     }
     clearDiagnostics() {
         this.diagnostics = [];
