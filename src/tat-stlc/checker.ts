@@ -1,4 +1,4 @@
-import { Node, TSTypeAnnotation, TSTypeLiteral } from '@babel/types';
+import { Node } from '@babel/types';
 import _ from 'lodash';
 import { ParsedFile } from '../types/parsed-types';
 import { assert } from '../utils/common';
@@ -70,44 +70,6 @@ const isSubtypeOf = (s: TATType, t: TATType): boolean => {
 class Checker {
     typeMap: NodeTypeMap = new WeakMap();
     diagnostics = new Array<string>();
-    getTypeLiteralAsTATType(typeLiteral: TSTypeLiteral, context: TypingContext): TATType | undefined {
-        // try to construct it as a TAT Obj Type
-        const mapping: Record<string, TATType> = Object.create(null);
-        typeLiteral.members.forEach((typeElement) => {
-            if (typeElement.type === 'TSPropertySignature') {
-                const annotation = typeElement.typeAnnotation;
-                if (annotation) {
-                    const tatType = this.getTypeAnnotationAsTATType(annotation, context);
-                    if (tatType) {
-                        const identifierName = assertGetIdentifierName(typeElement.key);
-                        mapping[identifierName] = tatType;
-                    }
-                }
-            } else {
-                throw new Error(`not implemented for ${typeElement.type}`);
-            }
-        });
-        return { type: TATTypeEnum.Obj, mapping };
-    }
-    getTypeAnnotationAsTATType(tsTypeAnnotation: TSTypeAnnotation, context: TypingContext): TATType | undefined {
-        const typeAnnotation = tsTypeAnnotation.typeAnnotation;
-        if (typeAnnotation.type === 'TSTypeReference') {
-            const entityName = typeAnnotation.typeName;
-            if (entityName.type === 'Identifier') {
-                // find id-type pair in type space of typing context
-                const id = entityName.name;
-                const typeSpaceItem = context.findInTypeSpace(id);
-                if (typeSpaceItem?.isReference) {
-                    return { type: TATTypeEnum.Reference, name: id, subtypeOf: typeSpaceItem.subTypeOf };
-                } else {
-                    return typeSpaceItem?.subTypeOf;
-                }
-            }
-        } else if (typeAnnotation.type === 'TSTypeLiteral') {
-            return this.getTypeLiteralAsTATType(typeAnnotation, context);
-        }
-        todoAddDiagnostics('not recognized type annotation');
-    }
     check(node: Node, context?: TypingContext): TATType | undefined {
         context ??= new TypingContext();
         const typeMap = this.typeMap;
@@ -369,10 +331,45 @@ class Checker {
                 break;
             }
             case 'TSTypeLiteral': {
-                const type = this.getTypeLiteralAsTATType(node, context);
-                if (type) {
-                    typeMap.set(node, type);
+                // try to construct it as a TAT Obj Type
+                const mapping: Record<string, TATType> = Object.create(null);
+                node.members.forEach((typeElement) => {
+                    if (typeElement.type === 'TSPropertySignature') {
+                        const annotation = typeElement.typeAnnotation;
+                        if (annotation) {
+                            const tatType = this.check(annotation, context);
+                            if (tatType) {
+                                const identifierName = assertGetIdentifierName(typeElement.key);
+                                mapping[identifierName] = tatType;
+                            }
+                        }
+                    } else {
+                        throw new Error(`not implemented for ${typeElement.type}`);
+                    }
+                });
+                return { type: TATTypeEnum.Obj, mapping };
+            }
+            case 'TSTypeAnnotation': {
+                const typeAnnotation = node.typeAnnotation;
+                let type: TATType | undefined = undefined;
+                if (typeAnnotation.type === 'TSTypeReference') {
+                    const entityName = typeAnnotation.typeName;
+                    if (entityName.type === 'Identifier') {
+                        // find id-type pair in type space of typing context
+                        const id = entityName.name;
+                        const typeSpaceItem = context.findInTypeSpace(id);
+                        if (typeSpaceItem?.isReference) {
+                            type = { type: TATTypeEnum.Reference, name: id, subtypeOf: typeSpaceItem.subTypeOf };
+                        } else {
+                            type = typeSpaceItem?.subTypeOf;
+                        }
+                    }
+                } else if (typeAnnotation.type === 'TSTypeLiteral') {
+                    type = this.check(typeAnnotation, context);
+                } else {
+                    todoAddDiagnostics('not recognized type annotation');
                 }
+                typeMap.set(node, type);
                 break;
             }
             case 'ArrowFunctionExpression': {
@@ -420,7 +417,7 @@ class Checker {
                 const paramTypeList: TATType[] = [];
                 params.forEach((param) => {
                     if (param.type === 'Identifier' && param.typeAnnotation?.type === 'TSTypeAnnotation') {
-                        const type = this.getTypeAnnotationAsTATType(param.typeAnnotation, newContext);
+                        const type = this.check(param.typeAnnotation, newContext);
                         const identifier = param.name;
                         if (type) {
                             newContext.addVariable({ identifier, type });
@@ -434,7 +431,7 @@ class Checker {
                 });
                 let annotatedReturnType = undefined;
                 if (node.returnType?.type === 'TSTypeAnnotation') {
-                    annotatedReturnType = this.getTypeAnnotationAsTATType(node.returnType, newContext);
+                    annotatedReturnType = this.check(node.returnType, newContext);
                     const bodyType = this.check(body, newContext);
                     if (annotatedReturnType && bodyType && isTypeEqual(annotatedReturnType, bodyType)) {
                         // annotated return type is identical to real return type
