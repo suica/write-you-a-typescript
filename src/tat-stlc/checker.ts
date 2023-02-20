@@ -392,7 +392,6 @@ class Checker {
                 if (node.returnType?.type === 'TSTypeAnnotation') {
                     annotatedReturnType = this.getTypeAnnotationAsTATType(node.returnType, newContext);
                     const bodyType = this.check(body, newContext);
-                    console.log({ bodyType });
                     if (annotatedReturnType && bodyType && isTypeEqual(annotatedReturnType, bodyType)) {
                         // annotated return type is identical to real return type
                         typeMap.set(node, {
