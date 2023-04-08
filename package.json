@@ -14,7 +14,7 @@
     "dependencies": {
         "lodash": "^4.17.21",
         "ts-node": "^10.2.1",
-        "typescript": "5.0.0-beta"
+        "typescript": "5.0.4"
     },
     "devDependencies": {
         "@babel/core": "^7.16.5",
