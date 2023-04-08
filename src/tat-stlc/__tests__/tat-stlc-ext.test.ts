@@ -1,4 +1,4 @@
-import { TATNumType, TATStrType, TATTopType } from '../TATTypes';
+import { TATNumType, TATTopType } from '../TATTypes';
 import { checkAsTATSTLC } from '../helper';
 
 describe('TAT-STLC with variable declaration', () => {
