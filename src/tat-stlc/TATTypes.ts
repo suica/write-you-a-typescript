@@ -12,7 +12,7 @@ export enum TATTypeEnum {
     Reference = 'Reference',
 }
 
-export type TATTypeParameter = {
+export type TATTypeReference = {
     subtypeOf: TATType;
     name: string;
     type: TATTypeEnum.Reference;
@@ -22,7 +22,7 @@ export type TATFuncType = {
     type: TATTypeEnum.Fun;
     from: TATType[];
     to: TATType;
-    typeParameters: TATTypeParameter[];
+    typeParameters: TATTypeReference[];
 };
 
 export type TATType =
@@ -32,7 +32,7 @@ export type TATType =
     | { type: TATTypeEnum.Str }
     | { type: TATTypeEnum.Unit }
     | { type: TATTypeEnum.Obj; mapping: Record<string, TATType> }
-    | TATTypeParameter
+    | TATTypeReference
     | TATFuncType;
 
 export function isTypeEqual(type1: TATType, type2: TATType): boolean {

@@ -11,7 +11,7 @@ import {
     TATTopType,
     TATType,
     TATTypeEnum,
-    TATTypeParameter,
+    TATTypeReference,
     TATUnitType,
     isListSubtypeOf,
     isSubtypeOf,
@@ -367,7 +367,7 @@ class Checker {
                 const body = node.body;
                 const newContext = context.copy();
                 const typeParametersNode = node.typeParameters;
-                const typeParameters: TATTypeParameter[] = [];
+                const typeParameters: TATTypeReference[] = [];
                 if (typeParametersNode) {
                     if (typeParametersNode.type === 'TSTypeParameterDeclaration') {
                         typeParametersNode.params.forEach((typeParameter) => {
@@ -428,6 +428,9 @@ class Checker {
                 } else {
                     todoAddDiagnostics('no return type annotation. auto inference not implemented.');
                 }
+                break;
+            }
+            case 'TSTypeAliasDeclaration': {
                 break;
             }
             default: {
