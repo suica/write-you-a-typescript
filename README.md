@@ -1,4 +1,4 @@
-# 实现一个类TypeScript类型检查器! (Write You a Typescript)
+# 实现一个类TypeScript类型检查器! (Write You a Typescript-like Type Checker)
 
 ## Introduction
 
@@ -7,8 +7,6 @@ This project contains a toy implementation of TypeScript-like type checker for a
 Also, the project contains the slides of a course about the type theory and how to implement the TAT type checker.
 
 If you want to have an old Chinese version of slides, you can visit [this](https://github.com/suica/write-you-a-typescript/blob/main/slides/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8.pdf).
-
-如果你想要一份旧的中文讲义，请访问[此处](https://github.com/suica/write-you-a-typescript/blob/main/slides/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8.pdf)。
 
 ## Doc
 
