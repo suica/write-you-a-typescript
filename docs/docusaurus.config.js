@@ -50,12 +50,13 @@ const config = {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl: 'https://github.com/suica/write-you-a-typescript/tree/main/docs/',
                     remarkPlugins: [math],
-                    rehypePlugins: [katex],
+                    rehypePlugins: [[katex, { strict: false }]],
                     sidebarCollapsed: false,
                 },
                 blog: {
                     showReadingTime: true,
                     editUrl: 'https://github.com/suica/write-you-a-typescript/tree/main/docs/',
+                    rehypePlugins: [[katex, { strict: false }]],
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
