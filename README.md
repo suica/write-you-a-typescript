@@ -55,3 +55,7 @@
 [^pts]: [Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf) 
 
 [^ts-handbook]: [TypeScript: Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
+
+如果你想要了解更多的关于真实 TypeScript 编译器的细节，可以参考[^ts-compiler-notes]。
+
+[^ts-compiler-notes]: [TypeScript Compiler Notes](https://github.com/microsoft/TypeScript-Compiler-Notes)
