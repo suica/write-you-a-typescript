@@ -10,8 +10,7 @@ sidebar_position: 1
 
 -   本课程的一大特色就是**产出导向**。每一节课后，都设有需要动手编码的小作业。如果你完成了每节课后的作业，那么你最终就能得到一个属于自己的类TypeScript的类型检查器，并且对TypeScript的类型系统产生较为深入的理解。
 
--   课程仓库：[https://github.com/suica/write-you-a-typescript](https://github.com/suica/write-you-a-typescript)
-    - 在这里你可以找到课程幻灯片的源码，和类型检查器的代码。 
+- [课程仓库](https://github.com/suica/write-you-a-typescript)可以找到课程讲义和类型检查器的源码。 
 
 # 课程路线图
 
