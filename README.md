@@ -1,6 +1,4 @@
-# write-you-a-typescript 
-
-实现一个类TypeScript类型检查器!
+# 实现一个类TypeScript类型检查器! (Write You a Typescript)
 
 ## Introduction
 
@@ -19,25 +17,3 @@ The original lecture slides will be revised and be carefully reorganized in the 
 You can visit the [Github Pages](https://suica.github.io/write-you-a-typescript/) or the [Vercel app](https://write-you-a-typescript.vercel.app/) to see the tutorial articles.
 
 > WARNING: the website of this project is currently under construction.
-
-
-
-## TODOs
-
-- [x] Create a document site from the slides
-- [x] Deploy the site to Github Pages & Vercel
-- [ ] Revise the document, fix errors/typos
-    - [x] Chapter 0: introduction to the course
-    - [x] Chapter 1: basics about the type systems
-    - [x] Chapter 2: basics about implementing a type checker
-    - [x] Chapter 3: the theory of subtyping, and its implementation
-    - [x] Chapter 4: the theory of polymorphism, and its implementation
-    - [x] Chapter 5: the TAT type checker and the type-level programming in TypeScript
-- [ ] Revise the README.md for better introduction
-- [ ] Add search to website
-- [ ] Add issue-based comments to website
-- [x] Implement the test cases for TAT-F
-- [x] Implement TAT-F
-- [x] Implement the test cases and code for TAT-Sub-F
-- [x] Implement TAT-Sub-F
-- [ ] Translate the site to English
