@@ -4,7 +4,7 @@
 
 ## 课程介绍
 
-- 本课程主要面向有一定经验的 TypeScript 用户。对于没有 TypeScript 经验的学习者，可以在先学完基本的 TypeScript 课程后再来学习本课程。
+- 本课程主要面向有一定经验的 TypeScript 用户。对于没有 TypeScript 经验的学习者，可以在先学完基本的 TypeScript 课程后再来学习本课程，推荐阅读 TypeScript Handbook [^ts-handbook]。
 - 本课程不预设学习者有特别的数学背景，尽量简化用到的数学知识，并会对学习者可能不熟悉的数学知识进行及时的介绍。但是，学习者应当熟悉高中数学涉及到的命题逻辑(比如，$\land$, $\lor$, $\lnot$, $\forall$)以及简单的集合论等相关知识。
 - 本课程的一大特色就是**产出导向**。每一节课后，都设有需要动手编码的小作业。如果你完成了每节课后的作业，那么你最终就能得到一个属于自己的类TypeScript的类型检查器，并且对TypeScript的类型系统产生较为深入的理解。
 - 你可以在仓库中找到课程幻灯片的源码，和类型检查器的代码。
@@ -40,16 +40,18 @@
 哪里没读懂？哪里讲得不够深入？或是想要扩展TAT？
 请提issue，我们非常欢迎你的贡献。
 
-## 参考文献
+## 扩展阅读
 
-如果你想了解更多关于类型系统的知识，可以参考这篇综述：
+如果你想了解更多关于类型系统的知识，可以参考这篇综述 [^1]。
 
-- [1] [Type Systems](http://lucacardelli.name/papers/typesystems.pdf)
+[^1]: [Type Systems](http://lucacardelli.name/papers/typesystems.pdf)
 
-如果你想了解更多关于类型系统的数学细节，可以参考这本类型论与编程语言的经典教材：
+如果你想了解更多关于类型系统的数学细节，可以参考这本类型论与编程语言的经典教材[^tapl]。
 
-- [2] [Benjamin C. Pierce. 2002. Types and Programming Languages (1st. ed.). The MIT Press.](https://dl.acm.org/doi/book/10.5555/509043) 
+[^tapl]: [Benjamin C. Pierce. 2002. Types and Programming Languages (1st. ed.). The MIT Press.](https://dl.acm.org/doi/book/10.5555/509043) 
 
-如果你想了解更多的PTS：
+如果你想了解更多的PTS，可以参考[^pts]。
 
-- [3] [Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf) 
+[^pts]: [Lambda cube and dependent types](https://www.math.nagoya-u.ac.jp/~garrigue/lecture/2018_tenbo/dependent.pdf) 
+
+[^ts-handbook]: [TypeScript: Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
