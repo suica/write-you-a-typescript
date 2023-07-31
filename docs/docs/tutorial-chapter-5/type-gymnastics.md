@@ -26,4 +26,5 @@ sidebar_position: 5
 
 1. 完成3道Type Challenges上的Medium难度的题目；
 2. 实现一个TypeScript有，但是TAT-Sub-F还没有的功能。
-  - 步骤：选定功能，确定定型规则，实现单测，实现功能。
+
+- 步骤：选定功能，确定定型规则，实现单测，实现功能。

@@ -17,11 +17,13 @@ TAT-Sub是基于TAT-STLC的类型检查器，具有前者的全部功能，因�
 ## 子类型定型规则
 
 自反性。
+
 $$
 {S<:S} \tag{S-Refl}
 $$
 
 传递性。
+
 $$
 { S <: U \quad U <: T
 \over

@@ -82,6 +82,7 @@ $$
 $$
 {\over \Gamma \vdash 1: \mathbf{Num}}和 {\over \Gamma \vdash 0.2: \mathbf{Num}} 还有 {\over \Gamma \vdash -1e15: \mathbf{Num}}
 $$
+
 </div>
 
 ---
@@ -109,10 +110,13 @@ $$
 $$
 { \over \Gamma \vdash \mathtt{""}: \mathbf{Str}}
 $$
+
 还有：
+
 $$
 {\over\Gamma \vdash \mathtt{"abc"}: \mathbf{Str}}
 $$
+
 等等。
 
 对于字符串连接意义上的`+`运算，我们有：
@@ -120,7 +124,6 @@ $$
 $$
 {\Gamma \vdash t_1: \mathbf{Str} \quad \Gamma \vdash t_2: \mathbf{Str}\over\Gamma \vdash t_1 + t_2 : \mathbf{Str}} \tag{S-Concat}
 $$
-
 
 ---
 
@@ -148,7 +151,6 @@ $$
 {\Gamma \vdash t_1: T_1 \over \Gamma \vdash \text{!}\ t_1 : \mathbf{Bool}} \tag{B-Not}
 $$
 
-
 ---
 
 ## 布尔类型上的条件运算符
@@ -164,7 +166,6 @@ $$
 $$
 
 可以看到，这个定型规则要求三元条件运算符的两个条件分支的类型必须相同。因为我们没有TypeScript那样的并类型(Union Type)来描写这种情况所需要的类型。
-
 
 ---
 

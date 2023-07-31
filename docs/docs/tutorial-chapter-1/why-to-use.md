@@ -32,8 +32,8 @@ sidebar_position: 3
 type Status = 'finished' | 'unfinished';
 
 const StatusDisplayDict: Record<Status, string> = {
-    finished: '已完成',
-    unfinished: '未完成',
+  finished: '已完成',
+  unfinished: '未完成',
 };
 ```
 
@@ -41,8 +41,8 @@ const StatusDisplayDict: Record<Status, string> = {
 type Status = 'finished' | 'unfinished' | 'processing';
 
 const StatusDisplayDict: Record<Status, string> = {
-    finished: '已完成',
-    unfinished: '未完成',
+  finished: '已完成',
+  unfinished: '未完成',
 };
 ```
 
@@ -52,22 +52,22 @@ const StatusDisplayDict: Record<Status, string> = {
 type MyEvent = { kind: 'resize'; hw: [number, number] } | { kind: 'select'; keys?: string[] };
 // @ts-expect-error
 function badHandleEvent(e) {
-    // 这里不小心少考虑了几种情况……
-    const keysHash = [...e.keys].sort().join('#');
-    console.log(`keys' hash is: ${keysHash}`);
+  // 这里不小心少考虑了几种情况……
+  const keysHash = [...e.keys].sort().join('#');
+  console.log(`keys' hash is: ${keysHash}`);
 }
 function goodHandleEvent(e: MyEvent) {
-    if (e.kind === 'resize') {
-        const [h, w] = e.hw;
-        console.log(`area: ${h * w}`);
-    } else if (e.kind === 'select') {
-        if (e.keys) {
-            const keysHash = [...e.keys].sort().join('#');
-            console.log(`keys' hash is: ${keysHash}`);
-        } else {
-            console.error('selected, but nothing selected!');
-        }
+  if (e.kind === 'resize') {
+    const [h, w] = e.hw;
+    console.log(`area: ${h * w}`);
+  } else if (e.kind === 'select') {
+    if (e.keys) {
+      const keysHash = [...e.keys].sort().join('#');
+      console.log(`keys' hash is: ${keysHash}`);
+    } else {
+      console.error('selected, but nothing selected!');
     }
+  }
 }
 ```
 
@@ -97,7 +97,7 @@ function goodHandleEvent(e: MyEvent) {
 function add<A extends string, B extends string>(first: A, second: B): `${A}${B}`;
 function add(first: number, second: number): number;
 function add(first: unknown, second: unknown): unknown {
-    return ((first as any) + second) as any;
+  return ((first as any) + second) as any;
 }
 
 add('1', 2); // 类型错误

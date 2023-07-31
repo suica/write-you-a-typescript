@@ -20,11 +20,10 @@ sidebar_position: 2
 
 ## 子类型多态
 
-在谈论面向对象编程的时候，我们通常用多态来指代用子类型实例替换父类型实例，并且能够通过将子类型的实例转型成父类型，然后动态调用父类型方法的现象。 
+在谈论面向对象编程的时候，我们通常用多态来指代用子类型实例替换父类型实例，并且能够通过将子类型的实例转型成父类型，然后动态调用父类型方法的现象。
 
 但是，这其实只是类型系统中各种多态当中的一种。在类型系统的理论中，它叫做 **子类型多态**(Subtype Polymorphism)。
 在Java中，我们有如下子类型多态的例子：
-
 
 ```java {monaco}
 class Shape {
@@ -51,13 +50,13 @@ shape1.draw(); // Square.draw();
 试看如下TypeScript代码：
 
 ```ts {monaco}
-function printEach<T>(list:T[]){
-  for(const item of list){
+function printEach<T>(list: T[]) {
+  for (const item of list) {
     console.log(item);
   }
 }
-const numberArr: number[] = [1,2,3];
-const stringArr: string[] = ["test1","test2"];
+const numberArr: number[] = [1, 2, 3];
+const stringArr: string[] = ['test1', 'test2'];
 printEach(numberArr);
 printEach(stringArr);
 printEach<unknown>([]);
@@ -77,11 +76,11 @@ printEach<unknown>([]);
 function add<A extends string, B extends string>(first: A, second: B): `${A}${B}`;
 function add(first: number, second: number): number;
 function add(first: unknown, second: unknown): unknown {
-    return ((first as any) + second) as any;
+  return ((first as any) + second) as any;
 }
-add("1",1);
-add("1","1");
-add(1,1);
+add('1', 1);
+add('1', '1');
+add(1, 1);
 ```
 
 我们手动写了两个`add`函数的类型签名，告诉TypeScript这个函数所能支持的两种不同形式的调用。

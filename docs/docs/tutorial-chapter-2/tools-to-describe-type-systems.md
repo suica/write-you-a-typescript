@@ -16,14 +16,16 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 ```
 
 下面这些记号，都不是JavaScript的一部分，而只是起到了描述语法模式的作用：
+
 - `arr, callback, accumulator, currentValue, index, array, initialValue`；
 - 用来表示可选的`[]`，以及`callback`中用来表示函数参数的`()`。
 
 之所以说它是模式描述，是因为我们在真实调用的时候，不一定非得传入完全相同的名字的参数，只要匹配上了这个模式就行。比如，这样也是完全可以的：
 
 ```js
-[1,2,3].reduce((acc, cur, ind,) => acc + cur + ind, -1)
+[1, 2, 3].reduce((acc, cur, ind) => acc + cur + ind, -1);
 ```
+
 像这样用来描述一种语言的语言，是**元语言**(Meta Language)。被描述的语言，则是**对象语言**(Object Language)。
 
 ---
@@ -35,9 +37,9 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 下面是几个元语言的例子。
 
 1. BNF(Backus-Naur Form，或Backus Normal Form)。
-  BNF是一种上下文无关的形式语言，它可以用来描写任何一种上下文无关语言的语法——包括它自己。
+   BNF是一种上下文无关的形式语言，它可以用来描写任何一种上下文无关语言的语法——包括它自己。
 
-  下面，我们用BNF定义了简单的算术表达式语言。此时BNF是元语言，被刻画的算术表达式语言是对象语言。
+下面，我们用BNF定义了简单的算术表达式语言。此时BNF是元语言，被刻画的算术表达式语言是对象语言。
 
 ```bnf
 <Digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
@@ -50,23 +52,17 @@ arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]
 
 - 带有"元"这个前缀，是因为它不存在于对象语言之中，而存在于元语言中。`<Digit>`不是一个算术表达式。
 
-
 - 叫做"变量"，是因为它可以被"赋值为"它所指代的任何一个对象语言符号，而不是特定的对象语言符号。
-
-
 
 ---
 
 ## 熟悉元语言和元变量（续）
 
-
-
 2. `Array.prototype.reduce`语法的描述语言。我们将其语法高亮着色：其中<span class="text-rose-400">粉色</span>的是元变量，<span class="text-blue-400">蓝色</span>的是居于辅助地位的元变量。而剩下的是对象语言的符号。
 
-    <code>
-        <span class="text-rose-400">arr</span>.reduce(<span class="text-blue-400"><span class="text-rose-400">callback</span>(<span class="text-rose-400">accumulator</span></span>, <span class="text-blue-400"><span class="text-rose-400">currentValue</span>[,<span class="text-rose-400">index</span>[, <span class="text-rose-400">array</span>]])[, <span class="text-rose-400">initialValue</span>]</span>)
-    </code>
-
+ <code>
+     <span class="text-rose-400">arr</span>.reduce(<span class="text-blue-400"><span class="text-rose-400">callback</span>(<span class="text-rose-400">accumulator</span></span>, <span class="text-blue-400"><span class="text-rose-400">currentValue</span>[,<span class="text-rose-400">index</span>[, <span class="text-rose-400">array</span>]])[, <span class="text-rose-400">initialValue</span>]</span>)
+ </code>
 
 3. 汉语。我们用汉语谈论JavaScript语法或者TAT的语法的时候，汉语就是元语言，被谈论的语言就是对象语言。在用汉语谈论汉语本身的时候，汉语即是元语言也是对象语言。比如，"形容词"这个术语就是一个元变量。
 
@@ -91,14 +87,11 @@ $$
 
 关于记号的一些说明：
 
-
-
 - $:=$ 符号是一种特殊的等号，它表示将这个等式的左边的表达式定义为右边的表达式。
 
 - $\{ n : n\in \N \}$是 $\{n\mid n\in \N\}$的另外一种写法，也是一种可接受的集合记号。它用$:$代替了$\mid$，书写更加方便，我们会全部使用前者。
 
 ---
- 
 
 ## 二元关系（续）
 
@@ -118,23 +111,23 @@ $$
 
 二元关系其实只是$n$元关系($n\in \N$)的特例。而关系也可以定义在**自然数个集合**之上。
 
--   二元关系。整除关系。
+- 二元关系。整除关系。
 
-    $$
-    \text{Divides} := \{ (n, m) : n\in \N^+, m\in \N, m\bmod n = 0 \}，其中 \\
-    $$
+  $$
+  \text{Divides} := \{ (n, m) : n\in \N^+, m\in \N, m\bmod n = 0 \}，其中 \\
+  $$
 
-    $x\bmod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
+  $x\bmod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
 
--   一元关系。是否是偶数。
+- 一元关系。是否是偶数。
 
-    $$
-    \begin{align}
-    \text{IsEven}:=\{0,2,4,6 \dots\}=\{n: n\in \N, 2\ \text{Divides}\ n\} \subset \N
-    \end{align}
-    $$
+  $$
+  \begin{align}
+  \text{IsEven}:=\{0,2,4,6 \dots\}=\{n: n\in \N, 2\ \text{Divides}\ n\} \subset \N
+  \end{align}
+  $$
 
-    一元关系也叫做一元**谓词**(Predicate)。谓词也可以看成是接受若干个元素，返回`true`或者`false`的函数。
+  一元关系也叫做一元**谓词**(Predicate)。谓词也可以看成是接受若干个元素，返回`true`或者`false`的函数。
 
 ---
 
@@ -148,10 +141,10 @@ $$
 \end{align}
 $$ -->
 
--   三元关系。
-    $$
-    \text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots \} \subset \text{Letter}\times \Z \times \text{HexNumber}
-    $$
+- 三元关系。
+  $$
+  \text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots \} \subset \text{Letter}\times \Z \times \text{HexNumber}
+  $$
 
 在本课程中，我们会主要使用二元关系和三元关系。它们是我们刻画**项**、**类型**、**定型环境**之间关系的有力工具。
 
@@ -177,5 +170,4 @@ $$
 
 「水果」可以看成是一个集合，其中包含了一切水果，因此我们也可以说
 
-$$\text{🍎} \in \text{水果}$$ 
- 
+$$\text{🍎} \in \text{水果}$$

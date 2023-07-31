@@ -19,8 +19,8 @@ sidebar_position: 3
 首先，观察TypeScript的泛型函数的形式，我们发现它需要填写泛型参数，如下：
 
 ```ts {monaco}
-function printEach<T>(list:T[]){
-  for(const item of list){
+function printEach<T>(list: T[]) {
+  for (const item of list) {
     console.log(item);
   }
 }
@@ -37,17 +37,20 @@ function printEach<T>(list:T[]){
 泛型参数，会在函数被调用的时候，被一个实际的类型替换，之后再进行类型检查。
 
 这是说，如果进行
+
 ```ts
-printEach<number>([1,2,3]);
+printEach<number>([1, 2, 3]);
 ```
+
 这样的调用，相当于就是对
+
 ```ts {monaco}
-function printEach(list:number[]){
-  for(const item of list){
+function printEach(list: number[]) {
+  for (const item of list) {
     console.log(item);
   }
 }
-printEach([1,2,3]);
+printEach([1, 2, 3]);
 ```
 
 这样的TypeScript代码做类型检查。注意，其中的类型变量`T`被一个实际的类型`number`替换了。

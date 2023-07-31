@@ -15,15 +15,16 @@ sidebar_position: 4
 
 ```typescript
 interface Named {
-    name: string;
+  name: string;
 }
 class Person {
-    name: string;
+  name: string;
 }
 let p: Named;
 // 不会有类型错误，因为使用了结构类型系统
 p = new Person();
 ```
+
 在使用基于名义类型的语言，比如 C# 或 Java 中，这段代码会报错，因为 Person 类没有明确说明其实现了 Named 接口。
 TypeScript 的结构性子类型是根据 JavaScript 代码的典型写法来设计的。因为 JavaScript 里广泛地使用函数表达式和对象字面量，所以使用结构类型系统来描述这些类型比使用名义类型系统更符合JavaScript开发者的直觉。这个设计决策使得TypeScript更容易为JavaScript开发者所接受。
 

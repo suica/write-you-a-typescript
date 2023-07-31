@@ -42,7 +42,7 @@ S_1 \Rightarrow S_2 <: T_1 \Rightarrow T_2
 } \tag{S-Arrow}
 $$
 
-若是理解了上面这个式子，就理解了函数的子类型关系。 
+若是理解了上面这个式子，就理解了函数的子类型关系。
 
 ---
 
@@ -101,8 +101,8 @@ number=>string <: number => unknown // 返回值协变
 
 ```ts {monaco}
 declare let f1: (x: {}) => void;
-declare let f2: (x: {dog:true}) => void;
-declare let f3: (x: {cat:true}) => void;
+declare let f2: (x: { dog: true }) => void;
+declare let f3: (x: { cat: true }) => void;
 f1 = f2; // Error with --strictFunctionTypes
 f2 = f1; // Ok
 f2 = f3; // Error
@@ -117,6 +117,7 @@ f2 = f3; // Error
 我们考察了TypeScript中的函数类型构造器，再来考察一下TypeScript对`Array`这个类型构造器的设计。
 
 `Array`是协变的，因为有：
+
 ```ts
 Array<number> <: Array<unknown>
 ```
@@ -126,7 +127,7 @@ Array<number> <: Array<unknown>
 ```ts {monaco}
 const a: Array<number> = [];
 const b: Array<unknown> = a;
-b.push("haha string!");
+b.push('haha string!');
 const c = a[0]; // 这里实际获得了一个string类型的值
 ```
 
