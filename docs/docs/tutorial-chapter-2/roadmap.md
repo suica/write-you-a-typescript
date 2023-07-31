@@ -9,7 +9,7 @@ flowchart LR
   subgraph Part1[第一部分: 类型检查器的基础知识]
     direction TB
     ArrowFunction[JavaScript箭头函数] --> UTLC[无类型Lambda演算]
-    UTLC --> STLC --> 宇宙的层级
+    UTLC --> STLC
     BinaryRelation[二元关系] --> TypingRelation[定型关系]
     TypingRelation --> TypingContext[定型环境和定型规则]
     TypingContext --> STLC[简单类型Lambda演算]
