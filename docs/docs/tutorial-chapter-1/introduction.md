@@ -28,22 +28,50 @@ sidebar_position: 1
 
 ## 编程语言中的类型
 
-### 类型检查
+对于编程语言，我们也会有类似的**类型检查**机制。
 
-对于编程语言，我们也会有类似的**类型检查**机制。一般来说，我们会先进行**语法检查**，再进行**语义检查**（类型检查是其中一部分），快速筛选掉那些必定存在错误的程序，而不需要去跑程序本身，最终达到提高程序的运行时安全性的目的。
+### 编译视角看类型检查
+
+一般来说，我们会先进行**语法检查**，再进行**语义检查**（类型检查是其中一部分），快速筛选掉那些必定存在错误的程序，而不需要去跑程序本身，最终达到提高程序的运行时安全性的目的。
 
 ```mermaid
 graph TB    
-    Start[开始]
+    Start[编译开始]
     SyntaxCheck[语法检查]
     SemanticCheck[语义检查]
-    Success["成功(有运行的价值)"]
+    Success["成功(有运行的价值，进入后续流程)"]
     Failure["失败(程序必定存在错误)"]
 
     Start --> SyntaxCheck
     SyntaxCheck -->|通过| SemanticCheck -->|通过| Success
     SemanticCheck -->|失败| Failure
     SyntaxCheck -->|失败| Failure
+```
+
+### 程序分析视角看类型检查
+
+**程序分析(program analysis)**是对程序运行时行为提供安全的、可计算的近似预测的技术[^1]。从程序分析的视角来看，编译过程中的**语法检查**和**语义检查**都是不执行程序而对目标程序进行分析的手段。这一类手段被称为**静态分析(static analysis)**。
+
+[^1]:  Nielson, F., Nielson, H. R., & Hankin, C. (2015). Principles of program analysis. Springer.
+
+类型检查是一种重要的静态程序分析技术，它也会被称为类型系统。
+
+```mermaid
+graph
+    subgraph ProgramAnalysis["程序分析(program analysis)"]
+        subgraph StaticAnalysis["静态分析(static analysis)"]
+            TypeChecking["类型检查(type checking)"]
+            Linter["Linter"]
+            ControlFlowAnalysis["控制流分析(control-flow analysis)"]
+            DataFlowAnalysis["数据流分析(data-flow analysis)"]
+            AbstractInterpretation["抽象解释(abstract interpretation)"]
+        end
+        subgraph DynamicAnalysis["动态分析(dynamic analysis)"]
+            Testing["测试(testing)"]
+            Monitoring["监控(monitoring)"]
+            ProgramSlicing["程序切片(program slicing)"]
+        end
+    end
 ```
 
 ### 静态类型 vs 动态类型
@@ -102,7 +130,7 @@ foo + 1; // 无需显式转换即可相加
 1. **「类型」是对具体对象的抽象**。抽象让我们只关注我们所关注的「性质」，而非具体的细节。
 <!-- 「类型」是对具体对象的「俯瞰」，如同眯起眼睛看世界，我们不再关注物体的每个视觉细节，而是只关注它们的颜色。 -->
 
-1. **「类型」是一种推理工具。**在对具体对象进行抽象得到「类型」之后，我们就可以对它们的性质进行推理。
+2. **「类型」是一种推理工具。**在对具体对象进行抽象得到「类型」之后，我们就可以对它们的性质进行推理。例如，一旦我们知道「苹果」可以被抽象为自然数之后，其实就可以将苹果当成自然数来处理。
 
 ```mermaid
 flowchart
@@ -136,4 +164,4 @@ flowchart
 
 ### 抽象解释
 
-<!-- TODO -->
+抽象解释是一种非常强大的理论框架，它可以把许多的静态分析技术。
