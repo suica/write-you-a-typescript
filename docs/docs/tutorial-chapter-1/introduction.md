@@ -60,7 +60,8 @@ graph TB
 graph
     subgraph ProgramAnalysis["程序分析(program analysis)"]
         subgraph StaticAnalysis["静态分析(static analysis)"]
-            TypeChecking["类型检查(type checking)"]
+            TypeSystem["类型系统(type system)"]
+            EffectSystem["效应系统(effect system)"]
             Linter["Linter"]
             ControlFlowAnalysis["控制流分析(control-flow analysis)"]
             DataFlowAnalysis["数据流分析(data-flow analysis)"]
@@ -164,4 +165,5 @@ flowchart
 
 ### 抽象解释
 
-抽象解释是一种非常强大的理论框架，它可以把许多的静态分析技术。
+抽象解释（abstract interpretation）是一种非常强大的理论框架，它可以把许多静态分析技术统一起来囊括其中。
+它的核心思想是：将具体域中的程序抽象化，放到抽象域中进行推理。由此，我们从原始的程序得到了一种新的、抽象的程序。通过执行这些抽象的程序，我们可以得到原始程序的部分性质。
