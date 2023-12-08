@@ -155,7 +155,7 @@ $x\bmod y = k$ 表示 $x$ 被 $y$ 除余 $k$。
 这是一个三元关系。请读者给它找一个语义：
 
 $$
-\text{ASCII} = \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots \} \subset \text{Letter}\times \Z \times \text{HexNumber}
+\text{ASCII} := \{(\texttt{A}, 65, \text{0x41}), (\texttt{B}, 66, \text{0x42}),\dots \} \subset \text{Letter}\times \Z \times \text{HexNumber}
 $$
 
 :::
