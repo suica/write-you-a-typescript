@@ -10,17 +10,17 @@ jobs:
         name: Docs site
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+            - run: corepack enable
             - name: Install Deps
-              uses: borales/actions-yarn@v4
-              with:
-                  cmd: install --frozen-lockfile # will run `yarn install` command
-                  dir: 'docs'
+              run: yarn install --frozen-lockfile
+              working-directory: docs
             - name: Build
-              uses: borales/actions-yarn@v4
-              with:
-                  cmd: build:pages # will run `yarn build` command
-                  dir: 'docs'
+              run: yarn build:pages
+              working-directory: docs
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
               with:
