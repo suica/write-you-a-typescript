@@ -1,15 +1,14 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const math = require('remark-math');
-const katex = require('rehype-katex');
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 const title = '写个迷你TypeScript';
 
-/** @type {import('@docusaurus/types').Config} */
-const config = {
+/** @returns {import('@docusaurus/types').Config} */
+const createConfig = (math, katex) => ({
     title,
     tagline: '动手写个自己的类型检查器！',
     favicon: 'img/favicon.ico',
@@ -26,7 +25,6 @@ const config = {
     projectName: 'write-you-a-typescript', // Usually your repo name.
 
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
 
     // Even if you don't use internalization, you can use this field to set useful
     // metadata like html lang. For example, if your site is Chinese, you may want
@@ -37,6 +35,7 @@ const config = {
     },
 
     markdown: {
+        hooks: {onBrokenMarkdownLinks: 'warn'},
         mermaid: true,
     },
     themes: ['@docusaurus/theme-mermaid'],
@@ -63,14 +62,6 @@ const config = {
                 },
             }),
         ],
-    ],
-    stylesheets: [
-        {
-            href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
-            type: 'text/css',
-            integrity: 'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
-            crossorigin: 'anonymous',
-        },
     ],
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -148,6 +139,10 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
-};
+});
 
-module.exports = config;
+module.exports = async function () {
+    const {default: math} = await import('remark-math');
+    const {default: katex} = await import('rehype-katex');
+    return createConfig(math, katex);
+};

@@ -1,8 +1,12 @@
 # Website
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This website is built using [Docusaurus 3](https://docusaurus.io/), a modern static website generator.
 
 ### Installation
+
+Use Node.js 22.12 or newer and Yarn 1.22.22 (via Corepack).
+
+The Yarn resolutions pin patched transitive packages until their upstream dependencies accept those versions.
 
 ```
 $ yarn
